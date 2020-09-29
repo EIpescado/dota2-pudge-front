@@ -1,6 +1,8 @@
 module.exports = {
   title: 'Vue Element Admin',
 
+  systemName: 'dota2-pudge-后台管理',
+
   port: 9527,
 
   /**
@@ -25,7 +27,7 @@ module.exports = {
    * @type {boolean} true | false
    * @description Whether show the logo in sidebar
    */
-  sidebarLogo: false,
+  sidebarLogo: true,
 
   /**
    * @type {string | array} 'production' | ['production', 'development']
