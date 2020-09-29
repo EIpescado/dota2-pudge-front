@@ -7,9 +7,9 @@ export function tree() {
   })
 }
 
-export function fullTree() {
+export function wholeTree() {
   return request({
-    url: '/menu/fullTree',
+    url: '/menu/wholeTree',
     method: 'get'
   })
 }
@@ -44,4 +44,4 @@ export function update(id, data) {
   })
 }
 
-export default { tree }
+export default { tree, wholeTree }

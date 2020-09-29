@@ -78,7 +78,6 @@ export const logOut = (commit) => {
 }
 
 export const setUserInfo = (res, commit) => {
-  console.log(res)
   commit('SET_USER', res)
 }
 
