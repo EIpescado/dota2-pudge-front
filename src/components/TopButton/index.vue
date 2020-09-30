@@ -1,10 +1,8 @@
 <template>
-  <div class="button-container">
+  <div class="top-button-container">
     <template v-for="bt in buttons">
-      <el-button :key="bt.id" size="mini" type="primary" class="button-item" round @click="clickCallBack(bt.click)">
-        <svg-icon v-if="bt.icon.indexOf('el-icon-') === -1" :icon-class="bt.icon" />
-        <i v-else-if="bt.icon.indexOf('el-icon-') !== -1" :class="bt.icon" />
-        <i v-else slot="prefix" class="el-icon-question" />
+      <el-button :key="bt.id" size="small" type="primary" class="top-button-item" @click="clickCallBack(bt.click)">
+        <svg-icon v-if="bt.icon" :icon-class="bt.icon" />
         {{ bt.buttonName }}
       </el-button>
     </template>
