@@ -21,10 +21,11 @@ export function get(id) {
   })
 }
 
-export function deleteMenu(id) {
+export function deleteNode(data) {
   return request({
-    url: '/menu/delete/' + id,
-    method: 'post'
+    url: '/menu/delete',
+    method: 'post',
+    data
   })
 }
 
@@ -43,5 +44,3 @@ export function update(id, data) {
     data
   })
 }
-
-export default { tree, wholeTree }

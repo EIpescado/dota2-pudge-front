@@ -1,68 +1,36 @@
 <template>
   <div class="app-container">
     <TopButton />
-    <el-table :data="data" row-key="id">
+    <el-table ref="table" :data="tableData" row-key="id">
       <el-table-column type="selection" width="55" />
-      <el-table-column prop="meta.title" label="菜单标题" min-width="180px" />
-      <el-table-column prop="sortNo" label="排序号" min-width="80px" />
-      <el-table-column prop="meta.icon" label="图标" align="center" width="50px">
+      <el-table-column prop="name" label="名称">
         <template slot-scope="scope">
-          <svg-icon :icon-class="scope.row.meta.icon ? scope.row.meta.icon : ''" />
+          <i :class="scope.row.whetherButton ? 'el-icon-thumb' : 'el-icon-menu'" /> {{ scope.row.name }}
         </template>
       </el-table-column>
-      <el-table-column prop="name" label="路由名称" show-overflow-tooltip />
-      <el-table-column prop="component" label="组件" />
-      <el-table-column prop="path" label="路径" show-overflow-tooltip />
-      <el-table-column prop="redirect" label="跳转" show-overflow-tooltip />
-      <el-table-column prop="iFrame" label="外链" width="50px">
+      <el-table-column prop="sortNo" label="排序号" />
+      <el-table-column prop="icon" label="图标" align="center">
         <template slot-scope="scope">
-          <span v-if="scope.row.iFrame">是</span>
-          <span v-else>否</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="noCache" label="缓存" width="50px">
-        <template slot-scope="scope">
-          <span v-if="scope.row.noCache">否</span>
-          <span v-else>是</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="hidden" label="可见" width="50px">
-        <template slot-scope="scope">
-          <span v-if="scope.row.hidden">否</span>
-          <span v-else>是</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="affix" label="常驻" width="50px">
-        <template slot-scope="scope">
-          <span v-if="scope.row.affix">是</span>
-          <span v-else>否</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="breadCrumb" label="面包屑" width="65px">
-        <template slot-scope="scope">
-          <span v-if="scope.row.breadCrumb">是</span>
-          <span v-else>否</span>
+          <svg-icon :icon-class="scope.row.icon ? scope.row.icon : ''" />
         </template>
       </el-table-column>
     </el-table>
+    <MenuForm ref="menuForm" />
+    <ButtonForm ref="buttonForm" />
   </div>
 </template>
 
 <script>
-import { wholeTree } from '@/api/system/menu'
-import IconSelect from '@/components/IconSelect'
-import Treeselect from '@riophae/vue-treeselect'
-import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-import { LOAD_CHILDREN_OPTIONS } from '@riophae/vue-treeselect'
-import DateRangePicker from '@/components/DateRangePicker'
+import { wholeTree, deleteNode } from '@/api/system/menu'
 import TopButton from '@/components/TopButton'
-
+import MenuForm from './menuForm'
+import ButtonForm from './buttonForm'
 export default {
   name: 'Menu',
-  components: { Treeselect, IconSelect, DateRangePicker, TopButton },
+  components: { TopButton, MenuForm, ButtonForm },
   data() {
     return {
-      data: []
+      tableData: []
     }
   },
   created() {
@@ -71,16 +39,55 @@ export default {
   methods: {
     wholeTree() {
       wholeTree().then(res => {
-        this.data = res
+        this.tableData = res
       })
     },
     create() {
-      console.log(11111)
+      this.$refs.menuForm.createOpen()
+    },
+    createButton() {
+      this.$refs.buttonForm.createOpen()
+    },
+    update() {
+      const rows = this.$refs.table.selection
+      if (rows && rows.length === 1) {
+        const row = rows[0]
+        if (row.whetherButton) {
+          this.$refs.buttonForm.updateOpen(row.id)
+        } else {
+          this.$refs.menuForm.updateOpen(row.id)
+        }
+      } else {
+        this.$message.error({
+          message: '请选择一个节点'
+        })
+      }
+    },
+    deleteNode() {
+      const rows = this.$refs.table.selection
+      if (rows && rows.length >= 1) {
+        this.$confirm('确认删除这' + rows.length + '节点?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          deleteNode(rows).then(res => {
+            this.$message.success({
+              message: '删除成功!'
+            })
+          })
+          this.wholeTree()
+        }).catch(() => {
+        })
+      } else {
+        this.$message.error({
+          message: '请至少选择一个节点'
+        })
+      }
     }
   }
 }
 </script>
-
 <style rel="stylesheet/scss" lang="scss" scoped>
  ::v-deep .el-input-number .el-input__inner {
     text-align: left;

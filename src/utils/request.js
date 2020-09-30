@@ -41,16 +41,17 @@ service.interceptors.response.use(
         return resData.res
       } else {
         Message({
-          message: resData.res.message || 'Error',
+          message: resData.message || 'Error',
           type: 'error',
           duration: 5 * 1000
         })
         // 登录过期
-        if (resData.res.code === '10004') {
+        if (resData.code === '10004') {
           store.dispatch('user/resetToken').then(() => {
             location.reload()
           })
         }
+        return Promise.reject('error')
       }
     }
   },
