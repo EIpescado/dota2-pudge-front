@@ -172,12 +172,35 @@ aside {
 }
 
 .filter-container {
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   padding-bottom: 10px;
-
-  .filter-item {
-    display: inline-block;
-    vertical-align: middle;
-    margin-bottom: 10px;
+  .el-form--inline{
+    padding-top: 10px !important;
+  }
+  .el-form-item{
+    width: 23%;
+    margin-bottom: 10px !important;
+  }
+  .el-select{
+    width: 100%;
+  }
+  .el-form-item__label{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 24%;
+  }
+  .el-form-item__content{
+    width: 70%;
+  }
+  .el-date-editor{
+    width: 100% !important;
+  }
+  .filter-button-container{
+    margin-left:45%;
+    .el-button{
+      margin-left: 40px;
+    }
   }
 }
 
@@ -190,8 +213,17 @@ aside {
   z-index: 1000 !important;
 }
 
+.table-container{
+  width: 100%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+  .el-table__header{
+    font-weight: 600;
+  }
+}
+
 .top-button-container{
-  padding-bottom: 20px;
+  margin-top: 10px;
+  padding-bottom: 10px;
   .top-button-item{
     font-size: 13px;
   }
