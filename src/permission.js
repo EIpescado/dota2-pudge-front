@@ -60,7 +60,12 @@ router.beforeEach(async(to, from, next) => {
 
 export const loadMenus = (next, to) => {
   tree().then(res => {
-    const asyncRouter = filterAsyncRouter(res[0].children)
+    let asyncRouter
+    if (res && res.length > 0 && res[0].children) {
+      asyncRouter = filterAsyncRouter(res[0].children)
+    } else {
+      asyncRouter = []
+    }
     asyncRouter.push({ path: '*', redirect: '/404', hidden: true })
     store.dispatch('GenerateRoutes', asyncRouter).then(() => { // 存储路由
       router.addRoutes(asyncRouter) // 动态添加可访问路由表

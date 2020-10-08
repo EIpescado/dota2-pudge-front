@@ -37,3 +37,18 @@ export function update(id, data) {
     data
   })
 }
+
+export function bindMenuAndButton(roleId, data) {
+  return request({
+    url: '/role/' + roleId + '/bindMenuAndButton',
+    method: 'post',
+    data
+  })
+}
+
+export function singleRoleMenuAndButton(roleId) {
+  return request({
+    url: '/role/' + roleId + '/singleRoleMenuAndButton',
+    method: 'get'
+  })
+}
