@@ -1,15 +1,24 @@
 module.exports = {
-  title: 'Vue Element Admin',
+  /**
+   * 页面title后缀
+   */
+  title: 'DOTA2',
 
-  systemName: 'dota2-pudge-后台管理',
+  /**
+   * 左上角系统名称
+   */
+  systemName: 'pudge后台管理',
 
+  /**
+   * 测试端口号
+   */
   port: 9527,
 
   /**
    * @type {boolean} true | false
    * @description Whether show the settings right-panel
    */
-  showSettings: true,
+  showSettings: false,
 
   /**
    * @type {boolean} true | false
@@ -50,5 +59,18 @@ module.exports = {
   /**
    * 请求凭证保存在浏览器cookie中的key值
    */
-  tokenKey: 'DOTA2-PUDGE-TOKEN'
+  tokenKey: 'DOTA2-PUDGE-TOKEN',
+
+  /**
+   * 是否显示设置的底部信息
+   */
+  showFooter: true,
+  /**
+   * 底部文字，支持html语法
+   */
+  footerTxt: '© 2020 yq <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License 2.0</a>',
+  /**
+   * 备案号
+   */
+  footerICP: '<a href="https://beian.miit.gov.cn/#/Integrated/index" target="_blank">粤ICP备123456789号</a>'
 }

@@ -1,12 +1,12 @@
 <template>
-  <div class="top-button-container">
+  <el-button-group class="top-button-container">
     <template v-for="bt in buttons">
       <el-button :key="bt.id" size="small" type="primary" class="top-button-item" @click="clickCallBack(bt.click)">
         <svg-icon v-if="bt.icon" :icon-class="bt.icon" />
         {{ bt.buttonName }}
       </el-button>
     </template>
-  </div>
+  </el-button-group>
 </template>
 
 <script>
@@ -23,7 +23,6 @@ export default {
   },
   methods: {
     clickCallBack(val) {
-      // this.$emit('listenCall', val)
       this.$parent[val]()
     },
     getButtons() {

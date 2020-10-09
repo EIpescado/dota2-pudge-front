@@ -47,7 +47,7 @@ service.interceptors.response.use(
         })
         // 登录过期
         if (resData.code === '10004') {
-          store.dispatch('user/resetToken').then(() => {
+          store.dispatch('LogOut').then(() => {
             location.reload()
           })
         }

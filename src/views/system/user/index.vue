@@ -2,7 +2,7 @@
   <div class="app-container">
 
     <!--查询-->
-    <div class="filter-container">
+    <div v-if="showFilterContainer" class="filter-container">
       <el-form ref="qo" :inline="true" :model="qo" size="small">
         <el-form-item label="用户名" prop="username">
           <el-input v-model.trim="qo.username" @keyup.enter.native="search" />
@@ -21,8 +21,11 @@
     <!--顶部按钮-->
     <TopButton />
 
+    <!--table右侧工具按钮-->
+    <TableRightButton />
+
     <!--列表-->
-    <el-table v-loading="showLoading" :data="data" size="small" highlight-current-row class="table-container">
+    <el-table ref="table" v-loading="showLoading" :data="data" size="small" highlight-current-row class="table-container">
       <el-table-column label="用户名" prop="username" />
       <el-table-column label="昵称" prop="nickName" />
       <el-table-column label="手机" prop="phone" />
@@ -39,13 +42,13 @@
 import { list } from '@/api/system/user'
 import Pagination from '@/components/Pagination'
 import TopButton from '@/components/TopButton'
-
+import TableRightButton from '@/components/TableRightButton'
 export default {
   name: 'User',
-  components: { Pagination, TopButton },
+  components: { Pagination, TopButton, TableRightButton },
   data() {
     return {
-      data: null, total: 0, showLoading: false,
+      data: null, total: 0, showLoading: false, showFilterContainer: true,
       qo: { page: 1, size: 10, username: '' }
     }
   },
@@ -54,13 +57,17 @@ export default {
   },
   methods: {
     getData() {
-      list(this.qo).then(res => {
-        this.data = res.rows
-        this.total = res.total
-      })
+      this.showLoading = true
+      setTimeout(() => {
+        list(this.qo).then(res => {
+          this.data = res.rows
+          this.total = res.total
+          this.showLoading = false
+        })
+      }, 300)
     },
     search() {
-      this.page = 1
+      this.qo.page = 1
       this.getData()
     },
     refreshQo() {

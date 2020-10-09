@@ -30,7 +30,7 @@ export default {
     },
     limit: {
       type: Number,
-      default: 20
+      default: 10
     },
     pageSizes: {
       type: Array,
@@ -92,6 +92,7 @@ export default {
 
 <style scoped>
 .pagination-container {
+  margin-top: 10px;
   background: #fff;
   padding: 20px 0 20px 0;
 }

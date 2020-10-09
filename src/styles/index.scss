@@ -121,16 +121,12 @@ aside {
 
 //main-container全局样式
 .app-container {
-  padding: 20px;
+  padding: 10px 20px 20px 20px;
 }
 
 .components-container {
   margin: 30px 50px;
   position: relative;
-}
-
-.pagination-container {
-  margin-top: 30px;
 }
 
 .text-center {
@@ -222,9 +218,39 @@ aside {
 }
 
 .top-button-container{
-  margin-top: 10px;
   padding-bottom: 10px;
+  width: 100%;
   .top-button-item{
-    font-size: 13px;
+    margin-top: 10px;
+    margin-right: 10px !important;
   }
+}
+
+#pudge-login-footer {
+  height: 40px;
+  line-height: 40px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  color: #fff;
+  font-family: Arial, serif;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+#pudge-footer {
+  background: none repeat scroll 0 0 white;
+  border-top: 1px solid #e7eaec;
+  overflow: hidden;
+  padding: 10px 6px 0 6px;
+  height: 33px;
+  font-size: 0.7rem !important;
+  color: #7a8b9a;
+  letter-spacing: 0.8px;
+  font-family: Arial, sans-serif !important;
+  position: fixed;
+  bottom: 0;
+  z-index: 99;
+  width: 100%;
 }

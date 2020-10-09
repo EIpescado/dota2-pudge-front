@@ -5,6 +5,11 @@
         <router-view :key="key" />
       </keep-alive>
     </transition>
+    <div v-if="$store.state.settings.showFooter" id="pudge-footer">
+      <span v-html="$store.state.settings.footerTxt" />
+      <span> ⋅ </span>
+      <span v-html="$store.state.settings.footerICP" />
+    </div>
   </section>
 </template>
 
