@@ -1,17 +1,16 @@
 <template>
-  <div :class="{'hidden':hidden}" class="pagination-container">
-    <el-pagination
-      :background="background"
-      :current-page.sync="currentPage"
-      :page-size.sync="pageSize"
-      :layout="layout"
-      :page-sizes="pageSizes"
-      :total="total"
-      v-bind="$attrs"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
-  </div>
+  <el-pagination
+    :current-page.sync="currentPage"
+    :page-size.sync="pageSize"
+    :layout="layout"
+    :page-sizes="pageSizes"
+    :total="total"
+    v-bind="$attrs"
+    background
+    class="pagination-container"
+    @size-change="handleSizeChange"
+    @current-change="handleCurrentChange"
+  />
 </template>
 
 <script>
@@ -41,18 +40,6 @@ export default {
     layout: {
       type: String,
       default: 'total, sizes, prev, pager, next, jumper'
-    },
-    background: {
-      type: Boolean,
-      default: true
-    },
-    autoScroll: {
-      type: Boolean,
-      default: true
-    },
-    hidden: {
-      type: Boolean,
-      default: false
     }
   },
   computed: {
@@ -76,15 +63,11 @@ export default {
   methods: {
     handleSizeChange(val) {
       this.$emit('pagination', { page: this.currentPage, limit: val })
-      if (this.autoScroll) {
-        scrollTo(0, 800)
-      }
+      scrollTo(0, 800)
     },
     handleCurrentChange(val) {
       this.$emit('pagination', { page: val, limit: this.pageSize })
-      if (this.autoScroll) {
-        scrollTo(0, 800)
-      }
+      scrollTo(0, 800)
     }
   }
 }
@@ -94,9 +77,6 @@ export default {
 .pagination-container {
   margin-top: 10px;
   background: #fff;
-  padding: 20px 0 20px 0;
-}
-.pagination-container.hidden {
-  display: none;
+  padding: 10px 0 20px 0;
 }
 </style>

@@ -10,8 +10,8 @@
         <el-checkbox v-model="allColumnsSelected" :indeterminate="allColumnsSelectedIndeterminate" @change="handleCheckAllChange">
           全选
         </el-checkbox>
-        <el-checkbox-group v-model="checkedTableColumns" @change="handleCheckedTableColumnsChange">
-          <el-checkbox v-for="item in tableColumns" :key="item.property" :label="item.label">
+        <el-checkbox-group v-model="checkedTableColumns" :min="1" @change="handleCheckedTableColumnsChange">
+          <el-checkbox v-for="item in tableColumns" :key="item.property" :label="item.property">
             {{ item.label }}
           </el-checkbox>
         </el-checkbox-group>
@@ -26,15 +26,21 @@ export default {
   },
   data() {
     return {
-      allColumnsSelected: true, allColumnsSelectedIndeterminate: false, tableColumns: [], checkedTableColumns: []
+      allColumnsSelected: true, allColumnsSelectedIndeterminate: false, tableColumns: [], checkedTableColumns: [], allTableColumns: []
     }
   },
   created() {
   },
   methods: {
     switchShowFilterContainer() {
-      const showFilterContainer = this.$parent.$data.showFilterContainer
-      this.$parent.$data.showFilterContainer = !showFilterContainer
+      const filterContainer = this.$parent.$refs.filterContainer
+      let resultClass = filterContainer.getAttribute('class')
+      if (resultClass.indexOf('hidden') !== -1) {
+        resultClass = 'filter-container'
+      } else {
+        resultClass = 'filter-container-hidden'
+      }
+      filterContainer.setAttribute('class', resultClass)
     },
     refresh() {
       this.$parent.getData()
@@ -42,26 +48,31 @@ export default {
     getTableFields() {
       if (!this.tableColumns || this.tableColumns.length === 0) {
         const tableColumnArray = []
+        const allTableColumnArray = []
         this.$parent.$refs.table.columns.forEach(r => {
           tableColumnArray.push({
             label: r.label,
             property: r.property
           })
+          allTableColumnArray.push(r.property)
         })
         this.tableColumns = tableColumnArray
-        this.checkedTableColumns = tableColumnArray
+        this.checkedTableColumns = allTableColumnArray
+        this.allTableColumns = allTableColumnArray
       }
     },
     handleCheckAllChange(val) {
-      console.log(this.tableColumns,this.checkedTableColumns)
-      this.checkedTableColumns = val ? this.tableColumns : []
+      if (val === false) {
+        this.allColumnsSelected = true
+        return
+      }
+      this.checkedTableColumns = val ? this.allTableColumns : []
       this.allColumnsSelectedIndeterminate = false
     },
     handleCheckedTableColumnsChange(value) {
-      console.log(value)
       const checkedCount = value.length
       this.allColumnsSelected = checkedCount === this.tableColumns.length
-      this.allColumnsSelectedIndeterminate = checkedCount > 0 && checkedCount < this.checkedTableColumns.length
+      this.allColumnsSelectedIndeterminate = checkedCount > 0 && checkedCount < this.tableColumns.length
     }
   }
 }
