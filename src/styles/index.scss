@@ -194,9 +194,10 @@ aside {
     width: 100% !important;
   }
   .filter-button-container{
-    margin-left:45%;
+    margin-left:42%;
     .el-button{
       margin-left: 40px;
+      border-radius: 6px !important;
     }
   }
 }
@@ -228,6 +229,7 @@ aside {
   .top-button-item{
     margin-top: 8px;
     margin-right: 10px !important;
+    border-radius: 6px !important;
   }
 }
 

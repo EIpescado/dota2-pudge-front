@@ -1,9 +1,9 @@
 <template>
   <div class="table-left-button-container">
     <el-button-group>
-      <el-button size="mini" icon="el-icon-search" @click="switchShowFilterContainer" />
-      <el-button size="mini" icon="el-icon-refresh" @click="refresh" />
-      <el-popover placement="bottom-end" width="150" trigger="click" @show="getTableFields">
+      <el-button v-show="showFilter" size="mini" icon="el-icon-search" @click="switchShowFilterContainer" />
+      <el-button v-show="showRefresh" size="mini" icon="el-icon-refresh" @click="refresh" />
+      <el-popover v-show="showColCheck" placement="bottom-end" width="150" trigger="click" @show="getTableFields">
         <el-button slot="reference" size="mini" icon="el-icon-s-grid">
           <i class="fa fa-caret-down" aria-hidden="true" />
         </el-button>
@@ -23,6 +23,34 @@
 export default {
   name: 'TableRightButton',
   props: {
+    showFilter: {
+      type: Boolean,
+      default: true
+    },
+    showRefresh: {
+      type: Boolean,
+      default: true
+    },
+    showColCheck: {
+      type: Boolean,
+      default: false
+    },
+    baba: {
+      type: Object,
+      required: true
+    },
+    filterKey: {
+      type: String,
+      default: 'filterContainer'
+    },
+    tableKey: {
+      type: String,
+      default: 'table'
+    },
+    tableDataFun: {
+      type: String,
+      default: 'getData'
+    }
   },
   data() {
     return {
@@ -33,7 +61,7 @@ export default {
   },
   methods: {
     switchShowFilterContainer() {
-      const filterContainer = this.$parent.$refs.filterContainer
+      const filterContainer = this.baba.$refs[this.filterKey]
       let resultClass = filterContainer.getAttribute('class')
       if (resultClass.indexOf('hidden') !== -1) {
         resultClass = 'filter-container'
@@ -43,13 +71,13 @@ export default {
       filterContainer.setAttribute('class', resultClass)
     },
     refresh() {
-      this.$parent.getData()
+      this.baba[this.tableDataFun]()
     },
     getTableFields() {
       if (!this.tableColumns || this.tableColumns.length === 0) {
         const tableColumnArray = []
         const allTableColumnArray = []
-        this.$parent.$refs.table.columns.forEach(r => {
+        this.baba.$refs[this.tableKey].columns.forEach(r => {
           tableColumnArray.push({
             label: r.label,
             property: r.property
@@ -77,9 +105,13 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style lang="scss">
 .table-left-button-container{
   float: right;
   margin: 0 0 10px 0;
+  .el-button{
+    border-radius: 6px !important;
+    margin-left: 10px !important;;
+  }
 }
 </style>

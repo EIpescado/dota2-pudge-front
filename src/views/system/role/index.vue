@@ -1,9 +1,5 @@
 <template>
   <div class="app-container">
-
-    <!-- 顶部按钮 -->
-    <TopButton />
-
     <el-row :gutter="15">
       <!--角色列表-->
       <el-col :xs="24" :sm="24" :md="16" :lg="16" :xl="17">
@@ -13,9 +9,22 @@
             <span class="role-span">角色列表</span>
             <div id="opt" style="float: right" />
           </div>
-
+          <!--查询-->
+          <div ref="filterContainer" class="filter-container">
+            <el-form ref="qo" :inline="true" :model="qo" size="small">
+              <el-form-item label="角色" prop="name">
+                <el-input v-model.trim="qo.name" clearable />
+              </el-form-item>
+              <!--查询框按钮-->
+              <FilterButton :baba="this" />
+            </el-form>
+          </div>
+          <!-- 顶部按钮 -->
+          <TopButton />
+          <!--table右侧工具按钮-->
+          <TableRightButton :baba="this" />
           <!--列表-->
-          <el-table :key="tableKey" v-loading="showLoading" :data="list" highlight-current-row style="width: 100%;" @row-click="handleRowClick">
+          <el-table ref="table" v-loading="showLoading" :data="data" size="small" highlight-current-row class="table-container" @row-click="handleRowClick">
             <el-table-column label="角色名" prop="name" />
             <el-table-column label="等级" prop="level" />
             <el-table-column label="描述" prop="description" />
@@ -23,7 +32,7 @@
           </el-table>
 
           <!--分页插件-->
-          <pagination v-show="total>0" :total="total" :page.sync="qo.page" :size.sync="qo.size" @pagination="getList" />
+          <pagination :total="total" :page.sync="qo.page" :limit.sync="qo.size" @pagination="getData" />
         </el-card>
       </el-col>
 
@@ -45,6 +54,7 @@
             :props="defaultProps"
             accordion
             show-checkbox
+            default-expand-all
             :check-strictly="treeSetTrue"
             node-key="id"
           />
@@ -61,13 +71,15 @@ import { list, deleteRole, singleRoleMenuAndButton, bindMenuAndButton } from '@/
 import { wholeTree } from '@/api/system/menu'
 import Pagination from '@/components/Pagination'
 import TopButton from '@/components/TopButton'
+import TableRightButton from '@/components/TableRightButton'
+import FilterButton from '@/components/FilterButton'
 import Form from './form'
 export default {
   name: 'Role',
-  components: { Pagination, TopButton, Form },
+  components: { Pagination, TopButton, Form, TableRightButton, FilterButton },
   data() {
     return {
-      tableKey: 0, list: null, total: 0, showLoading: false,
+      data: null, total: 0, showLoading: false,
       qo: { page: 1, size: 10 },
       menuLoading: false, showButton: false, treeSetTrue: true,
       menus: [], menuIds: [], currentRoleId: '',
@@ -78,23 +90,19 @@ export default {
     }
   },
   created() {
-    this.getList()
+    this.getData()
     this.wholeTree()
   },
   methods: {
-    getList() {
+    getData() {
       this.showLoading = true
       list(this.qo).then(response => {
-        this.list = response.rows
+        this.data = response.rows
         this.total = response.total
         this.showLoading = false
       }).catch(() => {
         this.showLoading = false
       })
-    },
-    handleFilter() {
-      this.qo.page = 1
-      this.getList()
     },
     create() {
       this.$refs.roleForm.createOpen()

@@ -1,21 +1,41 @@
 <template>
   <div class="app-container">
+
+    <!-- 顶部按钮 -->
     <TopButton />
-    <el-table ref="table" :data="tableData" row-key="id">
-      <el-table-column type="selection" width="55" />
-      <el-table-column prop="name" label="名称">
-        <template slot-scope="scope">
-          <i :class="scope.row.whetherButton ? 'el-icon-thumb' : 'el-icon-menu'" /> {{ scope.row.name }}
-        </template>
-      </el-table-column>
-      <el-table-column prop="sortNo" label="排序号" />
-      <el-table-column prop="icon" label="图标" align="center">
-        <template slot-scope="scope">
-          <svg-icon :icon-class="scope.row.icon ? scope.row.icon : ''" />
-        </template>
-      </el-table-column>
-    </el-table>
+
+    <el-row :gutter="15">
+      <el-col :span="12">
+        <el-card shadow="hover">
+          <div slot="header" class="clearfix">
+            <span>菜单及按钮树</span>
+          </div>
+          <el-input v-model.trim="filterText" placeholder="输入关键字进行过滤">
+            <i slot="prefix" class="el-input__icon el-icon-search" />
+          </el-input>
+          <el-tree
+            ref="tree"
+            :data="tableData"
+            :props="defaultProps"
+            :check-strictly="true"
+            show-checkbox
+            highlight-current
+            node-key="id"
+            class="filter-tree"
+            :filter-node-method="filterNode"
+          >
+            <span slot-scope="{ node, data }" class="custom-tree-node">
+              <svg-icon :icon-class="data.icon" />
+              <span class="custom-tree-lable">{{ data.sortNo + ' - ' + node.label }}</span>
+            </span>
+          </el-tree>
+        </el-card>
+      </el-col>
+    </el-row>
+
+    <!--菜单表单-->
     <MenuForm ref="menuForm" />
+    <!--按钮表单-->
     <ButtonForm ref="buttonForm" />
   </div>
 </template>
@@ -30,7 +50,13 @@ export default {
   components: { TopButton, MenuForm, ButtonForm },
   data() {
     return {
-      tableData: []
+      tableData: [], filterText: '', defaultProps: { children: 'children', label: 'name' },
+      treeSetTrue: true
+    }
+  },
+  watch: {
+    filterText(val) {
+      this.$refs.tree.filter(val)
     }
   },
   created() {
@@ -42,6 +68,10 @@ export default {
         this.tableData = res
       })
     },
+    filterNode(value, data, node) {
+      if (!value) return true
+      return data.name.indexOf(value) !== -1
+    },
     create() {
       this.$refs.menuForm.createOpen()
     },
@@ -49,7 +79,7 @@ export default {
       this.$refs.buttonForm.createOpen()
     },
     update() {
-      const rows = this.$refs.table.selection
+      const rows = this.$refs.tree.getCheckedNodes()
       if (rows && rows.length === 1) {
         const row = rows[0]
         if (row.whetherButton) {
@@ -64,7 +94,7 @@ export default {
       }
     },
     deleteNode() {
-      const rows = this.$refs.table.selection
+      const rows = this.$refs.tree.getCheckedNodes()
       if (rows && rows.length >= 1) {
         this.$confirm('确认删除这' + rows.length + '节点?', '提示', {
           confirmButtonText: '确定',
@@ -89,11 +119,16 @@ export default {
 }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
- ::v-deep .el-input-number .el-input__inner {
-    text-align: left;
+.filter-tree{
+  margin-top:16px;
+}
+.custom-tree-node {
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  .custom-tree-lable {
+    margin-left: 8px;
   }
- ::v-deep .vue-treeselect__control,::v-deep .vue-treeselect__placeholder,::v-deep .vue-treeselect__single-value {
-    height: 30px;
-    line-height: 30px;
-  }
+}
 </style>
