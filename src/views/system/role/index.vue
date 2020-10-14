@@ -20,7 +20,7 @@
             </el-form>
           </div>
           <!-- 顶部按钮 -->
-          <TopButton />
+          <TopButton :baba="this" />
           <!--table右侧工具按钮-->
           <TableRightButton :baba="this" />
           <!--列表-->
@@ -55,6 +55,7 @@
             accordion
             show-checkbox
             default-expand-all
+            check-on-click-node
             :check-strictly="treeSetTrue"
             node-key="id"
           />

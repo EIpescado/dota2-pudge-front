@@ -207,38 +207,29 @@ aside {
 }
 
 .form-container{
-  .el-form--inline{
-    padding-top: 8px !important;
-  }
   .el-form-item{
-    width: 30%;
+    width: 100%;
+  }
+  .el-form-item__label{
+    width: 70px;
+  }
+  .el-form-item__content{
+    width: 80%;
   }
   .el-select{
     width: 100%;
   }
-  .el-form-item__label{
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    width: 24%;
-  }
-  .el-form-item__content{
-    width: 70%;
-  }
   .el-date-editor{
     width: 100% !important;
   }
-  .form-item-row{
-    width: 100%;
-    .el-form-item__label{
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      width: 7.2%;
-    }
-    .el-form-item__content{
-      width: 83.2%;
-    }
+}
+
+.form-dialog{
+  .el-dialog__body{
+    padding: 30px 15px 15px 15px ;
+  }
+  .el-button{
+    margin-left: 20px;
   }
 }
 

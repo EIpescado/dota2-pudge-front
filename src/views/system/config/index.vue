@@ -4,8 +4,11 @@
     <!--查询-->
     <div ref="filterContainer" class="filter-container">
       <el-form ref="qo" :inline="true" :model="qo" size="small">
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model.trim="qo.username" clearable />
+        <el-form-item label="配置编码" prop="code">
+          <el-input v-model.trim="qo.code" clearable />
+        </el-form-item>
+        <el-form-item label="配置描述" prop="description">
+          <el-input v-model.trim="qo.description" clearable />
         </el-form-item>
       </el-form>
       <!--查询框按钮-->
@@ -20,10 +23,11 @@
 
     <!--列表-->
     <el-table ref="table" v-loading="showLoading" :data="data" size="small" highlight-current-row class="table-container">
-      <el-table-column label="用户名" resizable prop="username" />
-      <el-table-column label="昵称" prop="nickName" />
-      <el-table-column label="手机" prop="phone" />
-      <el-table-column label="注册日期" prop="dateCreated" />
+      <el-table-column label="配置编码" prop="code" />
+      <el-table-column label="配置描述" prop="description" />
+      <el-table-column label="配置值" prop="val" />
+      <el-table-column label="创建日期" prop="dateCreated" />
+      <el-table-column label="创建日期" prop="lastUpdated" />
       <el-table-column label="操作" width="100px">
         <template slot-scope="{row}">
           <!-- 右侧按钮 -->
@@ -40,7 +44,7 @@
 </template>
 
 <script>
-import { list } from '@/api/system/user'
+import { list } from '@/api/system/config'
 import Pagination from '@/components/Pagination'
 import TopButton from '@/components/TopButton'
 import SingleRowButton from '@/components/SingleRowButton'
@@ -48,12 +52,12 @@ import TableRightButton from '@/components/TableRightButton'
 import FilterButton from '@/components/FilterButton'
 import Form from './form'
 export default {
-  name: 'User',
+  name: 'Config',
   components: { Pagination, TopButton, TableRightButton, FilterButton, Form, SingleRowButton },
   data() {
     return {
       showLoading: false, data: null, total: 0,
-      qo: { page: 1, size: 10, username: '' }
+      qo: { page: 1, size: 10, code: '', description: '' }
     }
   },
   created() {

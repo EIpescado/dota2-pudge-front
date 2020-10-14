@@ -13,6 +13,12 @@
 
 export default {
   name: 'TopButton',
+  props: {
+    baba: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
       buttons: []
@@ -23,7 +29,7 @@ export default {
   },
   methods: {
     clickCallBack(val) {
-      this.$parent[val]()
+      this.baba[val]()
     },
     getButtons() {
       const metaButtons = this.$route.meta.buttons
