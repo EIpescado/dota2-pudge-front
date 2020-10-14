@@ -7,3 +7,26 @@ export function list(data) {
     params: data
   })
 }
+
+export function create(data) {
+  return request({
+    url: '/user',
+    method: 'post',
+    data
+  })
+}
+
+export function update(id, data) {
+  return request({
+    url: '/user/' + id,
+    method: 'post',
+    data
+  })
+}
+
+export function get(id) {
+  return request({
+    url: '/user/' + id,
+    method: 'get'
+  })
+}

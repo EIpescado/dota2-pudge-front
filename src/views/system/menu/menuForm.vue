@@ -119,7 +119,7 @@
         />
       </el-form-item>
     </el-form>
-    <div slot="footer" class="dialog-footer">
+    <div slot="footer">
       <el-button type="text" @click="cancel">取消</el-button>
       <el-button type="primary" @click="submit">确认</el-button>
     </div>
@@ -204,3 +204,8 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+.el-input__inner{
+  text-align: left !important;
+}
+</style>

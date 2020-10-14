@@ -20,15 +20,22 @@
 
     <!--列表-->
     <el-table ref="table" v-loading="showLoading" :data="data" size="small" highlight-current-row class="table-container">
-      <el-table-column label="用户名" prop="username" />
+      <el-table-column label="用户名" resizable prop="username" />
       <el-table-column label="昵称" prop="nickName" />
       <el-table-column label="手机" prop="phone" />
       <el-table-column label="注册日期" prop="dateCreated" />
+      <el-table-column label="操作" width="100px">
+        <template slot-scope="{row}">
+          <!-- 右侧按钮 -->
+          <SingleRowButton :row="row" />
+        </template>
+      </el-table-column>
     </el-table>
 
     <!--分页-->
     <Pagination :total="total" :page.sync="qo.page" :limit.sync="qo.size" @pagination="getData" />
 
+    <Form ref="form" />
   </div>
 </template>
 
@@ -36,11 +43,13 @@
 import { list } from '@/api/system/user'
 import Pagination from '@/components/Pagination'
 import TopButton from '@/components/TopButton'
+import SingleRowButton from '@/components/SingleRowButton'
 import TableRightButton from '@/components/TableRightButton'
 import FilterButton from '@/components/FilterButton'
+import Form from './form'
 export default {
   name: 'User',
-  components: { Pagination, TopButton, TableRightButton, FilterButton },
+  components: { Pagination, TopButton, TableRightButton, FilterButton, Form, SingleRowButton },
   data() {
     return {
       showLoading: false, data: null, total: 0,
@@ -58,6 +67,12 @@ export default {
         this.total = res.total
         this.showLoading = false
       })
+    },
+    create() {
+      this.$refs.form.createOpen()
+    },
+    update(row) {
+      this.$refs.form.updateOpen(row.id)
     }
   }
 }

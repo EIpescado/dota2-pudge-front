@@ -52,3 +52,10 @@ export function singleRoleMenuAndButton(roleId) {
     method: 'get'
   })
 }
+
+export function select() {
+  return request({
+    url: '/role/select',
+    method: 'get'
+  })
+}
