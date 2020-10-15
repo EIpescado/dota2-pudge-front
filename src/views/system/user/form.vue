@@ -23,7 +23,7 @@
     </el-form>
     <div slot="footer">
       <el-button type="text" @click="cancel">取消</el-button>
-      <el-button type="primary" @click="submit">确认</el-button>
+      <el-button :loading="submitLoading" :disabled="submitDisabled" type="primary" @click="submit">确认</el-button>
     </div>
   </el-dialog>
 </template>
@@ -55,7 +55,7 @@ export default {
           { required: true, validator: requiredValidator, trigger: 'change' }
         ]
       },
-      show: false, isAdd: false, roles: [], uid: '', formLoading: false
+      show: false, isAdd: false, roles: [], uid: '', formLoading: false, submitLoading: false, submitDisabled: false
     }
   },
   created() {
@@ -78,10 +78,14 @@ export default {
       })
     },
     cancel() {
+      this.submitDisabled = false
+      this.submitLoading = false
       this.show = false
       this.$refs.form.resetFields()
     },
     submit() {
+      this.submitDisabled = true
+      this.submitLoading = true
       this.$refs.form.validate(valid => {
         if (valid) {
           if (this.isAdd) {
@@ -91,6 +95,9 @@ export default {
                 message: '创建成功'
               })
               this.$parent.getData()
+            }).catch(() => {
+              this.submitDisabled = false
+              this.submitLoading = false
             })
           } else {
             update(this.uid, this.form).then(res => {
@@ -99,9 +106,14 @@ export default {
                 message: '修改成功'
               })
               this.$parent.getData()
+            }).catch(() => {
+              this.submitDisabled = false
+              this.submitLoading = false
             })
           }
         } else {
+          this.submitDisabled = false
+          this.submitLoading = false
           return false
         }
       })

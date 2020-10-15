@@ -1,6 +1,6 @@
 <template>
   <el-dialog append-to-body :close-on-click-modal="false" :visible.sync="show" :title="isAdd ? '新增菜单' : '编辑菜单'" width="640px" @closed="cancel">
-    <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small" label-width="80px">
+    <el-form ref="form" v-loading="formLoading" :inline="true" :model="form" :rules="rules" size="small" label-width="80px">
       <el-row :gutter="10">
         <el-col :span="12">
           <el-form-item label="菜单标题" prop="title">
@@ -121,7 +121,7 @@
     </el-form>
     <div slot="footer">
       <el-button type="text" @click="cancel">取消</el-button>
-      <el-button type="primary" @click="submit">确认</el-button>
+      <el-button :loading="submitLoading" :disabled="submitDisabled" type="primary" @click="submit">确认</el-button>
     </div>
   </el-dialog>
 </template>
@@ -142,53 +142,88 @@ export default {
       },
       rules: {
         title: [
-          { required: true, message: '请输入标题', trigger: 'blur' }
+          { required: true, message: '标题必填', trigger: 'blur' }
         ],
         icon: [
-          { required: true, message: '请选择图标', trigger: 'blur' }
+          { required: true, message: '请选择图标', trigger: 'change' }
+        ],
+        routerName: [
+          { required: true, message: '组件名称必填', trigger: 'blur' }
+        ],
+        component: [
+          { required: true, message: '组件路径必填', trigger: 'blur' }
+        ],
+        path: [
+          { required: true, message: '路由地址必填', trigger: 'blur' }
+        ],
+        permission: [
+          { required: true, message: '权限标识必填', trigger: 'blur' }
+        ],
+        sortNo: [
+          { required: true, message: '排序号必填', trigger: 'blur' }
         ]
       },
-      show: false, isAdd: false, menus: []
+      show: false, isAdd: false, menus: [], formLoading: false, submitLoading: false, submitDisabled: false
     }
   },
   created() {
   },
   methods: {
     createOpen() {
+      this.show = true
       this.menus = this.$parent.$data.tableData
       this.isAdd = true
-      this.show = true
     },
     updateOpen(id) {
+      this.show = true
+      this.formLoading = true
       this.menus = this.$parent.$data.tableData
       this.isAdd = false
       get(id).then(res => {
         this.form = res
+        this.formLoading = false
       })
-      this.show = true
     },
     cancel() {
+      this.submitDisabled = false
+      this.submitLoading = false
       this.show = false
       this.$refs.form.resetFields()
     },
     submit() {
-      if (this.isAdd) {
-        create(this.form).then(res => {
-          this.cancel()
-          this.$message.success({
-            message: '菜单创建成功'
-          })
-          this.$parent.wholeTree()
-        })
-      } else {
-        update(this.form.id, this.form).then(res => {
-          this.cancel()
-          this.$message.success({
-            message: '菜单修改成功'
-          })
-          this.$parent.wholeTree()
-        })
-      }
+      this.submitDisabled = true
+      this.submitLoading = true
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          if (this.isAdd) {
+            create(this.form).then(res => {
+              this.cancel()
+              this.$message.success({
+                message: '菜单创建成功'
+              })
+              this.$parent.wholeTree()
+            }).catch(() => {
+              this.submitDisabled = false
+              this.submitLoading = false
+            })
+          } else {
+            update(this.form.id, this.form).then(res => {
+              this.cancel()
+              this.$message.success({
+                message: '菜单修改成功'
+              })
+              this.$parent.wholeTree()
+            }).catch(() => {
+              this.submitDisabled = false
+              this.submitLoading = false
+            })
+          }
+        } else {
+          this.submitDisabled = false
+          this.submitLoading = false
+          return false
+        }
+      })
     },
     selected(name) {
       this.form.icon = name

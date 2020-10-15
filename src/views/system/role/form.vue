@@ -10,7 +10,7 @@
     </el-form>
     <div slot="footer">
       <el-button type="text" @click="cancel">取消</el-button>
-      <el-button type="primary" @click="submit">确认</el-button>
+      <el-button :loading="submitLoading" :disabled="submitDisabled" type="primary" @click="submit">确认</el-button>
     </div>
   </el-dialog>
 </template>
@@ -18,9 +18,16 @@
 <script>
 import { create, update, get } from '@/api/system/role'
 export default {
+  name: 'RoleForm',
+  props: {
+    baba: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
-      show: false, isAdd: false, uid: '', formLoading: false,
+      show: false, isAdd: false, uid: '', formLoading: false, submitLoading: false, submitDisabled: false,
       form: { name: '', description: '' },
       rules: {
         name: [
@@ -34,10 +41,14 @@ export default {
   },
   methods: {
     cancel() {
+      this.submitDisabled = false
+      this.submitLoading = false
       this.show = false
       this.$refs.form.resetFields()
     },
     submit() {
+      this.submitDisabled = true
+      this.submitLoading = true
       this.$refs.form.validate((valid) => {
         if (valid) {
           if (this.isAdd) {
@@ -46,7 +57,10 @@ export default {
               this.$message.success({
                 message: '添加成功'
               })
-              this.$parent.getList()
+              this.baba.getData()
+            }).catch(() => {
+              this.submitDisabled = false
+              this.submitLoading = false
             })
           } else {
             update(this.uid, this.form).then(res => {
@@ -54,10 +68,15 @@ export default {
               this.$message.success({
                 message: '修改成功'
               })
-              this.$parent.getList()
+              this.baba.getData()
+            }).catch(() => {
+              this.submitDisabled = false
+              this.submitLoading = false
             })
           }
         } else {
+          this.submitDisabled = false
+          this.submitLoading = false
           return false
         }
       })

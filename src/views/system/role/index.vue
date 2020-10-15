@@ -7,7 +7,6 @@
           <!--卡片头-->
           <div slot="header" class="clearfix">
             <span class="role-span">角色列表</span>
-            <div id="opt" style="float: right" />
           </div>
           <!--查询-->
           <div ref="filterContainer" class="filter-container">
@@ -76,7 +75,7 @@
       </el-col>
     </el-row>
 
-    <Form ref="roleForm" />
+    <Form ref="roleForm" :baba="this" />
   </div>
 </template>
 
