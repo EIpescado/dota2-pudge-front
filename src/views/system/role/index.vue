@@ -24,11 +24,18 @@
           <!--table右侧工具按钮-->
           <TableRightButton :baba="this" />
           <!--列表-->
-          <el-table ref="table" v-loading="showLoading" :data="data" size="small" highlight-current-row class="table-container" @row-click="handleRowClick">
+          <el-table ref="table" v-loading="showLoading" :data="dataList" size="small" highlight-current-row class="table-container" @row-click="handleRowClick">
             <el-table-column label="角色名" prop="name" />
             <el-table-column label="等级" prop="level" />
             <el-table-column label="描述" prop="description" />
             <el-table-column label="创建日期" prop="dateCreated" />
+            <el-table-column label="修改日期" prop="lastUpdated" />
+            <el-table-column label="操作" width="100px">
+              <template slot-scope="scope">
+                <!-- 右侧按钮 -->
+                <SingleRowButton :baba="scope" />
+              </template>
+            </el-table-column>
           </el-table>
 
           <!--分页插件-->
@@ -49,6 +56,7 @@
           </div>
           <el-tree
             ref="menu"
+            v-loading="roleTreeLoading"
             :data="menus"
             :default-checked-keys="menuIds"
             :props="defaultProps"
@@ -56,9 +64,14 @@
             show-checkbox
             default-expand-all
             check-on-click-node
-            :check-strictly="treeSetTrue"
+            :check-strictly="true"
             node-key="id"
-          />
+          >
+            <span slot-scope="{ node, data }" class="custom-tree-node">
+              <svg-icon :icon-class="data.icon" />
+              <span class="custom-tree-lable">{{ node.label }}</span>
+            </span>
+          </el-tree>
         </el-card>
       </el-col>
     </el-row>
@@ -74,16 +87,17 @@ import Pagination from '@/components/Pagination'
 import TopButton from '@/components/TopButton'
 import TableRightButton from '@/components/TableRightButton'
 import FilterButton from '@/components/FilterButton'
+import SingleRowButton from '@/components/SingleRowButton'
 import Form from './form'
 export default {
   name: 'Role',
-  components: { Pagination, TopButton, Form, TableRightButton, FilterButton },
+  components: { Pagination, TopButton, Form, TableRightButton, FilterButton, SingleRowButton },
   data() {
     return {
-      data: null, total: 0, showLoading: false,
+      dataList: null, total: 0, showLoading: false,
       qo: { page: 1, size: 10 },
-      menuLoading: false, showButton: false, treeSetTrue: true,
-      menus: [], menuIds: [], currentRoleId: '',
+      menuLoading: false, showButton: false,
+      menus: [], menuIds: [], currentRoleId: '', roleTreeLoading: false,
       defaultProps: {
         children: 'children',
         label: 'name'
@@ -98,24 +112,16 @@ export default {
     getData() {
       this.showLoading = true
       list(this.qo).then(response => {
-        this.data = response.rows
+        this.dataList = response.rows
         this.total = response.total
-        this.showLoading = false
-      }).catch(() => {
         this.showLoading = false
       })
     },
     create() {
       this.$refs.roleForm.createOpen()
     },
-    update() {
-      if (this.currentRoleId) {
-        this.$refs.roleForm.updateOpen(this.currentRoleId)
-      } else {
-        this.$message.error({
-          message: '请选择一个角色'
-        })
-      }
+    update(row) {
+      this.$refs.roleForm.updateOpen(row.id)
     },
     handleDelete(row) {
       this.$confirm('确认删除此角色?', '提示', {
@@ -148,11 +154,14 @@ export default {
       })
     },
     wholeTree() {
+      this.roleTreeLoading = true
       wholeTree().then(response => {
         this.menus = response
+        this.roleTreeLoading = false
       })
     },
     handleRowClick(row, column, event) {
+      this.roleTreeLoading = true
       this.currentRoleId = row.id
       // 清空选中
       this.$refs.menu.setCheckedKeys([])
@@ -160,15 +169,27 @@ export default {
       this.showButton = true
       singleRoleMenuAndButton(row.id).then(response => {
         this.menuIds = response
+        this.roleTreeLoading = false
       })
     }
   }
 }
 </script>
-
-<style rel="stylesheet/scss" lang="scss">
-  .role-span {
-    font-weight: bold;color: #303133;
-    font-size: 15px;
+<style rel="stylesheet/scss" lang="scss" scoped>
+.role-span {
+  font-weight: bold;color: #303133;
+  font-size: 15px;
+}
+.filter-tree{
+  margin-top:16px;
+}
+.custom-tree-node {
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  .custom-tree-lable {
+    margin-left: 8px;
   }
+}
 </style>

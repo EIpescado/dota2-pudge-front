@@ -23,3 +23,10 @@ export function update(id, data) {
     data
   })
 }
+
+export function get(id) {
+  return request({
+    url: '/config/' + id,
+    method: 'get'
+  })
+}

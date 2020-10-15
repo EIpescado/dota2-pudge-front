@@ -3,7 +3,7 @@
     <template v-if="buttons && buttons.length > 0">
       <el-dropdown v-if="buttons.length > 1" @command="clickCallBack">
         <el-button size="mini" type="primary" icon="el-icon-s-operation">操作</el-button>
-        <el-dropdown-menu slot="dropdown" split-button>
+        <el-dropdown-menu slot="dropdown">
           <template v-for="bt in buttons">
             <el-dropdown-item :key="bt.id" :command="bt.click">
               <svg-icon :icon-class="bt.icon" />
@@ -12,7 +12,7 @@
           </template>
         </el-dropdown-menu>
       </el-dropdown>
-      <el-button v-else size="mini" type="primary" @click="clickCallBack(buttons[0].click)">
+      <el-button v-else size="mini" type="primary" @click.native.stop="clickCallBack(buttons[0].click)">
         <svg-icon :icon-class="buttons[0].icon" />
         {{ buttons[0].buttonName }}
       </el-button>
@@ -25,7 +25,7 @@
 export default {
   name: 'SingleRowButton',
   props: {
-    row: {
+    baba: {
       type: Object,
       required: true
     }
@@ -40,8 +40,7 @@ export default {
   },
   methods: {
     clickCallBack(val) {
-      // 嵌套三层 table => table-container => app-container
-      this.$parent.$parent.$parent[val](this.row)
+      this.baba._self[val](this.baba.row)
     },
     getButtons() {
       const metaButtons = this.$route.meta.buttons

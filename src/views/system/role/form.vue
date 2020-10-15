@@ -1,6 +1,6 @@
 <template>
   <el-dialog :visible.sync="show" :title="isAdd ? '新增角色' : '编辑角色'" append-to-body :close-on-click-modal="false" width="500px" custom-class="form-dialog" @closed="cancel">
-    <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small" label-width="80px" class="form-container">
+    <el-form ref="form" v-loading="formLoading" :inline="true" :model="form" :rules="rules" size="small" label-width="80px" class="form-container">
       <el-form-item label="角色编码" prop="name">
         <el-input v-model.trim="form.name" :disabled="!isAdd" />
       </el-form-item>
@@ -20,7 +20,7 @@ import { create, update, get } from '@/api/system/role'
 export default {
   data() {
     return {
-      show: false, isAdd: false, uid: '',
+      show: false, isAdd: false, uid: '', formLoading: false,
       form: { name: '', description: '' },
       rules: {
         name: [
@@ -68,11 +68,13 @@ export default {
     },
     updateOpen(id) {
       this.show = true
+      this.formLoading = true
       this.isAdd = false
       this.uid = id
       get(id).then(res => {
         this.form.name = res.name
         this.form.description = res.description
+        this.formLoading = false
       })
     }
   }

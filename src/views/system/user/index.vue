@@ -25,9 +25,9 @@
       <el-table-column label="手机" prop="phone" />
       <el-table-column label="注册日期" prop="dateCreated" />
       <el-table-column label="操作" width="100px">
-        <template slot-scope="{row}">
+        <template slot-scope="scope">
           <!-- 右侧按钮 -->
-          <SingleRowButton :row="row" />
+          <SingleRowButton :baba="scope" />
         </template>
       </el-table-column>
     </el-table>

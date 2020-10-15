@@ -27,11 +27,11 @@
       <el-table-column label="配置描述" prop="description" />
       <el-table-column label="配置值" prop="val" />
       <el-table-column label="创建日期" prop="dateCreated" />
-      <el-table-column label="创建日期" prop="lastUpdated" />
+      <el-table-column label="修改日期" prop="lastUpdated" />
       <el-table-column label="操作" width="100px">
-        <template slot-scope="{row}">
+        <template slot-scope="scope">
           <!-- 右侧按钮 -->
-          <SingleRowButton :row="row" />
+          <SingleRowButton :baba="scope" />
         </template>
       </el-table-column>
     </el-table>
