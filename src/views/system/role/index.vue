@@ -128,7 +128,7 @@ export default {
       }).then(() => {
         deleteRole(row.id).then(res => {
           this.$message.success('删除成功')
-          this.getList()
+          this.getData()
         })
       }).catch(() => {})
     },
