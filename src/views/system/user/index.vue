@@ -21,9 +21,14 @@
     <!--列表-->
     <el-table ref="table" v-loading="showLoading" :data="data" size="small" highlight-current-row class="table-container">
       <el-table-column label="用户名" resizable prop="username" />
-      <el-table-column label="昵称" prop="nickName" />
+      <el-table-column label="昵称" prop="nickname" />
       <el-table-column label="手机" prop="phone" />
       <el-table-column label="注册日期" prop="dateCreated" />
+      <el-table-column label="状态">
+        <template slot-scope="{ row }">
+          <el-tag effect="dark">{{ row.enabled ? '启用' : '禁用' }}</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" width="100px">
         <template slot-scope="scope">
           <!-- 右侧按钮 -->
@@ -40,7 +45,7 @@
 </template>
 
 <script>
-import { list } from '@/api/system/user'
+import { list, resetPassword, switchEnabled } from '@/api/system/user'
 import Pagination from '@/components/Pagination'
 import TopButton from '@/components/TopButton'
 import SingleRowButton from '@/components/SingleRowButton'
@@ -73,6 +78,25 @@ export default {
     },
     update(row) {
       this.$refs.form.updateOpen(row.id)
+    },
+    resetPassword(row) {
+      this.$confirm('确认重置用户 ' + row.username + ' 密码', '提示', {
+        type: 'warning'
+      }).then(() => {
+        resetPassword(row.id).then(res => {
+          this.$message.success('重置成功')
+        })
+      }).catch(() => {})
+    },
+    switchEnabled(row) {
+      const tip = row.enabled ? '禁用' : '启用'
+      this.$confirm('确认' + tip + '用户 ' + row.username, '提示', {
+        type: 'warning'
+      }).then(() => {
+        switchEnabled(row.id).then(res => {
+          this.$message.success('用户 ' + row.username + ' 已' + tip)
+        })
+      }).catch(() => {})
     }
   }
 }

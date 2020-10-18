@@ -30,3 +30,17 @@ export function get(id) {
     method: 'get'
   })
 }
+
+export function resetPassword(id) {
+  return request({
+    url: '/user/resetPassword/' + id,
+    method: 'post'
+  })
+}
+
+export function switchEnabled(id) {
+  return request({
+    url: '/user/switchEnabled/' + id,
+    method: 'post'
+  })
+}
