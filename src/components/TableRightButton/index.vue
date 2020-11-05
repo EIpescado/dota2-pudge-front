@@ -1,9 +1,13 @@
 <template>
   <div class="table-left-button-container">
     <el-button-group>
-      <el-button v-show="showFilter" size="mini" icon="el-icon-search" @click="switchShowFilterContainer" />
-      <el-button v-show="showRefresh" size="mini" icon="el-icon-refresh" @click="refresh" />
-      <el-popover v-show="showColCheck" placement="bottom-end" width="150" trigger="click" @show="getTableFields">
+      <el-tooltip effect="light" content="折叠搜索框" placement="top-start">
+        <el-button v-if="showFilter" size="mini" icon="el-icon-search" @click="switchShowFilterContainer" />
+      </el-tooltip>
+      <el-tooltip effect="light" content="刷新列表" placement="top-start">
+        <el-button v-if="showRefresh" size="mini" icon="el-icon-refresh" @click="refresh" />
+      </el-tooltip>
+      <el-popover v-if="showColCheck" placement="bottom-end" width="150" trigger="click" @show="getTableFields">
         <el-button slot="reference" size="mini" icon="el-icon-s-grid">
           <i class="fa fa-caret-down" aria-hidden="true" />
         </el-button>
@@ -61,12 +65,14 @@ export default {
   },
   methods: {
     switchShowFilterContainer() {
+      console.log(this.filterKey, this.baba.$refs)
       const filterContainer = this.baba.$refs[this.filterKey]
       let resultClass = filterContainer.getAttribute('class')
-      if (resultClass.indexOf('hidden') !== -1) {
-        resultClass = 'filter-container'
+      const indexOfHidden = resultClass.indexOf('pudge-hidden')
+      if (indexOfHidden !== -1) {
+        resultClass = resultClass.substring(0, indexOfHidden).trim()
       } else {
-        resultClass = 'filter-container-hidden'
+        resultClass = resultClass + ' pudge-hidden'
       }
       filterContainer.setAttribute('class', resultClass)
     },

@@ -121,7 +121,7 @@ aside {
 
 //main-container全局样式
 .app-container {
-  padding: 15px;
+  padding: 10px;
 }
 
 .components-container {
@@ -168,7 +168,7 @@ aside {
 }
 
 .filter-container {
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  @include common-border;
   padding-bottom: 8px;
   .el-form--inline{
     padding-top: 8px !important;
@@ -193,16 +193,32 @@ aside {
   .el-date-editor{
     width: 100% !important;
   }
-  .filter-button-container{
-    margin-left:42%;
-    .el-button{
-      margin-left: 40px;
-      border-radius: 6px !important;
-    }
+}
+.filter-container:hover{
+  @include common-border-hover;
+}
+
+.card-filter-container{
+  @include common-border;
+  padding-bottom: 8px;
+  .el-form--inline{
+    padding-top: 8px !important;
   }
 }
 
-.filter-container-hidden{
+.card-filter-container:hover{
+  @include common-border-hover;
+}
+
+.filter-button-container{
+  margin-left:40%;
+  .el-button{
+    margin-right: 20px;
+    border-radius: 6px !important;
+  }
+}
+
+.pudge-hidden{
   display: none;
 }
 
@@ -221,6 +237,12 @@ aside {
   }
   .el-date-editor{
     width: 100% !important;
+  }
+  .el-input-number{
+    width: 100%;
+    .el-input__inner{
+      text-align: left;
+    }
   }
 }
 
@@ -245,10 +267,13 @@ aside {
 .table-container{
   width: 100%;
   overflow: auto;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+  @include common-border;
   .el-table__header{
     font-weight: 600;
   }
+}
+.table-container:hover{
+  @include common-border-hover;
 }
 
 .top-button-container{

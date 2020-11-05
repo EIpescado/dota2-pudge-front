@@ -17,6 +17,11 @@ export default {
     baba: {
       type: Object,
       required: true
+    },
+    // 同一页面存在多个table 时需要此值,详见 dict页
+    position: {
+      type: String,
+      default: 'TOP'
     }
   },
   data() {
@@ -33,7 +38,7 @@ export default {
     },
     getButtons() {
       const metaButtons = this.$route.meta.buttons
-      this.buttons = metaButtons !== null && metaButtons !== undefined ? metaButtons.TOP : []
+      this.buttons = metaButtons !== null && metaButtons !== undefined ? metaButtons[this.position] : []
     }
   }
 }

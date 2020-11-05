@@ -26,7 +26,7 @@
       <el-table-column label="注册日期" prop="dateCreated" />
       <el-table-column label="状态">
         <template slot-scope="{ row }">
-          <el-tag effect="dark">{{ row.enabled ? '启用' : '禁用' }}</el-tag>
+          <el-tag effect="dark" :type="row.enabled ? 'success' : 'danger'">{{ row.enabled ? '启用' : '禁用' }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="100px">
@@ -67,11 +67,13 @@ export default {
   methods: {
     getData() {
       this.showLoading = true
-      list(this.qo).then(res => {
-        this.data = res.rows
-        this.total = res.total
-        this.showLoading = false
-      })
+      setTimeout(() => {
+        list(this.qo).then(res => {
+          this.data = res.rows
+          this.total = res.total
+          this.showLoading = false
+        })
+      }, 400)
     },
     create() {
       this.$refs.form.createOpen()
@@ -81,21 +83,34 @@ export default {
     },
     resetPassword(row) {
       this.$confirm('确认重置用户 ' + row.username + ' 密码', '提示', {
-        type: 'warning'
+        type: 'warning',
+        center: true
       }).then(() => {
-        resetPassword(row.id).then(res => {
-          this.$message.success('重置成功')
-        })
+        const ld = this.$loading()
+        setTimeout(() => {
+          resetPassword(row.id).then(res => {
+            this.$message.success('重置成功')
+            ld.close()
+          }).catch(() => {
+            ld.close()
+          })
+        }, 400)
       }).catch(() => {})
     },
     switchEnabled(row) {
       const tip = row.enabled ? '禁用' : '启用'
       this.$confirm('确认' + tip + '用户 ' + row.username, '提示', {
-        type: 'warning'
+        type: 'warning',
+        center: true
       }).then(() => {
-        switchEnabled(row.id).then(res => {
-          this.$message.success('用户 ' + row.username + ' 已' + tip)
-        })
+        const ld = this.$loading()
+        setTimeout(() => {
+          switchEnabled(row.id).then(res => {
+            this.$message.success('用户 ' + row.username + ' 已' + tip)
+            ld.close()
+            this.getData()
+          }).catch(() => { ld.close() })
+        }, 400)
       }).catch(() => {})
     }
   }

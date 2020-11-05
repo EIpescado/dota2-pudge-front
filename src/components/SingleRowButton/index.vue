@@ -1,7 +1,7 @@
 <template>
   <div>
     <template v-if="buttons && buttons.length > 0">
-      <el-dropdown v-if="buttons.length > 1" @command="clickCallBack">
+      <el-dropdown v-if="buttons.length > 1" trigger="click" @command="clickCallBack">
         <el-button size="mini" type="primary" icon="el-icon-s-operation">操作</el-button>
         <el-dropdown-menu slot="dropdown">
           <template v-for="bt in buttons">
@@ -28,6 +28,11 @@ export default {
     baba: {
       type: Object,
       required: true
+    },
+    // 同一页面存在多个table 时需要此值,详见 dict页
+    position: {
+      type: String,
+      default: 'ROW'
     }
   },
   data() {
@@ -44,7 +49,7 @@ export default {
     },
     getButtons() {
       const metaButtons = this.$route.meta.buttons
-      this.buttons = (metaButtons !== null && metaButtons !== undefined) ? metaButtons.ROW : []
+      this.buttons = (metaButtons !== null && metaButtons !== undefined) ? metaButtons[this.position] : []
     }
   }
 }
