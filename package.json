@@ -15,6 +15,7 @@
     "test:ci": "npm run lint && npm run test:unit"
   },
   "dependencies": {
+    "@riophae/vue-treeselect": "0.4.0",
     "axios": "0.18.1",
     "clipboard": "2.0.4",
     "codemirror": "5.45.0",
@@ -26,6 +27,7 @@
     "file-saver": "2.0.1",
     "fuse.js": "3.4.4",
     "js-cookie": "2.2.0",
+    "jsencrypt": "^3.0.0-rc.1",
     "jsonlint": "1.6.3",
     "jszip": "3.2.1",
     "normalize.css": "7.0.0",
@@ -41,9 +43,7 @@
     "vue-splitpane": "1.0.4",
     "vuedraggable": "2.20.0",
     "vuex": "3.1.0",
-    "xlsx": "0.14.1",
-    "jsencrypt": "^3.0.0-rc.1",
-    "@riophae/vue-treeselect": "0.4.0"
+    "xlsx": "0.14.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "4.4.4",
@@ -84,12 +84,8 @@
   },
   "keywords": [
     "vue",
-    "admin",
-    "dashboard",
     "element-ui",
-    "boilerplate",
-    "admin-template",
-    "management-system"
+    "admin-template"
   ],
   "lint-staged": {
     "src/**/*.{js,vue}": [

@@ -1,23 +1,23 @@
 <template>
   <div class="app-container">
-    <div v-if="user">
+    <div v-if="userInfo">
       <el-row :gutter="20">
 
         <el-col :span="6" :xs="24">
-          <user-card :user="user" />
+          <user-card :user="userInfo" />
         </el-col>
 
         <el-col :span="18" :xs="24">
           <el-card>
             <el-tabs v-model="activeTab">
-              <el-tab-pane label="Activity" name="activity">
+              <el-tab-pane label="最新动态" name="activity">
                 <activity />
               </el-tab-pane>
-              <el-tab-pane label="Timeline" name="timeline">
+              <el-tab-pane label="操作日志" name="timeline">
                 <timeline />
               </el-tab-pane>
-              <el-tab-pane label="Account" name="account">
-                <account :user="user" />
+              <el-tab-pane label="帐号信息" name="account">
+                <account :user="userInfo" />
               </el-tab-pane>
             </el-tabs>
           </el-card>
@@ -46,23 +46,12 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'name',
-      'avatar',
-      'roles'
+      'userInfo'
     ])
   },
   created() {
-    this.getUser()
   },
   methods: {
-    getUser() {
-      this.user = {
-        name: this.name,
-        role: this.roles.join(' | '),
-        email: 'admin@test.com',
-        avatar: this.avatar
-      }
-    }
   }
 }
 </script>

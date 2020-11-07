@@ -29,10 +29,6 @@ import Layout from '@/layout'
   }
  */
 
-/**
- * asyncRoutes
- * the routes that need to be dynamically loaded based on user roles
- */
 export const routerArray = [
   {
     path: '/login',
@@ -58,8 +54,33 @@ export const routerArray = [
       {
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
-        name: 'Dashboard',
+        name: '首页',
         meta: { title: '首页', icon: 'dashboard', affix: true }
+      }
+    ]
+  },
+  {
+    path: '/redirect',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '/redirect/:path(.*)',
+        component: () => import('@/views/redirect/index')
+      }
+    ]
+  },
+  {
+    path: '/profile',
+    component: Layout,
+    redirect: '/profile/index',
+    hidden: true,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/profile/index'),
+        name: '个人中心',
+        meta: { title: '个人中心', icon: 'user', noCache: true }
       }
     ]
   }

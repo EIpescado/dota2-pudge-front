@@ -6,6 +6,14 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  created() {
+    this.showApp()
+  },
+  methods: {
+    showApp() {
+      console.log('123,come on')
+    }
+  }
 }
 </script>

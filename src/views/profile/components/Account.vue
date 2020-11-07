@@ -1,9 +1,9 @@
 <template>
-  <el-form>
-    <el-form-item label="Name">
+  <el-form inline>
+    <el-form-item label="昵称">
       <el-input v-model.trim="user.name" />
     </el-form-item>
-    <el-form-item label="Email">
+    <el-form-item label="邮箱">
       <el-input v-model.trim="user.email" />
     </el-form-item>
     <el-form-item>
