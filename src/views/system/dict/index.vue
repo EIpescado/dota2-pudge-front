@@ -141,8 +141,10 @@ export default {
       this.$confirm('确认删除此字典类型?', '提示', {
         type: 'warning'
       }).then(() => {
+        const ld = this.$loading()
         deleteDictType(row.id).then(res => {
           this.$message.success('删除成功')
+          ld.close()
           this.getData()
         })
       }).catch(() => {})

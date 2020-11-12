@@ -101,12 +101,12 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
+          const ld = this.$loading()
           deleteNode(rows).then(res => {
-            this.$message.success({
-              message: '删除成功!'
-            })
+            this.$message.success('删除成功!')
+            ld.close()
+            this.wholeTree()
           })
-          this.wholeTree()
         }).catch(() => {
         })
       } else {

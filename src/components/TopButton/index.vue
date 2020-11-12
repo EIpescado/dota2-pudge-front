@@ -1,7 +1,7 @@
 <template>
   <el-button-group class="top-button-container">
     <template v-for="bt in buttons">
-      <el-button :key="bt.id" size="small" type="primary" class="top-button-item" @click="clickCallBack(bt.click)">
+      <el-button :key="bt.id" :size="size" type="primary" class="top-button-item" @click="clickCallBack(bt.click)">
         <svg-icon v-if="bt.icon" :icon-class="bt.icon" />
         {{ bt.buttonName }}
       </el-button>
@@ -22,6 +22,10 @@ export default {
     position: {
       type: String,
       default: 'TOP'
+    },
+    size: {
+      type: String,
+      default: 'small'
     }
   },
   data() {

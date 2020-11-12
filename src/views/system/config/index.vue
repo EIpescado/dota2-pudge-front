@@ -66,11 +66,13 @@ export default {
   methods: {
     getData() {
       this.showLoading = true
-      list(this.qo).then(res => {
-        this.data = res.rows
-        this.total = res.total
-        this.showLoading = false
-      })
+      setTimeout(() => {
+        list(this.qo).then(res => {
+          this.data = res.rows
+          this.total = res.total
+          this.showLoading = false
+        })
+      }, 400)
     },
     create() {
       this.$refs.form.createOpen()

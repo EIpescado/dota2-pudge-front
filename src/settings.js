@@ -68,7 +68,7 @@ module.exports = {
   /**
    * 底部文字，支持html语法
    */
-  footerTxt: '© 2020 yq <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License 2.0</a>',
+  footerTxt: '©2020 <a href="#" target="_blank">yq from 1418-Group</a>',
   /**
    * 备案号
    */

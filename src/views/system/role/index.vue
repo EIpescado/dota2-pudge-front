@@ -49,9 +49,8 @@
             <el-tooltip class="item" effect="dark" content="选择指定角色分配菜单及按钮" placement="top">
               <span class="role-span">菜单及按钮分配</span>
             </el-tooltip>
-            <el-button :disabled="!showButton" :loading="menuLoading" icon="el-icon-check" size="mini" style="float: right; padding: 6px 9px" type="primary" @click="bindRelation">
-              保存
-            </el-button>
+            <!-- 顶部按钮 -->
+            <TopButton :baba="this" position="TOP_RIGHT" size="mini" style="float: right; width: 100px; padding: 0 9px;" />
           </div>
           <el-tree
             ref="menu"
@@ -95,7 +94,6 @@ export default {
     return {
       dataList: null, total: 0, showLoading: false,
       qo: { page: 1, size: 10 },
-      menuLoading: false, showButton: false,
       menus: [], menuIds: [], currentRoleId: '', roleTreeLoading: false,
       defaultProps: {
         children: 'children',
@@ -126,31 +124,40 @@ export default {
       this.$confirm('确认删除此角色?', '提示', {
         type: 'warning'
       }).then(() => {
+        const ld = this.$loading()
         deleteRole(row.id).then(res => {
           this.$message.success('删除成功')
+          ld.close()
           this.getData()
         })
       }).catch(() => {})
     },
     bindRelation() {
-      const nodes = this.$refs.menu.getCheckedNodes()
-      const params = []
-      nodes.forEach(function(data, index) {
-        params.push({
-          id: data.id,
-          whetherButton: data.whetherButton
+      if (!this.currentRoleId) {
+        this.$message.error('请先选择角色')
+      } else {
+        const ld = this.$loading()
+        const nodes = this.$refs.menu.getCheckedNodes()
+        const params = []
+        nodes.forEach(function(data, index) {
+          params.push({
+            id: data.id,
+            whetherButton: data.whetherButton
+          })
         })
-      })
-      bindMenuAndButton(this.currentRoleId, params).then(res => {
-        this.$message({
-          message: '绑定成功',
-          type: 'success'
-        })
-        this.menuLoading = false
-      }).catch(err => {
-        this.menuLoading = false
-        console.log(err)
-      })
+        setTimeout(() => {
+          bindMenuAndButton(this.currentRoleId, params).then(res => {
+            this.$message({
+              message: '绑定成功',
+              type: 'success'
+            })
+            ld.close()
+          }).catch(err => {
+            ld.close()
+            console.log(err)
+          })
+        }, 600)
+      }
     },
     wholeTree() {
       this.roleTreeLoading = true
