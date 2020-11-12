@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import Logo from '@/assets/images/logo.png'
+import Logo from '@/assets/images/logo.jpg'
 import defaultSettings from '@/settings'
 export default {
   name: 'SidebarLogo',
@@ -48,7 +48,8 @@ export default {
   width: 100%;
   height: 50px;
   line-height: 50px;
-  background: #2b2f3a;
+  // background: #2b2f3a;
+  background: #070007;
   text-align: center;
   overflow: hidden;
 
