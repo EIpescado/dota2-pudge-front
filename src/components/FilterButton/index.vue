@@ -1,9 +1,9 @@
 <template>
   <div class="filter-button-container">
-    <el-button type="primary" size="small" icon="el-icon-search" @click="search">
+    <el-button type="primary" icon="el-icon-search" @click="search">
       搜索
     </el-button>
-    <el-button size="small" icon="el-icon-refresh" @click="refreshQo">
+    <el-button icon="el-icon-refresh" @click="refreshQo">
       重置
     </el-button>
   </div>

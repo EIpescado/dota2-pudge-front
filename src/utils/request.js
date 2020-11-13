@@ -70,7 +70,6 @@ service.interceptors.response.use(
         return Promise.reject(error)
       }
     }
-    console.log(code)
     if (code) {
       const errorMsg = error.response.data.message
       if (errorMsg !== undefined) {

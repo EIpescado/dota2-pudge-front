@@ -5,8 +5,7 @@
     </div>
     <el-dropdown-menu slot="dropdown">
       <el-dropdown-item v-for="item of sizeOptions" :key="item.value" :disabled="size===item.value" :command="item.value">
-        {{
-          item.label }}
+        {{ item.label }}
       </el-dropdown-item>
     </el-dropdown-menu>
   </el-dropdown>
@@ -17,10 +16,10 @@ export default {
   data() {
     return {
       sizeOptions: [
-        { label: 'Default', value: 'default' },
-        { label: 'Medium', value: 'medium' },
-        { label: 'Small', value: 'small' },
-        { label: 'Mini', value: 'mini' }
+        { label: '默认', value: 'default' },
+        { label: '超大杯', value: 'medium' },
+        { label: '大杯', value: 'small' },
+        { label: '中杯', value: 'mini' }
       ]
     }
   },
@@ -35,7 +34,7 @@ export default {
       this.$store.dispatch('app/setSize', size)
       this.refreshView()
       this.$message({
-        message: 'Switch Size Success',
+        message: '切换布局大小成功',
         type: 'success'
       })
     },

@@ -15,36 +15,24 @@ module.exports = {
   port: 9527,
 
   /**
-   * @type {boolean} true | false
-   * @description Whether show the settings right-panel
+   * 显示设置
    */
-  showSettings: false,
+  showSettings: true,
 
   /**
-   * @type {boolean} true | false
-   * @description Whether need tagsView
+   * 显示 tagsView
    */
   tagsView: true,
 
   /**
-   * @type {boolean} true | false
-   * @description Whether fix the header
+   * 固定header
    */
-  fixedHeader: false,
+  fixedHeader: true,
 
   /**
-   * @type {boolean} true | false
-   * @description Whether show the logo in sidebar
+   * 显示左上角logo
    */
   sidebarLogo: true,
-
-  /**
-   * @type {string | array} 'production' | ['production', 'development']
-   * @description Need show err logs component.
-   * The default is only used in the production env
-   * If you want to also use it in dev, you can pass ['production', 'development']
-   */
-  errorLog: 'production',
 
   /**
    * 请求接口超时时间 默认30s
@@ -72,5 +60,10 @@ module.exports = {
   /**
    * 备案号
    */
-  footerICP: '<a href="https://beian.miit.gov.cn/#/Integrated/index" target="_blank">粤ICP备123456789号</a>'
+  footerICP: '<a href="https://beian.miit.gov.cn/#/Integrated/index" target="_blank">粤ICP备123456789号</a>',
+
+  /**
+   * 默认主题色
+   */
+  themeColor: '#FF9933'
 }

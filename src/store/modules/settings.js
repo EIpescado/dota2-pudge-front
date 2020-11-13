@@ -1,10 +1,12 @@
-import variables from '@/styles/element-variables.scss'
 import defaultSettings from '@/settings'
+import Cookies from 'js-cookie'
 
-const { showSettings, tagsView, fixedHeader, sidebarLogo, showFooter, footerTxt, footerICP } = defaultSettings
+const { showSettings, tagsView, fixedHeader, sidebarLogo, showFooter, footerTxt, footerICP, themeColor } = defaultSettings
+
+const theme = Cookies.get('theme') ? Cookies.get('theme') : themeColor
 
 const state = {
-  theme: variables.theme,
+  theme: theme,
   showSettings: showSettings,
   tagsView: tagsView,
   fixedHeader: fixedHeader,
@@ -19,6 +21,9 @@ const mutations = {
     // eslint-disable-next-line no-prototype-builtins
     if (state.hasOwnProperty(key)) {
       state[key] = value
+      if (key === 'theme') {
+        Cookies.set(key, value)
+      }
     }
   }
 }

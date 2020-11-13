@@ -44,7 +44,7 @@
 <script>
 import { encrypt } from '@/utils/rsaEncrypt'
 import Config from '@/settings'
-import { getCodeImg } from '@/api/login'
+import { getCodeImg } from '@/api/system/auth'
 import Cookies from 'js-cookie'
 import Background from '@/assets/images/background.jpg'
 export default {
@@ -138,7 +138,6 @@ export default {
             this.getCode()
           })
         } else {
-          console.log('error submit!!')
           return false
         }
       })

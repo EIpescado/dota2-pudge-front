@@ -24,6 +24,7 @@
   </div>
 </template>
 <script>
+import { hasClass, addClass, removeClass } from '@/utils/index'
 export default {
   name: 'TableRightButton',
   props: {
@@ -65,16 +66,13 @@ export default {
   },
   methods: {
     switchShowFilterContainer() {
-      console.log(this.filterKey, this.baba.$refs)
       const filterContainer = this.baba.$refs[this.filterKey]
-      let resultClass = filterContainer.getAttribute('class')
-      const indexOfHidden = resultClass.indexOf('pudge-hidden')
-      if (indexOfHidden !== -1) {
-        resultClass = resultClass.substring(0, indexOfHidden).trim()
+      const classVar = 'pudge-hidden'
+      if (hasClass(filterContainer, classVar)) {
+        removeClass(filterContainer, classVar)
       } else {
-        resultClass = resultClass + ' pudge-hidden'
+        addClass(filterContainer, classVar)
       }
-      filterContainer.setAttribute('class', resultClass)
     },
     refresh() {
       this.baba[this.tableDataFun]()

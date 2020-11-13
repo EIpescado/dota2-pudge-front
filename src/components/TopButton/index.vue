@@ -10,7 +10,6 @@
 </template>
 
 <script>
-
 export default {
   name: 'TopButton',
   props: {
@@ -25,7 +24,7 @@ export default {
     },
     size: {
       type: String,
-      default: 'small'
+      default: ''
     }
   },
   data() {
