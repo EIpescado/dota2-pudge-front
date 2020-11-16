@@ -3,7 +3,7 @@
 
     <!--查询-->
     <div ref="filterContainer" class="filter-container">
-      <el-form ref="qo" :inline="true" :model="qo" size="small">
+      <el-form ref="qo" :inline="true" :model="qo">
         <el-form-item label="配置编码" prop="code">
           <el-input v-model.trim="qo.code" clearable />
         </el-form-item>
@@ -22,7 +22,7 @@
     <TableRightButton :baba="this" />
 
     <!--列表-->
-    <el-table ref="table" v-loading="showLoading" :data="data" size="small" highlight-current-row class="table-container">
+    <el-table ref="table" v-loading="showLoading" :data="data" highlight-current-row class="table-container">
       <el-table-column label="配置编码" prop="code" />
       <el-table-column label="配置描述" prop="description" />
       <el-table-column label="配置值" prop="val" />

@@ -3,7 +3,7 @@
 
     <!--查询-->
     <div ref="filterContainer" class="filter-container">
-      <el-form ref="qo" :inline="true" :model="qo" size="small">
+      <el-form ref="qo" :inline="true" :model="qo">
         <el-form-item label="用户名" prop="username">
           <el-input v-model.trim="qo.username" clearable />
         </el-form-item>
@@ -19,7 +19,7 @@
     <TableRightButton :baba="this" />
 
     <!--列表-->
-    <el-table ref="table" v-loading="showLoading" :data="data" size="small" highlight-current-row class="table-container">
+    <el-table ref="table" v-loading="showLoading" :data="data" highlight-current-row class="table-container">
       <el-table-column label="用户名" resizable prop="username" />
       <el-table-column label="昵称" prop="nickname" />
       <el-table-column label="手机" prop="phone" />

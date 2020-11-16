@@ -65,5 +65,5 @@ module.exports = {
   /**
    * 默认主题色
    */
-  themeColor: '#FF9933'
+  themeColor: '#1890ff'
 }

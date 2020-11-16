@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie'
 export default {
   data() {
     return {
@@ -28,11 +29,20 @@ export default {
       return this.$store.getters.size
     }
   },
+  created() {
+    const sizeInCookie = Cookies.get('size')
+    if (!sizeInCookie) {
+      this.handleDefaultSize('small')
+    }
+  },
   methods: {
-    handleSetSize(size) {
+    handleDefaultSize(size) {
       this.$ELEMENT.size = size
       this.$store.dispatch('app/setSize', size)
       this.refreshView()
+    },
+    handleSetSize(size) {
+      this.handleDefaultSize(size)
       this.$message({
         message: '切换布局大小成功',
         type: 'success'

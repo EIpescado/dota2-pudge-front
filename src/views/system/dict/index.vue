@@ -10,7 +10,7 @@
           </div>
           <!--查询-->
           <div ref="filterContainer" class="card-filter-container">
-            <el-form ref="qo" :inline="true" :model="qo" size="small">
+            <el-form ref="qo" :inline="true" :model="qo">
               <el-form-item label="关键字" label-width="60px" prop="keyWord">
                 <el-input v-model.trim="qo.keyWord" clearable />
               </el-form-item>
@@ -23,11 +23,11 @@
           <!--table右侧工具按钮-->
           <TableRightButton :baba="this" />
           <!--列表-->
-          <el-table ref="table" v-loading="showLoading" :data="dataList" size="small" highlight-current-row class="table-container" @row-click="handleRowClick">
+          <el-table ref="table" v-loading="showLoading" :data="dataList" highlight-current-row class="table-container" @row-click="handleRowClick">
             <el-table-column label="编码" prop="code" />
             <el-table-column label="名称" show-overflow-tooltip prop="name" />
-            <el-table-column label="修改日期" width="120px" prop="lastUpdated" />
-            <el-table-column label="操作" width="90px">
+            <el-table-column label="修改日期" width="120px" show-overflow-tooltip prop="lastUpdated" />
+            <el-table-column label="操作" width="100px">
               <template slot-scope="scope">
                 <!-- 右侧按钮 -->
                 <SingleRowButton :baba="scope" />
@@ -53,7 +53,7 @@
           <div v-if="dictQo.typeCode">
             <!--查询-->
             <div ref="dictFilterContainer" class="card-filter-container">
-              <el-form ref="dictQo" :inline="true" :model="dictQo" size="small">
+              <el-form ref="dictQo" :inline="true" :model="dictQo">
                 <el-form-item label="字典类型" label-width="85px" prop="typeCode">
                   <el-input v-model.trim="dictQo.typeCode" disabled />
                 </el-form-item>
@@ -69,7 +69,7 @@
             <!--table右侧工具按钮-->
             <TableRightButton :baba="this" filter-key="dictFilterContainer" table-data-fun="getDictData" />
             <!--列表-->
-            <el-table ref="dictTable" v-loading="dictShowLoading" :data="dictDataList" size="small" highlight-current-row class="table-container">
+            <el-table ref="dictTable" v-loading="dictShowLoading" :data="dictDataList" highlight-current-row class="table-container">
               <el-table-column label="序号" width="50px" prop="seq" />
               <el-table-column label="名称" show-overflow-tooltip prop="name" />
               <el-table-column label="字典值" prop="val" />
@@ -78,8 +78,8 @@
                   {{ row.fixed ? '是' : '否' }}
                 </template>
               </el-table-column>
-              <el-table-column label="修改日期" width="120px" prop="lastUpdated" />
-              <el-table-column label="操作" width="90px">
+              <el-table-column label="修改日期" width="120px" show-overflow-tooltip prop="lastUpdated" />
+              <el-table-column label="操作" width="100px">
                 <template slot-scope="scope">
                   <!-- 右侧按钮 -->
                   <SingleRowButton :baba="scope" position="DICT_ROW" />

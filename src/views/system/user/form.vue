@@ -1,6 +1,6 @@
 <template>
   <el-dialog :visible.sync="show" append-to-body :close-on-click-modal="false" :title="isAdd ? '新增用户' : '编辑用户'" width="400px" custom-class="form-dialog" @closed="cancel">
-    <el-form ref="form" v-loading="formLoading" :inline="true" :model="form" :rules="rules" size="small" class="form-container">
+    <el-form ref="form" v-loading="formLoading" :inline="true" :model="form" :rules="rules" class="form-container">
       <el-form-item label="用户名" prop="username">
         <el-input v-model.trim="form.username" placeholder="用户名" />
       </el-form-item>

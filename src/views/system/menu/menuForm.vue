@@ -1,6 +1,6 @@
 <template>
   <el-dialog append-to-body :close-on-click-modal="false" :visible.sync="show" :title="isAdd ? '新增菜单' : '编辑菜单'" width="640px" @closed="cancel">
-    <el-form ref="form" v-loading="formLoading" :inline="true" :model="form" :rules="rules" size="small" label-width="80px">
+    <el-form ref="form" v-loading="formLoading" :inline="true" :model="form" :rules="rules" label-width="80px">
       <el-row :gutter="10">
         <el-col :span="12">
           <el-form-item label="菜单标题" prop="title">

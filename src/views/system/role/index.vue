@@ -10,7 +10,7 @@
           </div>
           <!--查询-->
           <div ref="filterContainer" class="filter-container">
-            <el-form ref="qo" :inline="true" :model="qo" size="small">
+            <el-form ref="qo" :inline="true" :model="qo">
               <el-form-item label="角色" prop="name">
                 <el-input v-model.trim="qo.name" clearable />
               </el-form-item>
@@ -23,7 +23,7 @@
           <!--table右侧工具按钮-->
           <TableRightButton :baba="this" />
           <!--列表-->
-          <el-table ref="table" v-loading="showLoading" :data="dataList" size="small" highlight-current-row class="table-container" @row-click="handleRowClick">
+          <el-table ref="table" v-loading="showLoading" :data="dataList" highlight-current-row class="table-container" @row-click="handleRowClick">
             <el-table-column label="角色名" prop="name" />
             <el-table-column label="等级" prop="level" />
             <el-table-column label="描述" prop="description" />

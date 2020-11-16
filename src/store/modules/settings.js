@@ -1,12 +1,9 @@
 import defaultSettings from '@/settings'
-import Cookies from 'js-cookie'
 
 const { showSettings, tagsView, fixedHeader, sidebarLogo, showFooter, footerTxt, footerICP, themeColor } = defaultSettings
 
-const theme = Cookies.get('theme') ? Cookies.get('theme') : themeColor
-
 const state = {
-  theme: theme,
+  theme: themeColor,
   showSettings: showSettings,
   tagsView: tagsView,
   fixedHeader: fixedHeader,
@@ -21,9 +18,6 @@ const mutations = {
     // eslint-disable-next-line no-prototype-builtins
     if (state.hasOwnProperty(key)) {
       state[key] = value
-      if (key === 'theme') {
-        Cookies.set(key, value)
-      }
     }
   }
 }
