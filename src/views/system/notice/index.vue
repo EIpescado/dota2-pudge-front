@@ -1,16 +1,90 @@
 <template>
-  <div />
+  <div class="app-container">
+
+    <!--查询-->
+    <div ref="filterContainer" class="filter-container">
+      <el-form ref="qo" :inline="true" :model="qo">
+        <el-form-item label="公告类型" prop="type">
+          <el-select v-model="qo.type" clearable>
+            <el-option v-for="item in this.$store.getters.dictSelectData.system_notice_type" :key="item.value" :value="item.value" :label="item.label" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="公告标题" prop="title">
+          <el-input v-model.trim="qo.title" clearable />
+        </el-form-item>
+      </el-form>
+      <!--查询框按钮-->
+      <FilterButton :baba="this" />
+    </div>
+
+    <!--顶部按钮-->
+    <TopButton :baba="this" />
+
+    <!--table右侧工具按钮-->
+    <TableRightButton :baba="this" />
+
+    <!--列表-->
+    <el-table ref="table" v-loading="showLoading" :data="data" highlight-current-row class="table-container">
+      <el-table-column label="标题">
+        <template slot-scope="{row}">
+          <el-link type="primary">{{ row.title }}</el-link>
+        </template>
+      </el-table-column>
+      <el-table-column label="创建日期" prop="dateCreated" />
+      <el-table-column label="修改日期" prop="lastUpdated" />
+      <el-table-column label="操作" width="100px">
+        <template slot-scope="scope">
+          <!-- 右侧按钮 -->
+          <SingleRowButton :baba="scope" />
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <!--分页-->
+    <Pagination :total="total" :page.sync="qo.page" :limit.sync="qo.size" @pagination="getData" />
+
+  </div>
 </template>
 
 <script>
+import { list } from '@/api/system/notice'
+import Pagination from '@/components/Pagination'
+import TopButton from '@/components/TopButton'
+import SingleRowButton from '@/components/SingleRowButton'
+import TableRightButton from '@/components/TableRightButton'
+import FilterButton from '@/components/FilterButton'
+import { getDictSelectData } from '@/utils/common'
 export default {
   name: 'Notice',
-  props: {},
+  components: { Pagination, TopButton, TableRightButton, FilterButton, SingleRowButton },
   data() {
-    return {}
+    return {
+      showLoading: false, data: null, total: 0,
+      qo: { page: 1, size: 10, type: '', title: '' },
+      typeOptions: []
+    }
   },
-  created() {},
-  mounted() {},
-  methods: {}
+  created() {
+    getDictSelectData('system_notice_type', this)
+    this.getData()
+  },
+  methods: {
+    getData() {
+      this.showLoading = true
+      setTimeout(() => {
+        list(this.qo).then(res => {
+          this.data = res.rows
+          this.total = res.total
+          this.showLoading = false
+        })
+      }, 400)
+    },
+    create() {
+      this.$refs.form.createOpen()
+    },
+    update(row) {
+      this.$refs.form.updateOpen(row.id)
+    }
+  }
 }
 </script>

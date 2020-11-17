@@ -17,7 +17,7 @@ module.exports = {
   /**
    * 显示设置
    */
-  showSettings: true,
+  showSettings: false,
 
   /**
    * 显示 tagsView

@@ -7,6 +7,7 @@ const getters = {
   token: state => state.user.token,
   userInfo: state => state.user.user,
   loadMenus: state => state.user.loadMenus,
-  permission_routes: state => state.permission.routes
+  permission_routes: state => state.permission.routes,
+  dictSelectData: state => state.common
 }
 export default getters

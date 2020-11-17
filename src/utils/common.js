@@ -11,3 +11,11 @@ export function getFieldArray(rows, key) {
 export function getIdArray(rows) {
   return getFieldArray(rows, 'id')
 }
+
+export function getDictSelectData(dictType, that) {
+  const dictSelectData = that.$store.getters.dictSelectData
+  const haveData = dictSelectData && dictSelectData[dictType] && dictSelectData[dictType].length > 0
+  if (!haveData) {
+    that.$store.dispatch('common/GetDictByDictType', dictType)
+  }
+}

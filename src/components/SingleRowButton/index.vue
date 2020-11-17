@@ -1,7 +1,7 @@
 <template>
   <div>
     <template v-if="buttons && buttons.length > 0">
-      <el-dropdown v-if="buttons.length > 1" trigger="click" size="medium" @command="clickCallBack">
+      <el-dropdown v-if="buttons.length > 1" trigger="click" @command="clickCallBack">
         <el-button type="primary" icon="el-icon-arrow-down">操作</el-button>
         <el-dropdown-menu slot="dropdown">
           <template v-for="bt in buttons">

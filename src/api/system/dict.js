@@ -75,3 +75,10 @@ export function deleteDict(id) {
     method: 'post'
   })
 }
+
+export function select(dictType) {
+  return request({
+    url: '/dict/select?dictType=' + dictType,
+    method: 'get'
+  })
+}

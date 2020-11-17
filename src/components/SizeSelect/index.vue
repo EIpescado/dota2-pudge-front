@@ -12,12 +12,10 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie'
 export default {
   data() {
     return {
       sizeOptions: [
-        { label: '默认', value: 'default' },
         { label: '超大杯', value: 'medium' },
         { label: '大杯', value: 'small' },
         { label: '中杯', value: 'mini' }
@@ -27,12 +25,6 @@ export default {
   computed: {
     size() {
       return this.$store.getters.size
-    }
-  },
-  created() {
-    const sizeInCookie = Cookies.get('size')
-    if (!sizeInCookie) {
-      this.handleDefaultSize('small')
     }
   },
   methods: {
