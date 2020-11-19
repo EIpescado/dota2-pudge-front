@@ -149,6 +149,13 @@ const actions = {
 
   updateVisitedView({ commit }, view) {
     commit('UPDATE_VISITED_VIEW', view)
+  },
+
+  delViewAndBackToLastView({ dispatch }, that) {
+    return new Promise(() => {
+      dispatch('delView', that.$route)
+      that.$router.go(-1)
+    })
   }
 }
 

@@ -138,8 +138,8 @@ aside {
   line-height: 50px;
   position: relative;
   width: 100%;
-  text-align: right;
-  padding-right: 20px;
+  text-align: left;
+  padding-left: 40px;
   transition: 600ms ease position;
   background: linear-gradient(90deg, rgba(32, 182, 249, 1) 0%, rgba(32, 182, 249, 1) 0%, rgba(33, 120, 241, 1) 100%, rgba(33, 120, 241, 1) 100%);
 
@@ -148,13 +148,8 @@ aside {
     color: #fff;
   }
 
-  &.draft {
-    background: #d0d0d0;
-  }
+  background: #d0d0d0;
 
-  &.deleted {
-    background: #d0d0d0;
-  }
 }
 
 .link-type,
@@ -227,10 +222,11 @@ aside {
     width: 100%;
   }
   .el-form-item__label{
-    width: 70px;
+    width: 85px;
   }
   .el-form-item__content{
     width: 80%;
+    width: calc(100% - 85px)
   }
   .el-select{
     width: 100%;

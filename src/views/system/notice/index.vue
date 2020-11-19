@@ -27,7 +27,17 @@
     <el-table ref="table" v-loading="showLoading" :data="data" highlight-current-row class="table-container">
       <el-table-column label="标题">
         <template slot-scope="{row}">
-          <el-link type="primary">{{ row.title }}</el-link>
+          <el-link type="primary" @click="showNoticeDialog(row)">{{ row.title }}</el-link>
+        </template>
+      </el-table-column>
+      <el-table-column label="公告类型">
+        <template slot-scope="{row}">
+          <DictValueFormatter dict-type="system_notice_type" :dict-value="row.type" />
+        </template>
+      </el-table-column>
+      <el-table-column label="有效时间">
+        <template slot-scope="{row}">
+          {{ row.startDate + ' 到 ' + row.endDate }}
         </template>
       </el-table-column>
       <el-table-column label="创建日期" prop="dateCreated" />
@@ -43,6 +53,7 @@
     <!--分页-->
     <Pagination :total="total" :page.sync="qo.page" :limit.sync="qo.size" @pagination="getData" />
 
+    <NoticeDialog ref="noticeDialog" />
   </div>
 </template>
 
@@ -53,10 +64,12 @@ import TopButton from '@/components/TopButton'
 import SingleRowButton from '@/components/SingleRowButton'
 import TableRightButton from '@/components/TableRightButton'
 import FilterButton from '@/components/FilterButton'
+import NoticeDialog from '@/components/NoticeDialog'
+import DictValueFormatter from '@/components/DictValueFormatter'
 import { getDictSelectData } from '@/utils/common'
 export default {
-  name: 'Notice',
-  components: { Pagination, TopButton, TableRightButton, FilterButton, SingleRowButton },
+  name: 'NoticeList',
+  components: { Pagination, TopButton, TableRightButton, FilterButton, SingleRowButton, NoticeDialog, DictValueFormatter },
   data() {
     return {
       showLoading: false, data: null, total: 0,
@@ -65,8 +78,9 @@ export default {
     }
   },
   created() {
-    getDictSelectData('system_notice_type', this)
-    this.getData()
+    getDictSelectData('system_notice_type', this).then(() => {
+      this.getData()
+    })
   },
   methods: {
     getData() {
@@ -80,10 +94,13 @@ export default {
       }, 400)
     },
     create() {
-      this.$refs.form.createOpen()
+      this.$router.push({ path: '/system/notice/create' })
     },
     update(row) {
-      this.$refs.form.updateOpen(row.id)
+      this.$router.push({ path: '/system/notice/edit', query: { id: row.id }})
+    },
+    showNoticeDialog(row) {
+      this.$refs.noticeDialog.show(row.id)
     }
   }
 }

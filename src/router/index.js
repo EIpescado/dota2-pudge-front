@@ -28,7 +28,6 @@ import Layout from '@/layout'
                                  点击文章进入文章详情页，这时候路由为/article/1，但你想在侧边栏高亮文章列表的路由，就可以进行如下设置
   }
  */
-
 export const routerArray = [
   {
     path: '/login',
@@ -81,6 +80,25 @@ export const routerArray = [
         component: () => import('@/views/profile/index'),
         name: '个人中心',
         meta: { title: '个人中心', icon: 'user', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '/system/notice/create',
+        component: () => import('@/views/system/notice/create'),
+        name: '创建公告',
+        meta: { title: '创建公告', icon: 'dashboard' }
+      },
+      {
+        path: '/system/notice/edit',
+        component: () => import('@/views/system/notice/edit'),
+        name: '修改公告',
+        meta: { title: '修改公告', icon: 'dashboard' }
       }
     ]
   }

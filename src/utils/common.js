@@ -13,9 +13,12 @@ export function getIdArray(rows) {
 }
 
 export function getDictSelectData(dictType, that) {
-  const dictSelectData = that.$store.getters.dictSelectData
-  const haveData = dictSelectData && dictSelectData[dictType] && dictSelectData[dictType].length > 0
-  if (!haveData) {
-    that.$store.dispatch('common/GetDictByDictType', dictType)
-  }
+  return new Promise(resolve => {
+    const dictSelectData = that.$store.getters.dictSelectData
+    const haveData = dictSelectData && dictSelectData[dictType] && dictSelectData[dictType].length > 0
+    if (!haveData) {
+      that.$store.dispatch('common/GetDictByDictType', dictType)
+    }
+    resolve()
+  })
 }

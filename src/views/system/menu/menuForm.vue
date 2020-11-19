@@ -52,7 +52,7 @@
         </el-col>
       </el-row>
 
-      <el-row :gutter="10">
+      <el-row :gutter="6">
         <el-col :span="8">
           <el-form-item label="常驻Tag" prop="affix">
             <el-radio-group v-model="form.affix" size="mini">
