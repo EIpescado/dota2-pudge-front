@@ -20,16 +20,16 @@
           </el-form-item>
         </el-row>
         <el-row>
-          <el-col :span="12">
+          <el-col :span="8">
             <el-form-item prop="type" label-width="70px" label="类型：">
               <el-select v-model.trim="form.type" clearable>
                 <el-option v-for="item in this.$store.getters.dictSelectData.system_notice_type" :key="item.value" :value="item.value" :label="item.label" />
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item prop="timeLimitArray" label-width="70px" label="期限：">
-              <date-range-picker v-model="form.timeLimitArray" value-format="yyyy-MM-dd" />
+          <el-col :span="8">
+            <el-form-item prop="expiredDate" label-width="100px" label="失效时间：">
+              <el-date-picker v-model="form.expiredDate" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -46,12 +46,11 @@
 <script>
 import Tinymce from '@/components/Tinymce'
 import Sticky from '@/components/Sticky'
-import DateRangePicker from '@/components/DateRangePicker'
 import { getDictSelectData } from '@/utils/common'
 import { create, get, update } from '@/api/system/notice'
 export default {
   name: 'ArticleDetail',
-  components: { Tinymce, Sticky, DateRangePicker },
+  components: { Tinymce, Sticky },
   props: {
     isEdit: {
       type: Boolean,
@@ -60,12 +59,12 @@ export default {
   },
   data() {
     return {
-      form: { title: '', type: '', content: '', startDate: '', endDate: '', timeLimitArray: [] },
+      form: { title: '', type: '', content: '', expiredDate: '' },
       submitLoading: false, submitDisabled: false, currentId: '',
       rules: {
         title: [{ required: true, message: '标题必填' }],
         type: [{ required: true, message: '类型必填' }],
-        timeLimitArray: [{ required: true, message: '期限必填' }],
+        expiredDate: [{ required: true, message: '失效时间必填' }],
         content: [{ required: true, message: '内容必填' }]
       }
     }
@@ -130,19 +129,13 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.notice-form-container {
-  .notice-main-container {
-    padding: 25px 40px;
-    .el-row{
-      width:70%;
-    }
-    .form-tinymce-container{
-      margin-bottom: 30px;
-      height: 450px;
-      width: 74%;
-    }
-  }
-
+<style scoped>
+.notice-form-container .notice-main-container{ padding: 25px 40px; }
+.notice-form-container .notice-main-container .el-row{ width:73%; }
+.notice-form-container .notice-main-container .el-row >>> .el-form-item__content { width: calc(100% - 105px); }
+.form-tinymce-container{
+  margin-bottom: 30px;
+  height: 450px;
+  width: 76%;
 }
 </style>

@@ -30,18 +30,18 @@
           <el-link type="primary" @click="showNoticeDialog(row)">{{ row.title }}</el-link>
         </template>
       </el-table-column>
-      <el-table-column label="公告类型">
+      <el-table-column label="公告类型" width="150px">
         <template slot-scope="{row}">
           <DictValueFormatter dict-type="system_notice_type" :dict-value="row.type" />
         </template>
       </el-table-column>
-      <el-table-column label="有效时间">
-        <template slot-scope="{row}">
-          {{ row.startDate + ' 到 ' + row.endDate }}
+      <el-table-column label="失效时间" prop="expiredDate" width="150px" />
+      <el-table-column label="创建日期" prop="dateCreated" width="150px" />
+      <el-table-column label="修改日期" prop="lastUpdated" width="150px">
+        <template slot-scope="scope">
+          <DateTimeHumanizer :value="scope.row.lastUpdated" />
         </template>
       </el-table-column>
-      <el-table-column label="创建日期" prop="dateCreated" />
-      <el-table-column label="修改日期" prop="lastUpdated" />
       <el-table-column label="操作" width="100px">
         <template slot-scope="scope">
           <!-- 右侧按钮 -->
@@ -66,10 +66,11 @@ import TableRightButton from '@/components/TableRightButton'
 import FilterButton from '@/components/FilterButton'
 import NoticeDialog from '@/components/NoticeDialog'
 import DictValueFormatter from '@/components/DictValueFormatter'
+import DateTimeHumanizer from '@/components/DateTimeHumanizer'
 import { getDictSelectData } from '@/utils/common'
 export default {
   name: 'NoticeList',
-  components: { Pagination, TopButton, TableRightButton, FilterButton, SingleRowButton, NoticeDialog, DictValueFormatter },
+  components: { Pagination, TopButton, TableRightButton, FilterButton, SingleRowButton, NoticeDialog, DictValueFormatter, DateTimeHumanizer },
   data() {
     return {
       showLoading: false, data: null, total: 0,

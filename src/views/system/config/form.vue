@@ -27,13 +27,13 @@ export default {
       form: { code: '', description: '', val: '' },
       rules: {
         code: [
-          { required: true, message: '用户名必填', trigger: 'blur' }
+          { required: true, message: '配置编码必填', trigger: 'blur' }
         ],
         description: [
-          { required: true, message: '昵称必填', trigger: 'blur' }
+          { required: true, message: '配置描述必填', trigger: 'blur' }
         ],
         val: [
-          { required: true, message: '手机必填', trigger: 'blur' }
+          { required: true, message: '配置值必填', trigger: 'blur' }
         ]
       },
       show: false, isAdd: false, uid: '', formLoading: false, submitLoading: false, submitDisabled: false

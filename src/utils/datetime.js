@@ -1,10 +1,5 @@
 /* eslint-disable */
-
-/**
- * Date对象的补充函数，包括类似Python中的strftime()
- * 阿债 https://gitee.com/azhai/datetime.js
- */
-
+// 时间所属日期的 开始时间
 Date.prototype.toMidnight = function() {
   this.setHours(0)
   this.setMinutes(0)
@@ -13,18 +8,21 @@ Date.prototype.toMidnight = function() {
   return this
 }
 
+// 几天前的 开始时间
 Date.prototype.daysAgo = function(days, midnight) {
   days = days ? days - 0 : 0
   const date = new Date(this.getTime() - days * 8.64E7)
   return midnight ? date.toMidnight() : date
 }
 
+// 本月的开始时间
 Date.prototype.monthBegin = function(offset) {
   offset = offset ? offset - 0 : 0
   const days = this.getDate() - 1 - offset
   return this.daysAgo(days, true)
 }
 
+// 本季度的开始时间
 Date.prototype.quarterBegin = function() {
   const month = this.getMonth() - this.getMonth() % 3
   return new Date(this.getFullYear(), month, 1).toMidnight()
@@ -34,12 +32,13 @@ Date.prototype.yearBegin = function() {
   return new Date(this.getFullYear(), 0, 1).toMidnight()
 }
 
-Date.prototype.strftime = function(format, local) {
+// 格式化日期
+Date.prototype.strftime = function(format) {
   if (!format) {
     const str = new Date(this.getTime() + 2.88E7).toISOString()
     return str.substr(0, 16).replace('T', ' ')
   }
-  local = local && local.startsWith('zh') ? 'zh' : 'en'
+  local = 'zh'
   const padZero = function(str, len) {
     const pads = len - str.toString().length
     return (pads && pads > 0 ? '0'.repeat(pads) : '') + str
@@ -77,11 +76,9 @@ Date.prototype.strftime = function(format, local) {
         break
 
       case '%B':
-        local = local.startsWith('en') ? 'english' : local
-
       case '%b':
         const m = _this.getMonth()
-        ans = local_labels.monthes[local][m]
+        ans = const_humanize_data.monthes[local][m]
         break
 
       case '%d':
@@ -107,11 +104,9 @@ Date.prototype.strftime = function(format, local) {
         break
 
       case '%A':
-        local = local.startsWith('en') ? 'english' : local
-
       case '%a':
         const d = _this.getDay()
-        ans = local_labels.weekdays[local][d]
+        ans = const_humanize_data.weekdays[local][d]
         break
 
       case '%H':
@@ -147,7 +142,7 @@ Date.prototype.strftime = function(format, local) {
 
       case '%p':
         const h = _this.getHours()
-        ans = local_labels.meridians[local][h < 12 ? 0 : 1]
+        ans = const_humanize_data.meridians[local][h < 12 ? 0 : 1]
         break
 
       case '%z':
@@ -169,48 +164,44 @@ Date.prototype.strftime = function(format, local) {
   })
 }
 
-Date.prototype.humanize = function(local) {
-  local = local && local.startsWith('zh') ? 'zh' : 'en'
-  const result = this.strftime('', local)
-  const days = (Date.today() - this.toMidnight().getTime()) / 8.64E7
-  if (days <= -10 || days >= 10) {
-    return result
-  }
-  const labels = local_labels.dayagos[local]
+// 个性化日期
+Date.prototype.humanize = function() {
+  const result = this.strftime('')
+  const now = Date.now()
+  // 当前时间与this时间的差值 秒
+  const diff = (now - this.getTime()) / 1000
+  const labels = const_humanize_data.humanizes['zh']
   let lbl = ''
-  if (days === 0 || days === 1) {
-    lbl = labels[days]
-  } else if (days === -1) {
-    lbl = labels[2]
-  } else if (days >= 2) {
-    lbl = days + labels[3]
+  if (diff <= const_humanize_data.minute) {
+    lbl = labels[0]
+  } else if (diff <= const_humanize_data.hour) {
+    lbl = Math.round(diff / const_humanize_data.minute) + labels[1]
+  } else if (diff <= const_humanize_data.day) {
+    lbl = Math.round(diff / const_humanize_data.hour) + labels[2]
+  } else if (diff <= (const_humanize_data.day * 2)) {
+    lbl = labels[3]
+  } else if (diff <= (const_humanize_data.day * 7)){
+    lbl = Math.round(diff / const_humanize_data.day) + labels[4]
   } else {
-    lbl = days + labels[4]
+    lbl = result
   }
-  return lbl + result.substr(10, 6)
+  return lbl
 }
 
-const local_labels = {
+const const_humanize_data = {
+  minute: 60, hour: 3600, day: 3600 * 24, week: 3600 * 24 * 7,
   monthes: {
-    english: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-    en: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     zh: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
   },
   weekdays: {
-    english: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-    en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
     zh: ['日', '一', '二', '三', '四', '五', '六']
   },
   meridians: {
-    english: ['a.m.', 'p.m.'],
-    en: ['AM', 'PM'],
     zh: ['上午', '下午']
   },
-  dayagos: {
-    english: ['Today', 'Yesterday', 'Tomorrow', ' days ago', ' days late'],
-    en: ['Today', 'Yesterday', 'Tomorrow', ' days ago', ' days late'],
-    zh: ['今天', '昨天', '明天', '天前', '天后']
-  }
+  humanizes: {
+    zh: ['刚刚', ' 分钟前', ' 小时前', '昨天', ' 天前']
+  } 
 }
 
 export default Date
