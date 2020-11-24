@@ -2,12 +2,12 @@ module.exports = {
   /**
    * 页面title后缀
    */
-  title: 'DOTA2',
+  title: '帕吉的碎肉铺',
 
   /**
    * 左上角系统名称
    */
-  systemName: 'pudge后台管理',
+  systemName: '帕吉的碎肉铺',
 
   /**
    * 测试端口号
@@ -33,6 +33,16 @@ module.exports = {
    * 显示左上角logo
    */
   sidebarLogo: true,
+
+  /**
+   * 记住密码状态下的token在Cookie中存储的天数，默认1天
+   */
+  tokenCookieExpires: 1,
+
+  /**
+   * 记住密码状态下的密码在Cookie中存储的天数，默认1天
+   */
+  passCookieExpires: 1,
 
   /**
    * 请求接口超时时间 默认30s
@@ -65,5 +75,5 @@ module.exports = {
   /**
    * 默认主题色
    */
-  themeColor: '#1890ff'
+  themeColor: '#13C2C2'
 }

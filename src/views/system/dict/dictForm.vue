@@ -53,6 +53,9 @@ export default {
         ],
         seq: [
           { required: true, message: '请输入字典排序号', trigger: 'blur' }
+        ],
+        fixed: [
+          { required: true, trigger: 'blur' }
         ]
       }
     }

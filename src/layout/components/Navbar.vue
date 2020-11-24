@@ -28,7 +28,7 @@
           <a target="_blank" href="https://github.com/EIpescado/dota2-pudge-front">
             <el-dropdown-item>Github</el-dropdown-item>
           </a>
-          <el-dropdown-item divided @click.native="logout">
+          <el-dropdown-item divided @click.native="open">
             <span style="display:block;">退出登录</span>
           </el-dropdown-item>
         </el-dropdown-menu>
@@ -64,9 +64,19 @@ export default {
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
+    open() {
+      this.$confirm('确定注销并退出系统吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.logout()
+      })
+    },
     async logout() {
-      await this.$store.dispatch('LogOut')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      await this.$store.dispatch('LogOut').then(() => {
+        location.reload()
+      })
     }
   }
 }

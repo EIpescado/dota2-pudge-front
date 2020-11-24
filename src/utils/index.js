@@ -4,7 +4,6 @@ import Date from './datetime'
  * @returns {string}
  */
 export function humanizeTime(time) {
-  console.log(time)
   const d = new Date(time)
   return d.humanize()
 }

@@ -2,7 +2,7 @@
   <div class="login" :style="'background-image:url('+ Background +');'">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-position="left" label-width="0px" class="login-form">
       <h3 class="title">
-        EL-ADMIN 后台管理系统
+        {{ systemName }}
       </h3>
       <el-form-item prop="username">
         <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号">
@@ -55,8 +55,8 @@ export default {
       codeUrl: '',
       cookiePass: '',
       loginForm: {
-        username: 'yq',
-        password: '123456',
+        username: '',
+        password: '',
         rememberMe: false,
         code: '',
         uuid: ''
@@ -67,7 +67,7 @@ export default {
         code: [{ required: true, trigger: 'change', message: '验证码不能为空' }]
       },
       loading: false,
-      redirect: undefined
+      redirect: undefined, systemName: Config.systemName
     }
   },
   watch: {
@@ -83,8 +83,6 @@ export default {
     this.getCode()
     // 获取用户名密码等Cookie
     this.getCookie()
-    // token 过期提示
-    this.point()
   },
   methods: {
     getCode() {
@@ -141,18 +139,6 @@ export default {
           return false
         }
       })
-    },
-    point() {
-      const point = Cookies.get('point') !== undefined
-      if (point) {
-        this.$notify({
-          title: '提示',
-          message: '当前登录状态已过期，请重新登录！',
-          type: 'warning',
-          duration: 5000
-        })
-        Cookies.remove('point')
-      }
     }
   }
 }

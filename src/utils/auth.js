@@ -7,8 +7,10 @@ export function getToken() {
   return Cookies.get(tokenKey)
 }
 
-export function setToken(token) {
-  return Cookies.set(tokenKey, token)
+export function setToken(token, rememberMe) {
+  if (rememberMe) {
+    return Cookies.set(tokenKey, token, { expires: Config.tokenCookieExpires })
+  } else return Cookies.set(tokenKey, token)
 }
 
 export function removeToken() {

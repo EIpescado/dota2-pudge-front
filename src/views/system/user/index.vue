@@ -23,6 +23,7 @@
       <el-table-column label="用户名" resizable prop="username" />
       <el-table-column label="昵称" prop="nickname" />
       <el-table-column label="手机" prop="phone" />
+      <el-table-column label="邮箱" prop="mail" />
       <el-table-column label="注册日期" prop="dateCreated" />
       <el-table-column label="状态">
         <template slot-scope="{ row }">

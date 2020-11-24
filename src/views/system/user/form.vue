@@ -10,6 +10,9 @@
       <el-form-item label="手机" prop="phone">
         <el-input v-model.trim="form.phone" placeholder="手机" />
       </el-form-item>
+      <el-form-item label="邮箱" prop="mail">
+        <el-input v-model.trim="form.mail" placeholder="邮箱" />
+      </el-form-item>
       <el-form-item label="角色" prop="roleIds" class="form-item-row">
         <el-select v-model="form.roleIds" multiple placeholder="请选择">
           <el-option
@@ -31,7 +34,7 @@
 <script>
 import { create, update, get } from '@/api/system/user'
 import { select } from '@/api/system/role'
-import { createValidator, validUsername, validNickname, validPhone, createRequiredValidator } from '@/utils/validate'
+import { createValidator, validUsername, validNickname, validPhone, createRequiredValidator, validEmail } from '@/utils/validate'
 export default {
   name: 'UserForm',
   data() {
@@ -39,8 +42,9 @@ export default {
     const nicknameValidator = createValidator(true, validNickname, '2-18位中文,字母,数字及下划线', '昵称必填')
     const phoneValidator = createValidator(true, validPhone, '请输入有效手机号', '手机必填')
     const requiredValidator = createRequiredValidator('角色必选')
+    const mailValidator = createValidator(true, validEmail, '请输入有效邮箱', '邮箱必填')
     return {
-      form: { username: '', nickname: '', phone: '', roleIds: [] },
+      form: { username: '', nickname: '', phone: '', roleIds: [], mail: '' },
       rules: {
         username: [
           { required: true, validator: usernameValidator, trigger: 'blur' }
@@ -50,6 +54,9 @@ export default {
         ],
         phone: [
           { required: true, validator: phoneValidator, trigger: 'blur' }
+        ],
+        mail: [
+          { required: true, validator: mailValidator, trigger: 'blur' }
         ],
         roleIds: [
           { required: true, validator: requiredValidator, trigger: 'change' }

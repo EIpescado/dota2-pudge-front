@@ -44,3 +44,26 @@ export function switchEnabled(id) {
     method: 'post'
   })
 }
+
+export function changePassword(params) {
+  return request({
+    url: '/user/changePassword',
+    method: 'post',
+    data: params
+  })
+}
+
+export function changeMail(params) {
+  return request({
+    url: '/user/changeMail',
+    method: 'post',
+    data: params
+  })
+}
+
+export function sendChangeMailCode(mail) {
+  return request({
+    url: '/user/sendChangeMailCode?mail=' + mail,
+    method: 'get'
+  })
+}
