@@ -27,7 +27,7 @@
       <el-table-column label="注册日期" prop="dateCreated" />
       <el-table-column label="状态">
         <template slot-scope="{ row }">
-          <el-tag effect="dark" :type="row.enabled ? 'success' : 'danger'">{{ row.enabled ? '启用' : '禁用' }}</el-tag>
+          <TableColumnTag :value="row.enabled" />
         </template>
       </el-table-column>
       <el-table-column label="操作" width="100px">
@@ -52,10 +52,11 @@ import TopButton from '@/components/TopButton'
 import SingleRowButton from '@/components/SingleRowButton'
 import TableRightButton from '@/components/TableRightButton'
 import FilterButton from '@/components/FilterButton'
+import TableColumnTag from '@/components/TableColumnTag'
 import Form from './form'
 export default {
   name: 'User',
-  components: { Pagination, TopButton, TableRightButton, FilterButton, Form, SingleRowButton },
+  components: { Pagination, TopButton, TableRightButton, FilterButton, Form, SingleRowButton, TableColumnTag },
   data() {
     return {
       showLoading: false, data: null, total: 0,

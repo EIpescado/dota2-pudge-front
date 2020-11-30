@@ -180,7 +180,6 @@ export default {
   }
   .login-code {
     width: 33%;
-    display: inline-block;
     height: 38px;
     float: right;
     img{

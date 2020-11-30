@@ -1,5 +1,5 @@
 <template>
-  <el-tag type="info" effect="plain">{{ value }}</el-tag>
+  <el-tag :type="tagType" :effect="tagEffect">{{ value }}</el-tag>
 </template>
 
 <script>
@@ -14,6 +14,14 @@ export default {
     dictValue: {
       type: String,
       required: true
+    },
+    tagType: {
+      type: String,
+      default: 'success'
+    },
+    tagEffect: {
+      type: String,
+      default: 'light'
     }
   },
   data() {
