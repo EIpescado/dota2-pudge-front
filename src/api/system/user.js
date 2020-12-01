@@ -67,3 +67,11 @@ export function sendChangeMailCode(mail) {
     method: 'get'
   })
 }
+
+export function userLog(params) {
+  return request({
+    url: '/user/log',
+    method: 'get',
+    params: params
+  })
+}
