@@ -44,6 +44,8 @@
       <el-table-column label="IP" prop="ip" />
       <el-table-column label="IP来源" prop="address" />
       <el-table-column label="操作" prop="action" />
+      <el-table-column label="系统" show-overflow-tooltip prop="system" />
+      <el-table-column label="浏览器" prop="browser" />
       <el-table-column label="耗时" prop="timeCost">
         <template slot-scope="{row}">
           <el-tag v-if="row.timeCost <= 300">{{ row.timeCost }}ms</el-tag>
