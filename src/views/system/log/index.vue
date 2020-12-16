@@ -21,9 +21,9 @@
     <!--列表-->
     <el-table ref="table" v-loading="showLoading" :data="data" highlight-current-row class="table-container">
       <el-table-column label="用户" prop="nickname" />
-      <el-table-column label="类型" prop="type" :formatter="formatter">
+      <el-table-column label="类型" prop="type">
         <template slot-scope="{row}">
-          <DictValueFormatter :key="row.id" dict-type="system_log_type" :dict-value="row.type" />
+          <el-tag :type="row.type === 'INFO' ? 'success' : 'danger'" effect="light">{{ row.type }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="IP" prop="ip" width="120px" />
@@ -66,12 +66,11 @@ import Pagination from '@/components/Pagination'
 import TopButton from '@/components/TopButton'
 import TableRightButton from '@/components/TableRightButton'
 import FilterButton from '@/components/FilterButton'
-import DictValueFormatter from '@/components/DictValueFormatter'
 import MultiFunctionalWindow from '@/components/MultiFunctionalWindow'
 import { getDictSelectData } from '@/utils/common'
 export default {
   name: 'Log',
-  components: { Pagination, TopButton, TableRightButton, FilterButton, DictValueFormatter, MultiFunctionalWindow },
+  components: { Pagination, TopButton, TableRightButton, FilterButton, MultiFunctionalWindow },
   data() {
     return {
       showLoading: false, data: [], total: 0,
@@ -94,10 +93,6 @@ export default {
     },
     showMultiWindow(title, content, contentType) {
       this.$refs.multiWindow.show(title, content, contentType)
-    },
-    formatter(row, column, cellValue, index) {
-      console.log(123456)
-      return row.type
     }
   }
 }
