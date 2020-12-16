@@ -7,9 +7,6 @@
         <el-button :loading="submitLoading" :disabled="submitDisabled" type="primary" @click="submitForm">
           {{ isEdit ? '保存' : '发布' }}
         </el-button>
-        <!-- <el-button :loading="submitLoading" :disabled="submitDisabled" type="primary" @click="draftForm">
-          暂存
-        </el-button> -->
       </sticky>
 
       <!--表单-->
@@ -70,9 +67,7 @@ export default {
     }
   },
   created() {
-    getDictSelectData('system_notice_type', this).then(() => {
-      this.loadDetail()
-    })
+    getDictSelectData('system_notice_type').then(() => { this.loadDetail() })
   },
   methods: {
     submitForm() {

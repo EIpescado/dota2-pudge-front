@@ -73,15 +73,13 @@ export default {
   components: { Pagination, TopButton, TableRightButton, FilterButton, SingleRowButton, NoticeDialog, DictValueFormatter, DateTimeHumanizer },
   data() {
     return {
-      showLoading: false, data: null, total: 0,
+      showLoading: false, data: [], total: 0,
       qo: { page: 1, size: 10, type: '', title: '' },
       typeOptions: []
     }
   },
   created() {
-    getDictSelectData('system_notice_type', this).then(() => {
-      this.getData()
-    })
+    getDictSelectData('system_notice_type').then(() => { this.getData() })
   },
   methods: {
     getData() {

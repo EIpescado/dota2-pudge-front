@@ -34,6 +34,7 @@ export default {
   },
   methods: {
     formatDictValueToLabel() {
+      console.log('xxx')
       if (!this.dictValue) {
         this.value = ''
       } else {
@@ -48,7 +49,7 @@ export default {
             }
           }
         }
-        this.value = result
+        this.value = result + ''
       }
     }
   }

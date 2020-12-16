@@ -21,9 +21,9 @@
     <!--列表-->
     <el-table ref="table" v-loading="showLoading" :data="data" highlight-current-row class="table-container">
       <el-table-column label="用户" prop="nickname" />
-      <el-table-column label="类型">
+      <el-table-column label="类型" prop="type" :formatter="formatter">
         <template slot-scope="{row}">
-          <DictValueFormatter dict-type="system_log_type" :dict-value="row.type" />
+          <DictValueFormatter :key="row.id" dict-type="system_log_type" :dict-value="row.type" />
         </template>
       </el-table-column>
       <el-table-column label="IP" prop="ip" width="120px" />
@@ -32,13 +32,17 @@
       <el-table-column label="请求方法" prop="method" show-overflow-tooltip />
       <el-table-column label="请求参数" width="80px">
         <template slot-scope="{row}">
-          <el-link v-if="row.params" type="primary" @click="showMultiWindow('请求参数',row.params)">查看参数</el-link>
+          <el-link v-if="row.params" type="primary" @click="showMultiWindow('请求参数', row.params, 'JSON')">查看参数</el-link>
         </template>
       </el-table-column>
-      <el-table-column label="异常信息" prop="errorInfo" />
+      <el-table-column label="异常信息" width="80px">
+        <template slot-scope="{row}">
+          <el-link v-if="row.errorInfo" type="danger" @click="showMultiWindow('异常信息', row.errorInfo)">查看异常</el-link>
+        </template>
+      </el-table-column>
       <el-table-column label="系统" show-overflow-tooltip prop="system" />
       <el-table-column label="浏览器" prop="browser" />
-      <el-table-column label="耗时" prop="timeCost" width="70px">
+      <el-table-column label="耗时" prop="timeCost" width="75px">
         <template slot-scope="{row}">
           <el-tag v-if="row.timeCost <= 300">{{ row.timeCost }}ms</el-tag>
           <el-tag v-else-if="row.timeCost <= 1000" type="warning">{{ row.timeCost }}ms</el-tag>
@@ -50,7 +54,10 @@
 
     <!--分页-->
     <Pagination :total="total" :page.sync="qo.page" :limit.sync="qo.size" @pagination="getData" />
+
+    <!--请求参数-->
     <MultiFunctionalWindow ref="multiWindow" />
+
   </div>
 </template>
 <script>
@@ -67,14 +74,12 @@ export default {
   components: { Pagination, TopButton, TableRightButton, FilterButton, DictValueFormatter, MultiFunctionalWindow },
   data() {
     return {
-      showLoading: false, data: null, total: 0,
+      showLoading: false, data: [], total: 0,
       qo: { page: 1, size: 10, keyWord: '' }
     }
   },
   created() {
-    getDictSelectData('system_log_type', this).then(() => {
-      this.getData()
-    })
+    getDictSelectData('system_log_type').then(() => { this.getData() })
   },
   methods: {
     getData() {
@@ -87,8 +92,12 @@ export default {
         })
       }, 400)
     },
-    showMultiWindow(title, content) {
-      this.$refs.multiWindow.show(title, content)
+    showMultiWindow(title, content, contentType) {
+      this.$refs.multiWindow.show(title, content, contentType)
+    },
+    formatter(row, column, cellValue, index) {
+      console.log(123456)
+      return row.type
     }
   }
 }

@@ -36,7 +36,7 @@ Date.prototype.yearBegin = function() {
 Date.prototype.strftime = function(format) {
   if (!format) {
     const str = new Date(this.getTime() + 2.88E7).toISOString()
-    return str.substr(0, 16).replace('T', ' ')
+    return str.substr(0, 19).replace('T', ' ')
   }
   local = 'zh'
   const padZero = function(str, len) {
