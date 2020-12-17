@@ -75,8 +75,8 @@ export default {
 
 <style scoped>
 .pagination-container {
-  margin-top: 10px;
+  margin-top: 5px;
   background: #fff;
-  padding: 10px 0 20px 0;
+  padding: 10px 0 30px 0;
 }
 </style>

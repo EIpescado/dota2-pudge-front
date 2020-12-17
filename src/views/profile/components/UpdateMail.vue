@@ -111,7 +111,7 @@ export default {
                 title: '邮箱修改成功'
               })
               this.resetForm()
-              store.dispatch('GetInfo').then(() => {})
+              store.dispatch('GetInfo')
             }).catch(() => {
               this.submitDisabled = false
               this.submitLoading = false

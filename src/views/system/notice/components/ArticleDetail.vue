@@ -73,8 +73,6 @@ export default {
     submitForm() {
       this.submitDisabled = true
       this.submitLoading = true
-      this.form.startDate = this.form.timeLimitArray[0]
-      this.form.endDate = this.form.timeLimitArray[1]
       this.$refs.form.validate(valid => {
         if (valid) {
           if (!this.isEdit) {

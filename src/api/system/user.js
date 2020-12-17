@@ -75,3 +75,11 @@ export function userLog(params) {
     params: params
   })
 }
+
+export function changeAccountInfo(params) {
+  return request({
+    url: '/user/changeAccountInfo',
+    method: 'post',
+    data: params
+  })
+}

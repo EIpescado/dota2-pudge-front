@@ -32,7 +32,7 @@
       </el-table-column>
       <el-table-column label="公告类型" width="150px">
         <template slot-scope="{row}">
-          <DictValueFormatter dict-type="system_notice_type" :dict-value="row.type" />
+          <el-tag type="success" effect="light">{{ row.type }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="失效时间" prop="expiredDate" width="150px" />
@@ -65,12 +65,11 @@ import SingleRowButton from '@/components/SingleRowButton'
 import TableRightButton from '@/components/TableRightButton'
 import FilterButton from '@/components/FilterButton'
 import NoticeDialog from '@/components/NoticeDialog'
-import DictValueFormatter from '@/components/DictValueFormatter'
 import DateTimeHumanizer from '@/components/DateTimeHumanizer'
 import { getDictSelectData } from '@/utils/common'
 export default {
   name: 'NoticeList',
-  components: { Pagination, TopButton, TableRightButton, FilterButton, SingleRowButton, NoticeDialog, DictValueFormatter, DateTimeHumanizer },
+  components: { Pagination, TopButton, TableRightButton, FilterButton, SingleRowButton, NoticeDialog, DateTimeHumanizer },
   data() {
     return {
       showLoading: false, data: [], total: 0,

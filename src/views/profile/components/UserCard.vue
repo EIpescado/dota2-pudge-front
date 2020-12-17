@@ -10,7 +10,7 @@
       </div>
       <div class="box-center">
         <div class="user-name text-center">{{ user.nickname }}</div>
-        <div class="user-role text-center text-muted">普通用户</div>
+        <div class="user-role text-center text-muted">{{ user.admin ? '管理员' : '普通用户' }}</div>
       </div>
     </div>
 
@@ -19,9 +19,9 @@
         <div class="user-bio-section-header"><svg-icon icon-class="user" /><span>个人信息</span></div>
         <div class="user-bio-section-body">
           <ul class="user-info">
-            <li><svg-icon icon-class="user" /> 账号<div class="user-right">{{ user.username }}</div></li>
-            <li><svg-icon icon-class="phone" /> 手机 <div class="user-right">{{ user.phone }}</div></li>
-            <li><svg-icon icon-class="phone" /> 邮箱 <div class="user-right">{{ user.mail }}</div></li>
+            <li><svg-icon icon-class="user" />账号<div class="user-right">{{ user.username }}</div></li>
+            <li><svg-icon icon-class="phone" />手机<div class="user-right">{{ user.phone }}</div></li>
+            <li><svg-icon icon-class="phone" />邮箱<div class="user-right">{{ user.mail }}</div></li>
             <li>
               <svg-icon icon-class="panda" /> 安全设置
               <div class="user-right">

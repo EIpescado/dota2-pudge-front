@@ -32,12 +32,12 @@
       <el-table-column label="请求方法" prop="method" show-overflow-tooltip />
       <el-table-column label="请求参数" width="80px">
         <template slot-scope="{row}">
-          <el-link v-if="row.params" type="primary" @click="showMultiWindow('请求参数', row.params, 'JSON')">查看参数</el-link>
+          <el-link type="primary" @click="showMultiWindow(row, false)">查看参数</el-link>
         </template>
       </el-table-column>
       <el-table-column label="异常信息" width="80px">
         <template slot-scope="{row}">
-          <el-link v-if="row.errorInfo" type="danger" @click="showMultiWindow('异常信息', row.errorInfo)">查看异常</el-link>
+          <el-link v-if="row.type === 'ERROR'" type="danger" @click="showMultiWindow(row, true)">查看异常</el-link>
         </template>
       </el-table-column>
       <el-table-column label="系统" show-overflow-tooltip prop="system" />
@@ -61,7 +61,7 @@
   </div>
 </template>
 <script>
-import { list } from '@/api/system/log'
+import { list, get } from '@/api/system/log'
 import Pagination from '@/components/Pagination'
 import TopButton from '@/components/TopButton'
 import TableRightButton from '@/components/TableRightButton'
@@ -91,8 +91,20 @@ export default {
         })
       }, 400)
     },
-    showMultiWindow(title, content, contentType) {
-      this.$refs.multiWindow.show(title, content, contentType)
+    showMultiWindow(row, isError) {
+      const ld = this.$loading()
+      get(row.id).then(res => {
+        let title = '请求参数'
+        let contentType = 'JSON'
+        let content = res.params
+        if (isError) {
+          title = '异常信息'
+          contentType = ''
+          content = res.errorInfo
+        }
+        ld.close()
+        this.$refs.multiWindow.show(title, content, contentType)
+      }).catch(() => { ld.close() })
     }
   }
 }

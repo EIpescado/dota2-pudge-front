@@ -7,3 +7,10 @@ export function list(data) {
     params: data
   })
 }
+
+export function get(id) {
+  return request({
+    url: '/log/' + id,
+    method: 'get'
+  })
+}

@@ -1,36 +1,58 @@
 <template>
-  <el-form inline>
-    <el-form-item label="昵称">
-      <el-input v-model.trim="user.name" />
+  <el-form ref="userForm" :rules="rules" :model="userForm" label-width="50px" style="margin-top: 10px;">
+    <el-form-item label="昵称" prop="nickname">
+      <el-input v-model.trim="userForm.nickname" clearable style="width: 35%" />
     </el-form-item>
-    <el-form-item label="邮箱">
-      <el-input v-model.trim="user.email" />
-    </el-form-item>
-    <el-form-item>
-      <el-button type="primary" @click="submit">Update</el-button>
+    <el-form-item label="">
+      <el-button type="primary" style="width: 10%" :loading="submitLoading" :disabled="submitDisabled" @click="submit">保存</el-button>
     </el-form-item>
   </el-form>
 </template>
 
 <script>
+import { changeAccountInfo } from '@/api/system/user'
 export default {
   props: {
     user: {
       type: Object,
-      default: () => {
-        return {
-          name: '',
-          email: ''
-        }
+      required: true
+    }
+  },
+  data() {
+    return {
+      userForm: { nickname: '' }, submitLoading: false, submitDisabled: false,
+      rules: {
+        nickname: [
+          { required: true, message: '昵称必填', trigger: 'blur' }
+        ]
       }
     }
   },
+  created() {
+    this.userForm.nickname = this.user.nickname
+  },
   methods: {
     submit() {
-      this.$message({
-        message: 'User information has been updated successfully',
-        type: 'success',
-        duration: 5 * 1000
+      this.submitDisabled = true
+      this.submitLoading = true
+      this.$refs.userForm.validate(valid => {
+        if (valid) {
+          changeAccountInfo(this.userForm).then(res => {
+            this.$message.success({
+              message: '保存成功'
+            })
+            this.submitDisabled = false
+            this.submitLoading = false
+            this.$store.dispatch('GetInfo')
+          }).catch(() => {
+            this.submitDisabled = false
+            this.submitLoading = false
+          })
+        } else {
+          this.submitDisabled = false
+          this.submitLoading = false
+          return false
+        }
       })
     }
   }
