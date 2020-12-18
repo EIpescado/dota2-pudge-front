@@ -8,10 +8,12 @@
       <template v-if="device!=='mobile'">
         <search id="header-search" class="right-menu-item" />
 
-        <screenfull id="screenfull" class="right-menu-item hover-effect" />
+        <el-tooltip :disabled="screenfullTooltipDisabled" content="全屏显示" effect="light" placement="bottom">
+          <screenfull id="screenfull" class="right-menu-item hover-effect" :baba="this" />
+        </el-tooltip>
 
-        <el-tooltip content="布局大小" effect="dark" placement="bottom">
-          <size-select id="size-select" class="right-menu-item hover-effect" />
+        <el-tooltip :disabled="sizeSelectTooltipDisabled" content="布局大小" effect="light" placement="bottom">
+          <size-select id="size-select" class="right-menu-item hover-effect" :baba="this" />
         </el-tooltip>
 
       </template>
@@ -53,6 +55,11 @@ export default {
     SizeSelect,
     Search
   },
+  data() {
+    return {
+      screenfullTooltipDisabled: false, sizeSelectTooltipDisabled: false
+    }
+  },
   computed: {
     ...mapGetters([
       'sidebar',
@@ -77,6 +84,13 @@ export default {
       await this.$store.dispatch('LogOut').then(() => {
         location.reload()
       })
+    },
+    closeToolTip(flag) {
+      if (flag === 'screenfull') {
+        this.screenfullTooltipDisabled = true
+      } else if (flag === 'sizeSelect') {
+        this.sizeSelectTooltipDisabled = true
+      }
     }
   }
 }
@@ -134,7 +148,7 @@ export default {
         transition: background .3s;
 
         &:hover {
-          background: rgba(0, 0, 0, .025)
+          background: #DCDFE6;
         }
       }
     }

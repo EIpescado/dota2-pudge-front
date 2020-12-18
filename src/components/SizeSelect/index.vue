@@ -1,5 +1,5 @@
 <template>
-  <el-dropdown trigger="click" @command="handleSetSize">
+  <el-dropdown trigger="click" @command="handleSetSize" @visible-change="showSize">
     <div>
       <svg-icon class-name="size-icon" icon-class="size" />
     </div>
@@ -13,6 +13,13 @@
 
 <script>
 export default {
+  name: 'SizeSelect',
+  props: {
+    baba: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
       sizeOptions: [
@@ -28,6 +35,9 @@ export default {
     }
   },
   methods: {
+    showSize(val) {
+      this.baba.closeToolTip('sizeSelect')
+    },
     handleDefaultSize(size) {
       this.$ELEMENT.size = size
       this.$store.dispatch('app/setSize', size)

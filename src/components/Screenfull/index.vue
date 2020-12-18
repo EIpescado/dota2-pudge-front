@@ -9,6 +9,12 @@ import screenfull from 'screenfull'
 
 export default {
   name: 'Screenfull',
+  props: {
+    baba: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
       isFullscreen: false
@@ -22,6 +28,7 @@ export default {
   },
   methods: {
     click() {
+      this.baba.closeToolTip('screenfull')
       if (!screenfull.enabled) {
         this.$message({
           message: '您的浏览器暂不支持此操作',

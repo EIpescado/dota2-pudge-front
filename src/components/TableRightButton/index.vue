@@ -1,10 +1,10 @@
 <template>
   <div class="table-left-button-container">
     <el-button-group>
-      <el-tooltip effect="light" content="折叠搜索框" placement="top-start">
+      <el-tooltip :disabled="searchTooltipDisabled" effect="light" content="折叠搜索框" placement="top-start">
         <el-button v-if="showFilter" size="mini" icon="el-icon-search" @click="switchShowFilterContainer" />
       </el-tooltip>
-      <el-tooltip effect="light" content="刷新列表" placement="top-start">
+      <el-tooltip :disabled="refreshTooltipDisabled" effect="light" content="刷新" placement="top-start">
         <el-button v-if="showRefresh" size="mini" icon="el-icon-refresh" @click="refresh" />
       </el-tooltip>
       <el-popover v-if="showColCheck" placement="bottom-end" width="150" trigger="click" @show="getTableFields">
@@ -59,13 +59,15 @@ export default {
   },
   data() {
     return {
-      allColumnsSelected: true, allColumnsSelectedIndeterminate: false, tableColumns: [], checkedTableColumns: [], allTableColumns: []
+      allColumnsSelected: true, allColumnsSelectedIndeterminate: false, tableColumns: [], checkedTableColumns: [], allTableColumns: [],
+      searchTooltipDisabled: false, refreshTooltipDisabled: false
     }
   },
   created() {
   },
   methods: {
     switchShowFilterContainer() {
+      this.searchTooltipDisabled = true
       const filterContainer = this.baba.$refs[this.filterKey]
       const classVar = 'pudge-hidden'
       if (hasClass(filterContainer, classVar)) {
@@ -75,6 +77,7 @@ export default {
       }
     },
     refresh() {
+      this.refreshTooltipDisabled = true
       this.baba[this.tableDataFun]()
     },
     getTableFields() {
