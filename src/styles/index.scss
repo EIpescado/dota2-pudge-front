@@ -180,10 +180,10 @@ aside {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    width: 24%;
+    width: 80px;
   }
   .el-form-item__content{
-    width: 70%;
+    width: calc(100% - 80px);
   }
   .el-date-editor{
     width: 100% !important;

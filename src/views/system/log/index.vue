@@ -67,7 +67,6 @@ import TopButton from '@/components/TopButton'
 import TableRightButton from '@/components/TableRightButton'
 import FilterButton from '@/components/FilterButton'
 import MultiFunctionalWindow from '@/components/MultiFunctionalWindow'
-import { getDictSelectData } from '@/utils/common'
 export default {
   name: 'Log',
   components: { Pagination, TopButton, TableRightButton, FilterButton, MultiFunctionalWindow },
@@ -78,7 +77,7 @@ export default {
     }
   },
   created() {
-    getDictSelectData('system_log_type').then(() => { this.getData() })
+    this.getData()
   },
   methods: {
     getData() {

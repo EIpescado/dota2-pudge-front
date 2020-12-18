@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible.sync="dialog" :close-on-click-modal="false" title="修改密码" append-to-body width="450px" custom-class="form-dialog" @close="cancel">
+  <el-dialog :visible.sync="dialog" :close-on-click-modal="false" title="更改密码" append-to-body width="450px" custom-class="form-dialog" @close="cancel">
     <el-form ref="form" :inline="true" :model="form" :rules="rules" class="form-container">
       <el-form-item label="旧密码" prop="oldPass">
         <el-input v-model.trim="form.oldPass" type="password" />

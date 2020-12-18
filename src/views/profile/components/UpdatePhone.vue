@@ -1,10 +1,10 @@
 <template>
-  <el-dialog :visible.sync="dialog" :close-on-click-modal="false" title="更改邮箱" append-to-body width="475px" custom-class="form-dialog" @close="cancel">
-    <el-form ref="mailForm" :inline="true" :model="mailForm" :rules="rules" class="form-container">
-      <el-form-item label="新邮箱" prop="mail">
+  <el-dialog :visible.sync="dialog" :close-on-click-modal="false" title="换绑手机" append-to-body width="475px" custom-class="form-dialog" @close="cancel">
+    <el-form ref="phoneForm" :inline="true" :model="phoneForm" :rules="rules" class="form-container">
+      <el-form-item label="新手机号" prop="phone">
         <el-row>
           <el-col :span="18">
-            <el-input v-model.trim="mailForm.mail" />
+            <el-input v-model.trim="phoneForm.phone" />
           </el-col>
           <el-col :span="6">
             <el-button :loading="codeLoading" :disabled="codeDisabled" type="primary" class="send-mail-code-button" @click="sendMailCode">{{ buttonName }}</el-button>
@@ -12,10 +12,10 @@
         </el-row>
       </el-form-item>
       <el-form-item label="验证码" prop="code">
-        <el-input v-model.trim="mailForm.code" />
+        <el-input v-model.trim="phoneForm.code" />
       </el-form-item>
       <el-form-item label="账号密码" prop="password">
-        <el-input v-model.trim="mailForm.password" type="password" />
+        <el-input v-model.trim="phoneForm.password" type="password" />
       </el-form-item>
     </el-form>
     <div slot="footer">
@@ -26,36 +26,36 @@
 </template>
 
 <script>
-import { validEmail } from '@/utils/validate'
-import { changeMail, sendChangeMailCode } from '@/api/system/user'
+import { validPhone } from '@/utils/validate'
+import { changePhone, sendChangePhoneCode } from '@/api/system/user'
 import { encrypt } from '@/utils/rsaEncrypt'
 export default {
-  name: 'UpdateMail',
+  name: 'UpdatePhone',
   data() {
-    const validMail = (rule, value, callback) => {
+    const phoneValidator = (rule, value, callback) => {
       if (value === '' || value === null) {
-        callback(new Error('新邮箱必填'))
+        callback(new Error('新手机号必填'))
       } else if (value === this.$store.getters.userInfo.mail) {
-        callback(new Error('新邮箱不能与旧邮箱相同'))
-      } else if (validEmail(value)) {
+        callback(new Error('新手机号不能与旧手机号相同'))
+      } else if (validPhone(value)) {
         callback()
       } else {
-        callback(new Error('邮箱格式错误'))
+        callback(new Error('无效手机号'))
       }
     }
     return {
       dialog: false,
-      mailForm: { mail: '', password: '', code: '' }, submitLoading: false, submitDisabled: false,
+      phoneForm: { phone: '', password: '', code: '' }, submitLoading: false, submitDisabled: false,
       codeLoading: false, buttonName: '获取验证码', codeDisabled: false, time: 60,
       rules: {
         password: [
           { required: true, message: '当前密码不能为空', trigger: 'blur' }
         ],
-        mail: [
-          { required: true, validator: validMail, trigger: 'blur' }
+        phone: [
+          { required: true, validator: phoneValidator, trigger: 'blur' }
         ],
         code: [
-          { required: true, message: '验证码不能为空', trigger: 'blur' }
+          { required: true, message: '短信验证码不能为空', trigger: 'blur' }
         ]
       }
     }
@@ -65,16 +65,16 @@ export default {
       this.resetForm()
     },
     sendMailCode() {
-      if (this.mailForm.mail) {
-        if (this.mailForm.mail === this.$store.getters.userInfo.mail) {
-          this.$message.warning('新邮箱不能与旧邮箱相同')
+      if (this.phoneForm.phone) {
+        if (this.phoneForm.phone === this.$store.getters.userInfo.phone) {
+          this.$message.warning('新手机号不能与旧手机号相同')
         } else {
           this.codeDisabled = true
           this.codeLoading = true
           this.buttonName = '发送中'
           const _this = this
-          sendChangeMailCode(this.mailForm.mail).then(res => {
-            this.$message.success('验证码已发送到邮箱，请及时查看(有效期5分分钟)')
+          sendChangePhoneCode(this.phoneForm.phone).then(res => {
+            this.$message.success('验证码已发送到您手机，请及时查看(有效期5分分钟)')
             this.codeLoading = false
             this.codeDisabled = true
             this.buttonName = (this.time--) + '秒'
@@ -93,21 +93,21 @@ export default {
           })
         }
       } else {
-        this.$message.warning('请输入有效邮箱')
+        this.$message.warning('请输入有效手机')
       }
     },
     doSubmit() {
-      this.$refs['mailForm'].validate((valid) => {
+      this.$refs['phoneForm'].validate((valid) => {
         if (valid) {
           this.submitDisabled = true
           this.submitLoading = true
           const submitForm = {
-            mail: this.mailForm.mail, password: encrypt(this.mailForm.password), code: this.mailForm.code
+            phone: this.phoneForm.phone, password: encrypt(this.phoneForm.password), code: this.phoneForm.code
           }
           setTimeout(() => {
-            changeMail(submitForm).then(res => {
+            changePhone(submitForm).then(res => {
               this.$notify.success({
-                title: '邮箱修改成功'
+                title: '手机换绑成功'
               })
               this.resetForm()
               this.$store.dispatch('GetInfo').then(r => {
@@ -125,7 +125,7 @@ export default {
     },
     resetForm() {
       this.dialog = false
-      this.$refs['mailForm'].resetFields()
+      this.$refs['phoneForm'].resetFields()
       window.clearInterval(this.timer)
       this.time = 60
       this.buttonName = '获取验证码'

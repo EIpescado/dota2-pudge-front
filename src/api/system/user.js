@@ -68,6 +68,21 @@ export function sendChangeMailCode(mail) {
   })
 }
 
+export function changePhone(params) {
+  return request({
+    url: '/user/changePhone',
+    method: 'post',
+    data: params
+  })
+}
+
+export function sendChangePhoneCode(phone) {
+  return request({
+    url: '/user/sendChangePhoneCode?phone=' + phone,
+    method: 'get'
+  })
+}
+
 export function userLog(params) {
   return request({
     url: '/user/log',

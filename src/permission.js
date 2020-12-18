@@ -27,7 +27,7 @@ router.beforeEach(async(to, from, next) => {
     } else {
       // store中不存在user_info
       if (!store.getters.userInfo.id) {
-        store.dispatch('GetInfo').then(() => { // 拉取user_info
+        store.dispatch('GetInfo').then(res => { // 拉取user_info
           // 动态路由，拉取菜单
           loadMenus(next, to)
         }).catch(() => {

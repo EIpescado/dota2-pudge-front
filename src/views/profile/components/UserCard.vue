@@ -22,28 +22,15 @@
             <li><svg-icon icon-class="user" />账号<div class="user-right">{{ user.username }}</div></li>
             <li><svg-icon icon-class="phone" />手机<div class="user-right">{{ user.phone }}</div></li>
             <li><svg-icon icon-class="phone" />邮箱<div class="user-right">{{ user.mail }}</div></li>
-            <li>
-              <svg-icon icon-class="panda" /> 安全设置
-              <div class="user-right">
-                <el-link type="primary" @click="$refs.up.dialog=true">修改密码</el-link>
-                <el-link type="primary" @click="$refs.um.dialog=true">修改邮箱</el-link>
-              </div>
-            </li>
           </ul>
         </div>
       </div>
     </div>
-
-    <UpdatePass ref="up" />
-    <UpdateMail ref="um" />
   </el-card>
 </template>
 
 <script>
-import UpdatePass from './UpdatePass'
-import UpdateMail from './UpdateMail'
 export default {
-  components: { UpdatePass, UpdateMail },
   props: {
     user: {
       type: Object,

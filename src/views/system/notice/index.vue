@@ -9,9 +9,6 @@
             <el-option v-for="item in this.$store.getters.dictSelectData.system_notice_type" :key="item.value" :value="item.value" :label="item.label" />
           </el-select>
         </el-form-item>
-        <el-form-item label="公告标题" prop="title">
-          <el-input v-model.trim="qo.title" clearable />
-        </el-form-item>
       </el-form>
       <!--查询框按钮-->
       <FilterButton :baba="this" />
