@@ -93,6 +93,8 @@ export default {
             })
           }
         } else {
+          this.submitDisabled = false
+          this.submitLoading = false
           return false
         }
       })

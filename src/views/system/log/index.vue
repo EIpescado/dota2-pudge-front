@@ -23,7 +23,7 @@
       <el-table-column label="用户" prop="nickname" />
       <el-table-column label="类型" prop="type">
         <template slot-scope="{row}">
-          <el-tag :type="row.type === 'INFO' ? 'success' : 'danger'" effect="light">{{ row.type }}</el-tag>
+          <el-tag :type="row.type === '1' ? 'success' : 'danger'" effect="light">{{ formatType(row) }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="IP" prop="ip" width="120px" />
@@ -37,7 +37,7 @@
       </el-table-column>
       <el-table-column label="异常信息" width="80px">
         <template slot-scope="{row}">
-          <el-link v-if="row.type === 'ERROR'" type="danger" @click="showMultiWindow(row, true)">查看异常</el-link>
+          <el-link v-if="row.type === '2'" type="danger" @click="showMultiWindow(row, true)">查看异常</el-link>
         </template>
       </el-table-column>
       <el-table-column label="系统" show-overflow-tooltip prop="system" />
@@ -67,6 +67,7 @@ import TopButton from '@/components/TopButton'
 import TableRightButton from '@/components/TableRightButton'
 import FilterButton from '@/components/FilterButton'
 import MultiFunctionalWindow from '@/components/MultiFunctionalWindow'
+import { getDictSelectData, transferValueForArray } from '@/utils/common'
 export default {
   name: 'Log',
   components: { Pagination, TopButton, TableRightButton, FilterButton, MultiFunctionalWindow },
@@ -77,7 +78,7 @@ export default {
     }
   },
   created() {
-    this.getData()
+    getDictSelectData('system_log_type').then(res => { this.getData() })
   },
   methods: {
     getData() {
@@ -104,6 +105,9 @@ export default {
         ld.close()
         this.$refs.multiWindow.show(title, content, contentType)
       }).catch(() => { ld.close() })
+    },
+    formatType(row) {
+      return transferValueForArray('system_log_type', row.type)
     }
   }
 }

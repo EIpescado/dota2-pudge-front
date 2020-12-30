@@ -29,7 +29,7 @@
       </el-table-column>
       <el-table-column label="公告类型" width="150px">
         <template slot-scope="{row}">
-          <el-tag type="success" effect="light">{{ row.type }}</el-tag>
+          <el-tag type="success" effect="light">{{ formatType(row) }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="失效时间" prop="expiredDate" width="150px" />
@@ -63,7 +63,7 @@ import TableRightButton from '@/components/TableRightButton'
 import FilterButton from '@/components/FilterButton'
 import NoticeDialog from '@/components/NoticeDialog'
 import DateTimeHumanizer from '@/components/DateTimeHumanizer'
-import { getDictSelectData } from '@/utils/common'
+import { getDictSelectData, transferValueForArray } from '@/utils/common'
 export default {
   name: 'NoticeList',
   components: { Pagination, TopButton, TableRightButton, FilterButton, SingleRowButton, NoticeDialog, DateTimeHumanizer },
@@ -75,7 +75,7 @@ export default {
     }
   },
   created() {
-    getDictSelectData('system_notice_type').then(() => { this.getData() })
+    getDictSelectData('system_notice_type').then(res => { this.getData() })
   },
   methods: {
     getData() {
@@ -96,6 +96,9 @@ export default {
     },
     showNoticeDialog(row) {
       this.$refs.noticeDialog.show(row.id)
+    },
+    formatType(row) {
+      return transferValueForArray('system_notice_type', row.type)
     }
   }
 }
