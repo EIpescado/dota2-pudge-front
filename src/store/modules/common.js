@@ -2,7 +2,8 @@ import { select } from '@/api/system/dict'
 
 const state = {
   system_notice_type: [],
-  system_log_type: []
+  system_log_type: [],
+  system_file_tag: []
 }
 
 const mutations = {

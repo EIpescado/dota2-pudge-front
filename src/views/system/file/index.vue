@@ -20,6 +20,19 @@
 
     <!--列表-->
     <el-table ref="table" v-loading="showLoading" :data="data" highlight-current-row class="table-container">
+      <el-table-column label="文件名称" prop="fileName" />
+      <el-table-column label="文件类型" prop="mimeType" />
+      <el-table-column label="文件大小">
+        <template slot-scope="{row}">
+          <el-tag type="success" effect="light">{{ formatFileSize(row) }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="文件用途">
+        <template slot-scope="{row}">
+          <el-tag type="success" effect="light">{{ formatFileTag(row) }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="上传时间" prop="uploadDate" />
       <el-table-column label="操作" width="100px">
         <template slot-scope="scope">
           <!-- 右侧按钮 -->
@@ -34,14 +47,16 @@
   </div>
 </template>
 <script>
-import { list } from '@/api/{{ apiJS }}'
+import { list } from '@/api/system/file'
 import Pagination from '@/components/Pagination'
 import TopButton from '@/components/TopButton'
 import SingleRowButton from '@/components/SingleRowButton'
 import TableRightButton from '@/components/TableRightButton'
 import FilterButton from '@/components/FilterButton'
+import { getDictSelectData, transferValueForArray } from '@/utils/common'
+import { formatBytes } from '@/utils/index'
 export default {
-  name: '{{ properCase name }}',
+  name: 'File',
   components: { Pagination, TopButton, TableRightButton, FilterButton, SingleRowButton },
   data() {
     return {
@@ -50,7 +65,7 @@ export default {
     }
   },
   created() {
-    this.getData()
+    getDictSelectData('system_file_tag').then(res => { this.getData() })
   },
   methods: {
     getData() {
@@ -62,6 +77,15 @@ export default {
           this.showLoading = false
         })
       }, 400)
+    },
+    formatFileTag(row) {
+      return transferValueForArray('system_file_tag', row.fileTag)
+    },
+    formatFileSize(row) {
+      return formatBytes(row.fileSize, 2)
+    },
+    download(row) {
+      console.log('下载')
     }
   }
 }

@@ -22,7 +22,7 @@ export function transferValueForArray(dictType, val) {
     let current
     for (let i = 0; i < length; i++) {
       current = array[i]
-      if (current.value === val) {
+      if (current.value === val || current.value === val.toString()) {
         return current.label
       }
     }
