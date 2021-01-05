@@ -188,6 +188,23 @@ Date.prototype.humanize = function() {
   return lbl
 }
 
+Date.prototype.simpleHumanize = function() {
+  const result = this.strftime('')
+  const now = Date.now()
+  // 当前时间与this时间的差值 秒
+  const diff = (now - this.getTime()) / 1000
+  const labels = const_humanize_data.simpleHumanizes['zh']
+  let lbl = ''
+  if (diff <= const_humanize_data.day) {
+    lbl = labels[0] + this.strftime('%H:%M')
+  } else if (diff <= (const_humanize_data.day * 2)) {
+    lbl = labels[1] + this.strftime('%H:%M')
+  } else {
+    lbl = result
+  }
+  return lbl
+}
+
 const const_humanize_data = {
   minute: 60, hour: 3600, day: 3600 * 24, week: 3600 * 24 * 7,
   monthes: {
@@ -201,6 +218,9 @@ const const_humanize_data = {
   },
   humanizes: {
     zh: ['刚刚', ' 分钟前', ' 小时前', '昨天', ' 天前']
+  },
+  simpleHumanizes: {
+    zh: ['今天', '昨天']
   } 
 }
 
