@@ -7,6 +7,11 @@
         <el-form-item label="关键字" prop="keyWord">
           <el-input v-model.trim="qo.keyWord" clearable />
         </el-form-item>
+        <el-form-item label="文件用途" prop="fileTag">
+          <el-select v-model="qo.fileTag" clearable>
+            <el-option v-for="item in this.$store.getters.dictSelectData.system_file_tag" :key="item.value" :value="item.value" :label="item.label" />
+          </el-select>
+        </el-form-item>
       </el-form>
       <!--查询框按钮-->
       <FilterButton :baba="this" />
@@ -21,7 +26,7 @@
     <!--列表-->
     <el-table ref="table" v-loading="showLoading" :data="data" highlight-current-row class="table-container">
       <el-table-column label="文件名称" prop="fileName" />
-      <el-table-column label="文件类型" prop="mimeType" />
+      <el-table-column label="文件类型" prop="fileType" />
       <el-table-column label="文件大小">
         <template slot-scope="{row}">
           <el-tag type="success" effect="light">{{ formatFileSize(row) }}</el-tag>
@@ -61,7 +66,7 @@ export default {
   data() {
     return {
       showLoading: false, data: null, total: 0,
-      qo: { page: 1, size: 10, keyWord: '' }
+      qo: { page: 1, size: 10, keyWord: '', fileTag: '' }
     }
   },
   created() {

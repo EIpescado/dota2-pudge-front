@@ -9,6 +9,15 @@ export function humanizeTime(time) {
 }
 
 /**
+ * @param {number} time
+ * @returns {string}
+ */
+export function simpleHumanizeTime(time) {
+  const d = new Date(time.replace(/-/g, '/'))
+  return d.simpleHumanize()
+}
+
+/**
  * @param {string} url
  * @returns {Object}
  */
@@ -315,7 +324,7 @@ export function uppercaseFirst(string) {
  * @param {number} b 保留小数位数 默认2
  */
 export function formatBytes(a, b) {
-  if (a === 0) return '0 B'
+  if (a === 0 || a === '0') return '0 B'
   const c = 1024
   const d = b || 2
   const e = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']

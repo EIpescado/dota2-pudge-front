@@ -38,7 +38,7 @@ Date.prototype.strftime = function(format) {
     const str = new Date(this.getTime() + 2.88E7).toISOString()
     return str.substr(0, 19).replace('T', ' ')
   }
-  local = 'zh'
+  const local = 'zh'
   const padZero = function(str, len) {
     const pads = len - str.toString().length
     return (pads && pads > 0 ? '0'.repeat(pads) : '') + str
@@ -189,20 +189,28 @@ Date.prototype.humanize = function() {
 }
 
 Date.prototype.simpleHumanize = function() {
-  const result = this.strftime('')
-  const now = Date.now()
-  // 当前时间与this时间的差值 秒
-  const diff = (now - this.getTime()) / 1000
-  const labels = const_humanize_data.simpleHumanizes['zh']
-  let lbl = ''
-  if (diff <= const_humanize_data.day) {
-    lbl = labels[0] + this.strftime('%H:%M')
-  } else if (diff <= (const_humanize_data.day * 2)) {
-    lbl = labels[1] + this.strftime('%H:%M')
+  // 获取参数时间的当天起始时间
+  const dateStart = new Date(this.toLocaleDateString()).getTime()
+  // 获取当前时间当天起始时间
+  const nowStart = new Date().toMidnight().getTime()
+  // 间隔日期 向下取整
+  const diffDays = Math.floor((nowStart - dateStart) / const_humanize_data.day * 2)
+  let prefix = ''
+  let noChanged = false
+  if (diffDays === 0) {
+    prefix = '今天'
+  } else if (diffDays === 1) {
+    prefix = '昨天'
+  } else if (diffDays === 2) {
+    prefix = '前天'
+  } else if (diffDays === -1) {
+    prefix = '明天'
+  } else if (diffDays === -2) {
+    prefix = '后天'
   } else {
-    lbl = result
+    noChanged = true
   }
-  return lbl
+  return noChanged ? this.strftime('') : prefix + this.strftime('%H:%M:%S')
 }
 
 const const_humanize_data = {
@@ -218,10 +226,7 @@ const const_humanize_data = {
   },
   humanizes: {
     zh: ['刚刚', ' 分钟前', ' 小时前', '昨天', ' 天前']
-  },
-  simpleHumanizes: {
-    zh: ['今天', '昨天']
-  } 
+  }
 }
 
 export default Date

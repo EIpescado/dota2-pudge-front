@@ -3,7 +3,7 @@
 </template>
 <script>
 // 使用el-table中的formatter或插槽数据会多次执行 formatter中的函数
-import { humanizeTime } from '@/utils'
+import { simpleHumanizeTime } from '@/utils'
 export default {
   name: 'DateTimeHumanizer',
   props: {
@@ -25,7 +25,7 @@ export default {
       if (!this.value) {
         return ''
       } else {
-        this.result = humanizeTime(this.value)
+        this.result = simpleHumanizeTime(this.value)
       }
     }
   }
