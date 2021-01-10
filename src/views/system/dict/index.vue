@@ -3,7 +3,7 @@
     <el-row :gutter="15">
       <!--字典类型-->
       <el-col :span="10">
-        <el-card class="box-card" shadow="never">
+        <el-card shadow="never">
           <!--卡片头-->
           <div slot="header" class="clearfix">
             <span class="card-header-text">字典类型</span>
@@ -42,7 +42,7 @@
 
       <!--字典-->
       <el-col :span="14">
-        <el-card class="box-card" shadow="never">
+        <el-card shadow="never">
           <!--卡片头-->
           <div slot="header" class="clearfix">
             <span class="card-header-text">字典</span>

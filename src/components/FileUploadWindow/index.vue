@@ -8,8 +8,9 @@
       :on-change="handleChange"
       :file-list="fileList"
       :auto-upload="false"
+      :show-file-list="false"
     >
-      <el-button slot="trigger" ref="selectFileButton" size="small" type="primary">选取文件</el-button>
+      <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
     </el-upload>
     <div slot="footer">
       <el-button v-show="fileList && fileList.length > 0" type="primary" @click="handleUpload">确认上传</el-button>
@@ -24,7 +25,7 @@ export default {
   data() {
     return {
       showUploadWindow: false, title: '',
-      fileList: [],
+      fileList: [], haveUploadFileArray: [],
       fileData: ''
     }
   },
@@ -48,16 +49,16 @@ export default {
         })
       }
     },
-    show(title) {
+    show(title, haveUploadFileArray) {
       this.title = title
       this.showUploadWindow = true
-      const refs = this.$refs
-      console.log(refs, refs.selectFileButton)
-      setTimeout(() => {
-        console.log(refs, refs.selectFileButton)
-      }, 300)
-
-      // refs.selectFileButton.handleClick()
+      const fileList = []
+      if (haveUploadFileArray && haveUploadFileArray.length > 0) {
+        haveUploadFileArray.forEach(f => {
+          fileList.push({ id: f.id, name: f.fileName, status: 'success' })
+        })
+      }
+      this.fileList = fileList
     },
     cancel() {
       this.fileList = []

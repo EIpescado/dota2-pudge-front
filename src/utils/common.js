@@ -41,3 +41,21 @@ export function getDictSelectData(dictType) {
     }
   })
 }
+
+export function getDataInArrayByKeyEq(val, array, key) {
+  if (!array || array.length === 0) {
+    return
+  }
+  let currentValue = ''
+  const haveKey = key && key.length > 0
+  let result
+  for (let i = 0; i < array.length; i++) {
+    console.log('过滤', array[i])
+    currentValue = haveKey ? array[i][key] : array[i]
+    if (currentValue === val) {
+      result = array[i]
+      break
+    }
+  }
+  return result
+}

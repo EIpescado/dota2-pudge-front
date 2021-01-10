@@ -3,7 +3,7 @@
     <el-row :gutter="15">
       <!--角色列表-->
       <el-col :xs="24" :sm="24" :md="16" :lg="16" :xl="17">
-        <el-card class="box-card" shadow="never">
+        <el-card shadow="never">
           <!--卡片头-->
           <div slot="header" class="clearfix">
             <span class="role-span">角色列表</span>
@@ -44,7 +44,7 @@
 
       <!--菜单及按钮权限-->
       <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="7">
-        <el-card class="box-card" shadow="never">
+        <el-card shadow="never">
           <div slot="header" class="clearfix">
             <el-tooltip class="item" effect="dark" content="选择指定角色分配菜单及按钮" placement="top">
               <span class="role-span">菜单及按钮分配</span>
