@@ -2,7 +2,7 @@
   <div class="dashboard-container">
     <el-row style="margin:20px;">
       <el-col :span="4">
-        <FileUpload />
+        <FileUpload accept=".pdf" />
       </el-col>
     </el-row>
   </div>
