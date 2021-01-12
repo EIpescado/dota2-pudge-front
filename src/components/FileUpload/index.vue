@@ -17,7 +17,7 @@
       class="file-upload-container"
     >
       <el-button slot="trigger" type="primary">选取文件</el-button>
-      <div slot="tip" class="el-upload__tip">只能上传 {{ accept.replace(/./, '') }} 文件，且不超过{{ maxSizeStr }}</div>
+      <div slot="tip" class="el-upload__tip">只能上传 {{ acceptType }} 文件，且不超过{{ maxSizeStr }}</div>
     </el-upload>
   </el-card>
 </template>
@@ -28,12 +28,16 @@ import { formatBytes } from '@/utils/index'
 export default {
   name: 'FileUpload',
   props: {
+    fileTag: {
+      type: Number,
+      required: true
+    },
     // 上传文件最大数量
     limit: {
       type: Number,
       default: 5
     },
-    // 接受的文件类型, 还需在beforeupload中过滤,因为仍可选择,此选项只是从文件列表过滤
+    // 接受的文件类型, 还需在beforeupload中过滤,因为仍可选择,此选项只是从文件列表过滤,形如 .pdf
     accept: {
       type: String,
       default: undefined
@@ -46,14 +50,14 @@ export default {
   },
   data() {
     return {
-      fileList: [], maxSizeStr: formatBytes(this.maxSize)
+      fileList: [], maxSizeStr: formatBytes(this.maxSize), acceptType: this.accept ? this.accept.replace(/./, '') : ''
     }
   },
   methods: {
     uploadFile(file) {
       const formData = new FormData()
       formData.append('file', file.file)
-      upload(1, formData, (progressEvent) => {
+      upload(this.fileTag, file.file.type, formData, (progressEvent) => {
         // 上传百分比
         const num = progressEvent.loaded / progressEvent.total * 100 | 0
         file.onProgress({ percent: num })
@@ -82,7 +86,7 @@ export default {
       }
       const extension = file.name.substring(file.name.lastIndexOf('.') + 1)
       if (this.accept && this.accept.length > 0 && this.accept.indexOf(extension) === -1) {
-        this.$message.error('仅可上传 ' + this.accept)
+        this.$message.error('仅可上传 ' + this.acceptType)
         return false
       }
       return true

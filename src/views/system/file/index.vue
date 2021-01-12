@@ -26,10 +26,11 @@
     <!--列表-->
     <el-table ref="table" v-loading="showLoading" :data="data" highlight-current-row class="table-container">
       <el-table-column label="文件名称" prop="fileName" />
-      <el-table-column label="文件类型" prop="fileType" />
-      <el-table-column label="文件大小">
+      <el-table-column label="文件类型" prop="fileType" width="80" />
+      <el-table-column label="MIME_TYPE" prop="mimeType" width="200" />
+      <el-table-column label="文件大小" width="100">
         <template slot-scope="{row}">
-          <el-tag type="success" effect="light">{{ formatFileSize(row) }}</el-tag>
+          {{ formatFileSize(row) }}
         </template>
       </el-table-column>
       <el-table-column label="文件用途">
@@ -37,6 +38,8 @@
           <el-tag type="success" effect="light">{{ formatFileTag(row) }}</el-tag>
         </template>
       </el-table-column>
+      <el-table-column label="存储路径" prop="filePath" />
+      <el-table-column label="上传用户" prop="nickname" width="100" />
       <el-table-column label="上传时间" prop="uploadDate" />
       <el-table-column label="操作" width="100px">
         <template slot-scope="scope">
