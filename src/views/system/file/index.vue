@@ -55,7 +55,7 @@
   </div>
 </template>
 <script>
-import { list } from '@/api/system/file'
+import { list, download } from '@/api/system/file'
 import Pagination from '@/components/Pagination'
 import TopButton from '@/components/TopButton'
 import SingleRowButton from '@/components/SingleRowButton'
@@ -93,7 +93,7 @@ export default {
       return formatBytes(row.fileSize, 2)
     },
     download(row) {
-      console.log('下载')
+      download(row.id)
     }
   }
 }

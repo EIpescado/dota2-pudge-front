@@ -50,6 +50,11 @@ module.exports = {
   requestTimeOut: 30000,
 
   /**
+   * 文件请求超时时间
+   */
+  fileRequestTimeOut: 30000,
+
+  /**
    * 请求接口携带的请求header名称
    */
   requestTokenHeaderName: 'Authorization',
