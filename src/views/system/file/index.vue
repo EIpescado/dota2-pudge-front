@@ -25,6 +25,7 @@
 
     <!--列表-->
     <el-table ref="table" v-loading="showLoading" :data="data" highlight-current-row class="table-container">
+      <el-table-column type="selection" width="55" />
       <el-table-column label="文件名称" prop="fileName" />
       <el-table-column label="文件类型" prop="fileType" width="80" />
       <el-table-column label="MIME_TYPE" prop="mimeType" width="200" />
@@ -55,7 +56,7 @@
   </div>
 </template>
 <script>
-import { list, download } from '@/api/system/file'
+import { list, download, downloadZip } from '@/api/system/file'
 import Pagination from '@/components/Pagination'
 import TopButton from '@/components/TopButton'
 import SingleRowButton from '@/components/SingleRowButton'
@@ -94,6 +95,18 @@ export default {
     },
     download(row) {
       download(row.id)
+    },
+    downloadZip() {
+      const rows = this.$refs.table.selection
+      if (rows && rows.length > 0) {
+        const ids = []
+        rows.forEach(element => { ids.push(element.id) })
+        downloadZip(ids).then(res => {
+          this.$message.success('下载成功,文件将打包成ZIP')
+        })
+      } else {
+        this.$message.warning('请选中至少一条')
+      }
     }
   }
 }

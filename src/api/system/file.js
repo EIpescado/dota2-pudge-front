@@ -57,3 +57,26 @@ export function download(fileId) {
     console.log(error)
   })
 }
+
+export function downloadZip(fileIds) {
+  return fileRequest({
+    url: '/file/downloadZip',
+    method: 'post',
+    data: fileIds,
+    responseType: 'blob'
+  }).then(res => {
+    const disposition = res.headers['content-disposition']
+    let fileName = disposition.substring(disposition.indexOf('=') + 1)
+    fileName = decodeURIComponent(fileName)
+    const link = document.createElement('a')
+    link.style.display = 'none'
+    link.href = window.URL.createObjectURL(new Blob([res.data]))
+    link.setAttribute('download', fileName)
+    document.body.appendChild(link)
+    link.click()
+    URL.revokeObjectURL(link.href)
+    document.body.removeChild(link)
+  }).catch(error => {
+    console.log(error)
+  })
+}
