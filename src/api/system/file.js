@@ -80,3 +80,11 @@ export function downloadZip(fileIds) {
     console.log(error)
   })
 }
+
+export function batchGetEntityFileCount(entityIds) {
+  return request({
+    url: '/file/batchGetEntityFileCount',
+    method: 'post',
+    data: entityIds
+  })
+}

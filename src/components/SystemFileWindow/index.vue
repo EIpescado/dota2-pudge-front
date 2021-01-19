@@ -38,7 +38,6 @@ export default {
   },
   created() {
     getDictSelectData('system_file_tag')
-    this.showFileList('1317296928130662402')
   },
   methods: {
     showFileList(entityId, title) {

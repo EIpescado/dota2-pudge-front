@@ -4,8 +4,9 @@
       <el-col :span="4">
         <FileUpload :file-tag="1" />
       </el-col>
-      <el-col :span="4">
-        <SystemFileWindow :zip="true" />
+      <el-col :span="4" style="margin:20px;">
+        <el-button type="primary" @click="showFileWindow">附件窗口</el-button>
+        <SystemFileWindow ref="sfw" :zip="false" />
       </el-col>
     </el-row>
   </div>
@@ -21,6 +22,9 @@ export default {
     return {}
   },
   methods: {
+    showFileWindow() {
+      this.$refs.sfw.showFileList('1317296928130662402', '测试附件')
+    }
   }
 }
 </script>

@@ -25,6 +25,11 @@
       <el-table-column label="手机" prop="phone" />
       <el-table-column label="邮箱" prop="mail" />
       <el-table-column label="注册日期" prop="dateCreated" />
+      <el-table-column label="文件" prop="fileCount">
+        <template slot-scope="{ row }">
+          <el-link v-show="row.fileCount > 0" type="primary" @click="showFileWindow(row)">附件({{ row.fileCount }})</el-link>
+        </template>
+      </el-table-column>
       <el-table-column label="状态">
         <template slot-scope="{ row }">
           <TableColumnTag :value="row.enabled" />
@@ -42,21 +47,27 @@
     <Pagination :total="total" :page.sync="qo.page" :limit.sync="qo.size" @pagination="getData" />
 
     <Form ref="form" />
+
+    <!--附件窗口-->
+    <SystemFileWindow ref="sfw" :zip="false" />
   </div>
 </template>
 
 <script>
 import { list, resetPassword, switchEnabled } from '@/api/system/user'
+import { batchGetEntityFileCount } from '@/api/system/file'
+import { getIdArray } from '@/utils/common'
 import Pagination from '@/components/Pagination'
 import TopButton from '@/components/TopButton'
 import SingleRowButton from '@/components/SingleRowButton'
 import TableRightButton from '@/components/TableRightButton'
 import FilterButton from '@/components/FilterButton'
 import TableColumnTag from '@/components/TableColumnTag'
+import SystemFileWindow from '@/components/SystemFileWindow'
 import Form from './form'
 export default {
   name: 'User',
-  components: { Pagination, TopButton, TableRightButton, FilterButton, Form, SingleRowButton, TableColumnTag },
+  components: { Pagination, TopButton, TableRightButton, FilterButton, Form, SingleRowButton, TableColumnTag, SystemFileWindow },
   data() {
     return {
       showLoading: false, data: null, total: 0,
@@ -74,6 +85,7 @@ export default {
           this.data = res.rows
           this.total = res.total
           this.showLoading = false
+          this.asyncGetEntityFileCount(this.data)
         })
       }, 400)
     },
@@ -114,6 +126,19 @@ export default {
           }).catch(() => { ld.close() })
         }, 400)
       }).catch(() => {})
+    },
+    asyncGetEntityFileCount(currentDataList) {
+      if (currentDataList && currentDataList.length > 0) {
+        const entityIds = getIdArray(currentDataList)
+        batchGetEntityFileCount(entityIds).then(res => {
+          currentDataList.forEach((item, index) => {
+            item.fileCount = res[index]
+          })
+        })
+      }
+    },
+    showFileWindow(row) {
+      this.$refs.sfw.showFileList(row.id, '用户附件')
     }
   }
 }
