@@ -20,9 +20,6 @@
     <!--顶部按钮-->
     <TopButton :baba="this" />
 
-    <!--table右侧工具按钮-->
-    <TableRightButton :baba="this" />
-
     <!--列表-->
     <el-table ref="table" v-loading="showLoading" :data="data" highlight-current-row class="table-container">
       <el-table-column type="selection" width="55" />
@@ -60,13 +57,12 @@ import { list, download, downloadZip } from '@/api/system/file'
 import Pagination from '@/components/Pagination'
 import TopButton from '@/components/TopButton'
 import SingleRowButton from '@/components/SingleRowButton'
-import TableRightButton from '@/components/TableRightButton'
 import FilterButton from '@/components/FilterButton'
 import { getDictSelectData, transferValueForArray } from '@/utils/common'
 import { formatBytes } from '@/utils/index'
 export default {
   name: 'File',
-  components: { Pagination, TopButton, TableRightButton, FilterButton, SingleRowButton },
+  components: { Pagination, TopButton, FilterButton, SingleRowButton },
   data() {
     return {
       showLoading: false, data: null, total: 0,

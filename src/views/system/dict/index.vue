@@ -20,8 +20,6 @@
           </div>
           <!-- 顶部按钮 -->
           <TopButton :baba="this" />
-          <!--table右侧工具按钮-->
-          <TableRightButton :baba="this" />
           <!--列表-->
           <el-table ref="table" v-loading="showLoading" :data="dataList" highlight-current-row class="table-container" @row-click="handleRowClick">
             <el-table-column label="编码" prop="code" />
@@ -65,9 +63,7 @@
               </el-form>
             </div>
             <!-- 顶部按钮 -->
-            <TopButton :baba="this" position="DICT_TOP" />
-            <!--table右侧工具按钮-->
-            <TableRightButton :baba="this" filter-key="dictFilterContainer" table-data-fun="getDictData" />
+            <TopButton :baba="this" position="DICT_TOP" filter-key="dictFilterContainer" table-data-fun="getDictData" />
             <!--列表-->
             <el-table ref="dictTable" v-loading="dictShowLoading" :data="dictDataList" highlight-current-row class="table-container">
               <el-table-column label="序号" width="50px" prop="seq" />
@@ -103,14 +99,13 @@
 import { listDictType, deleteDictType, list, deleteDict } from '@/api/system/dict'
 import Pagination from '@/components/Pagination'
 import TopButton from '@/components/TopButton'
-import TableRightButton from '@/components/TableRightButton'
 import FilterButton from '@/components/FilterButton'
 import SingleRowButton from '@/components/SingleRowButton'
 import DictTypeForm from './dictTypeForm'
 import DictForm from './dictForm'
 export default {
   name: 'Dict',
-  components: { Pagination, TopButton, TableRightButton, FilterButton, SingleRowButton, DictTypeForm, DictForm },
+  components: { Pagination, TopButton, FilterButton, SingleRowButton, DictTypeForm, DictForm },
   data() {
     return {
       dataList: null, total: 0, showLoading: false, qo: { page: 1, size: 10, keyWord: '' },

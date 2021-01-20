@@ -20,8 +20,6 @@
           </div>
           <!-- 顶部按钮 -->
           <TopButton :baba="this" />
-          <!--table右侧工具按钮-->
-          <TableRightButton :baba="this" />
           <!--列表-->
           <el-table ref="table" v-loading="showLoading" :data="dataList" highlight-current-row class="table-container" @row-click="handleRowClick">
             <el-table-column label="角色名" prop="name" />
@@ -50,7 +48,7 @@
               <span class="role-span">菜单及按钮分配</span>
             </el-tooltip>
             <!-- 顶部按钮 -->
-            <TopButton :baba="this" position="TOP_RIGHT" size="mini" style="float: right; width: 100px; padding: 0 9px;" />
+            <TopButton :baba="this" position="TOP_RIGHT" size="mini" style="float: right; width: 100px; padding: 0 9px;" :show-right="false" />
           </div>
           <el-tree
             ref="menu"
@@ -83,13 +81,12 @@ import { list, deleteRole, singleRoleMenuAndButton, bindMenuAndButton } from '@/
 import { wholeTree } from '@/api/system/menu'
 import Pagination from '@/components/Pagination'
 import TopButton from '@/components/TopButton'
-import TableRightButton from '@/components/TableRightButton'
 import FilterButton from '@/components/FilterButton'
 import SingleRowButton from '@/components/SingleRowButton'
 import Form from './form'
 export default {
   name: 'Role',
-  components: { Pagination, TopButton, Form, TableRightButton, FilterButton, SingleRowButton },
+  components: { Pagination, TopButton, Form, FilterButton, SingleRowButton },
   data() {
     return {
       dataList: null, total: 0, showLoading: false,

@@ -2,7 +2,7 @@
   <div class="app-container">
 
     <!-- 顶部按钮 -->
-    <TopButton :baba="this" />
+    <TopButton :baba="this" :show-right="false" />
 
     <el-row :gutter="15">
       <el-col :span="12">

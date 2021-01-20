@@ -18,9 +18,6 @@
     <!--顶部按钮-->
     <TopButton :baba="this" />
 
-    <!--table右侧工具按钮-->
-    <TableRightButton :baba="this" />
-
     <!--列表-->
     <el-table ref="table" v-loading="showLoading" :data="data" highlight-current-row class="table-container">
       <el-table-column label="配置编码" prop="code" />
@@ -48,12 +45,11 @@ import { list } from '@/api/system/config'
 import Pagination from '@/components/Pagination'
 import TopButton from '@/components/TopButton'
 import SingleRowButton from '@/components/SingleRowButton'
-import TableRightButton from '@/components/TableRightButton'
 import FilterButton from '@/components/FilterButton'
 import Form from './form'
 export default {
   name: 'Config',
-  components: { Pagination, TopButton, TableRightButton, FilterButton, Form, SingleRowButton },
+  components: { Pagination, TopButton, FilterButton, Form, SingleRowButton },
   data() {
     return {
       showLoading: false, data: null, total: 0,

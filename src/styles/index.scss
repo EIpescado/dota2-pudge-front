@@ -272,13 +272,23 @@ aside {
   @include common-border-hover;
 }
 
-.top-button-container{
-  padding-bottom: 8px;
-  width: 100%;
-  .top-button-item{
-    margin-top: 8px;
-    margin-right: 10px !important;
-    border-radius: 6px !important;
+.top-table-container{
+  margin: 12px 0;
+  line-height: 36px;
+  .table-right-button-container{
+    width: calc(100% - 280px);
+    .table-right-button-item{
+      margin-right: 10px !important;
+      border-radius: 6px !important;
+    }
+  }
+  
+  .table-left-button-container{
+    float: right;
+    .table-left-button-item{
+      border-radius: 6px !important;
+      margin-left: 10px !important;;
+    }
   }
 }
 

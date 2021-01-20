@@ -15,9 +15,6 @@
     <!--顶部按钮-->
     <TopButton :baba="this" />
 
-    <!--table右侧工具按钮-->
-    <TableRightButton :baba="this" />
-
     <!--列表-->
     <el-table ref="table" v-loading="showLoading" :data="data" highlight-current-row class="table-container">
       <el-table-column label="用户" prop="nickname" />
@@ -64,13 +61,12 @@
 import { list, get } from '@/api/system/log'
 import Pagination from '@/components/Pagination'
 import TopButton from '@/components/TopButton'
-import TableRightButton from '@/components/TableRightButton'
 import FilterButton from '@/components/FilterButton'
 import MultiFunctionalWindow from '@/components/MultiFunctionalWindow'
 import { getDictSelectData, transferValueForArray } from '@/utils/common'
 export default {
   name: 'Log',
-  components: { Pagination, TopButton, TableRightButton, FilterButton, MultiFunctionalWindow },
+  components: { Pagination, TopButton, FilterButton, MultiFunctionalWindow },
   data() {
     return {
       showLoading: false, data: [], total: 0,

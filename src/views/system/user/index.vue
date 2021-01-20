@@ -15,9 +15,6 @@
     <!--顶部按钮-->
     <TopButton :baba="this" />
 
-    <!--table右侧工具按钮-->
-    <TableRightButton :baba="this" />
-
     <!--列表-->
     <el-table ref="table" v-loading="showLoading" :data="data" highlight-current-row class="table-container">
       <el-table-column label="用户名" resizable prop="username" />
@@ -60,14 +57,13 @@ import { getIdArray } from '@/utils/common'
 import Pagination from '@/components/Pagination'
 import TopButton from '@/components/TopButton'
 import SingleRowButton from '@/components/SingleRowButton'
-import TableRightButton from '@/components/TableRightButton'
 import FilterButton from '@/components/FilterButton'
 import TableColumnTag from '@/components/TableColumnTag'
 import SystemFileWindow from '@/components/SystemFileWindow'
 import Form from './form'
 export default {
   name: 'User',
-  components: { Pagination, TopButton, TableRightButton, FilterButton, Form, SingleRowButton, TableColumnTag, SystemFileWindow },
+  components: { Pagination, TopButton, FilterButton, Form, SingleRowButton, TableColumnTag, SystemFileWindow },
   data() {
     return {
       showLoading: false, data: null, total: 0,

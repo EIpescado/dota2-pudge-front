@@ -17,9 +17,6 @@
     <!--顶部按钮-->
     <TopButton :baba="this" />
 
-    <!--table右侧工具按钮-->
-    <TableRightButton :baba="this" />
-
     <!--列表-->
     <el-table ref="table" v-loading="showLoading" :data="data" highlight-current-row class="table-container">
       <el-table-column label="标题">
@@ -59,14 +56,13 @@ import { list } from '@/api/system/notice'
 import Pagination from '@/components/Pagination'
 import TopButton from '@/components/TopButton'
 import SingleRowButton from '@/components/SingleRowButton'
-import TableRightButton from '@/components/TableRightButton'
 import FilterButton from '@/components/FilterButton'
 import NoticeDialog from '@/components/NoticeDialog'
 import DateTimeHumanizer from '@/components/DateTimeHumanizer'
 import { getDictSelectData, transferValueForArray } from '@/utils/common'
 export default {
   name: 'NoticeList',
-  components: { Pagination, TopButton, TableRightButton, FilterButton, SingleRowButton, NoticeDialog, DateTimeHumanizer },
+  components: { Pagination, TopButton, FilterButton, SingleRowButton, NoticeDialog, DateTimeHumanizer },
   data() {
     return {
       showLoading: false, data: [], total: 0,
