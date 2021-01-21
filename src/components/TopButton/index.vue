@@ -1,22 +1,33 @@
 <template>
   <div class="top-table-container">
-    <el-button-group class="table-right-button-container">
+    <el-button-group class="table-top-left-button-container">
       <template v-for="bt in buttons">
-        <el-button :key="bt.id" :size="size" type="primary" class="table-right-button-item" @click="clickCallBack(bt.click)">
+        <el-button :key="bt.id" :size="size" type="primary" class="table-top-left-button-item" @click="clickCallBack(bt.click)">
           <svg-icon v-if="bt.icon" :icon-class="bt.icon" />
           {{ bt.buttonName }}
         </el-button>
       </template>
+      <el-dropdown v-if="moreButtons && moreButtons.length > 1" trigger="click" :size="size" @command="clickCallBack">
+        <el-button type="primary" :size="size" icon="el-icon-arrow-down" class="table-top-left-more-button-item">更多...</el-button>
+        <el-dropdown-menu slot="dropdown">
+          <template v-for="bt in moreButtons">
+            <el-dropdown-item :key="bt.id" :command="bt.click" class="table-top-left-button-dropdown-menu">
+              <svg-icon :icon-class="bt.icon" />
+              {{ bt.buttonName }}
+            </el-dropdown-item>
+          </template>
+        </el-dropdown-menu>
+      </el-dropdown>
     </el-button-group>
-    <el-button-group v-show="showRight" class="table-left-button-container">
+    <el-button-group v-show="showRight" class="table-top-right-button-container">
       <el-tooltip :disabled="searchTooltipDisabled" effect="light" content="折叠搜索框" placement="top-start">
-        <el-button v-if="showFilter" icon="el-icon-search" class="table-left-button-item" @click="switchShowFilterContainer" />
+        <el-button v-if="showFilter" icon="el-icon-search" class="table-top-right-button-item" @click="switchShowFilterContainer" />
       </el-tooltip>
       <el-tooltip :disabled="refreshTooltipDisabled" effect="light" content="刷新" placement="top-start">
-        <el-button v-if="showRefresh" icon="el-icon-refresh" class="table-left-button-item" @click="refresh" />
+        <el-button v-if="showRefresh" icon="el-icon-refresh" class="table-top-right-button-item" @click="refresh" />
       </el-tooltip>
       <el-popover v-if="showColCheck" placement="bottom-end" width="150" trigger="click" @show="getTableFields">
-        <el-button slot="reference" icon="el-icon-s-grid" class="table-left-button-item">
+        <el-button slot="reference" icon="el-icon-s-grid" class="table-top-right-button-item">
           <i class="fa fa-caret-down" aria-hidden="true" />
         </el-button>
         <el-checkbox v-model="allColumnsSelected" :indeterminate="allColumnsSelectedIndeterminate" @change="handleCheckAllChange">
@@ -81,21 +92,30 @@ export default {
   },
   data() {
     return {
-      buttons: [],
+      buttons: [], moreButtons: [],
       allColumnsSelected: true, allColumnsSelectedIndeterminate: false, tableColumns: [], checkedTableColumns: [], allTableColumns: [],
       searchTooltipDisabled: false, refreshTooltipDisabled: false
     }
   },
   created() {
-    this.getButtons()
+    this.getButtons(8)
   },
   methods: {
     clickCallBack(val) {
       this.baba[val]()
     },
-    getButtons() {
+    // maxShowButtonNumber 最多显示的按钮个数 多余的 buttonsLength - maxShowButtonNumber 合并为一个按钮下拉显示
+    getButtons(maxShowButtonNumber) {
       const metaButtons = this.$route.meta.buttons
-      this.buttons = metaButtons !== null && metaButtons !== undefined ? metaButtons[this.position] : []
+      const currentMenuButtons = metaButtons !== null && metaButtons !== undefined ? metaButtons[this.position] : []
+      const buttonsLength = currentMenuButtons ? currentMenuButtons.length : 0
+      if (buttonsLength > maxShowButtonNumber) {
+        this.buttons = currentMenuButtons.slice(0, maxShowButtonNumber - 1)
+        this.moreButtons = currentMenuButtons.slice(maxShowButtonNumber - 1, buttonsLength)
+      } else {
+        this.buttons = currentMenuButtons
+        this.moreButtons = []
+      }
     },
     switchShowFilterContainer() {
       this.searchTooltipDisabled = true

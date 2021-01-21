@@ -273,23 +273,33 @@ aside {
 }
 
 .top-table-container{
-  margin: 12px 0;
-  line-height: 36px;
-  .table-right-button-container{
+  margin-top: 12px;
+  margin-bottom: 12px;
+  .table-top-left-button-container{
     width: calc(100% - 280px);
-    .table-right-button-item{
-      margin-right: 10px !important;
+    .table-top-left-button-item{
+      margin-right: 8px !important;
+      border-radius: 6px !important;
+    }
+    .table-top-left-more-button-item{
+      top: 0;
+      margin-right: 8px !important;
       border-radius: 6px !important;
     }
   }
   
-  .table-left-button-container{
+  .table-top-right-button-container{
     float: right;
-    .table-left-button-item{
+    .table-top-right-button-item{
       border-radius: 6px !important;
-      margin-left: 10px !important;;
+      margin-left: 8px !important;;
     }
   }
+}
+
+.table-top-left-button-dropdown-menu{
+  padding: 8px 17px !important;
+  
 }
 
 #pudge-login-footer {

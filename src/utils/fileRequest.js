@@ -31,7 +31,6 @@ fileService.interceptors.response.use(
       return Promise.reject('error')
     } else {
       const resData = response.data
-      console.log(response)
       if (resData instanceof Blob) {
         return response
       } else {
