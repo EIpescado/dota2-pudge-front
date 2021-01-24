@@ -38,9 +38,16 @@ export function resetPassword(id) {
   })
 }
 
-export function switchEnabled(id) {
+export function enableAccount(id) {
   return request({
-    url: '/user/switchEnabled/' + id,
+    url: '/user/enableAccount/' + id,
+    method: 'post'
+  })
+}
+
+export function disableAccount(id) {
+  return request({
+    url: '/user/disableAccount/' + id,
     method: 'post'
   })
 }

@@ -28,8 +28,8 @@
         </template>
       </el-table-column>
       <el-table-column label="状态">
-        <template slot-scope="{ row }">
-          <TableColumnTag :value="row.enabled" />
+        <template slot-scope="{row}">
+          <el-tag :type="row.state === 1 ? 'success' : 'danger'" effect="light">{{ formatState(row) }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="100px">
@@ -51,19 +51,19 @@
 </template>
 
 <script>
-import { list, resetPassword, switchEnabled } from '@/api/system/user'
+import { list, resetPassword, enableAccount, disableAccount } from '@/api/system/user'
 import { batchGetEntityFileCount } from '@/api/system/file'
 import { getIdArray } from '@/utils/common'
 import Pagination from '@/components/Pagination'
 import TopButton from '@/components/TopButton'
 import SingleRowButton from '@/components/SingleRowButton'
 import FilterButton from '@/components/FilterButton'
-import TableColumnTag from '@/components/TableColumnTag'
 import SystemFileWindow from '@/components/SystemFileWindow'
+import { getDictSelectData, transferValueForArray } from '@/utils/common'
 import Form from './form'
 export default {
   name: 'User',
-  components: { Pagination, TopButton, FilterButton, Form, SingleRowButton, TableColumnTag, SystemFileWindow },
+  components: { Pagination, TopButton, FilterButton, Form, SingleRowButton, SystemFileWindow },
   data() {
     return {
       showLoading: false, data: null, total: 0,
@@ -71,7 +71,7 @@ export default {
     }
   },
   created() {
-    this.getData()
+    getDictSelectData('system_user_state').then(() => { this.getData() })
   },
   methods: {
     getData() {
@@ -107,16 +107,30 @@ export default {
         }, 400)
       }).catch(() => {})
     },
-    switchEnabled(row) {
-      const tip = row.enabled ? '禁用' : '启用'
-      this.$confirm('确认' + tip + '用户 ' + row.username, '提示', {
+    enableAccount(row) {
+      this.$confirm('确认启用用户 ' + row.username, '提示', {
         type: 'warning',
         center: true
       }).then(() => {
         const ld = this.$loading()
         setTimeout(() => {
-          switchEnabled(row.id).then(res => {
-            this.$message.success('用户 ' + row.username + ' 已' + tip)
+          enableAccount(row.id).then(res => {
+            this.$message.success('用户 ' + row.username + ' 已启用')
+            ld.close()
+            this.getData()
+          }).catch(() => { ld.close() })
+        }, 400)
+      }).catch(() => {})
+    },
+    disableAccount(row) {
+      this.$confirm('确认禁用用户 ' + row.username, '提示', {
+        type: 'warning',
+        center: true
+      }).then(() => {
+        const ld = this.$loading()
+        setTimeout(() => {
+          disableAccount(row.id).then(res => {
+            this.$message.success('用户 ' + row.username + ' 已禁用')
             ld.close()
             this.getData()
           }).catch(() => { ld.close() })
@@ -135,6 +149,9 @@ export default {
     },
     showFileWindow(row) {
       this.$refs.sfw.showFileList(row.id, '用户附件')
+    },
+    formatState(row) {
+      return transferValueForArray('system_user_state', row.state)
     }
   }
 }

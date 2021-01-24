@@ -5,7 +5,7 @@
         <el-button type="primary" icon="el-icon-arrow-down">操作</el-button>
         <el-dropdown-menu slot="dropdown">
           <template v-for="bt in buttons">
-            <el-dropdown-item :key="bt.id" :command="bt.click">
+            <el-dropdown-item :key="bt.id" :command="bt.click" class="single-row-button-dropdown-menu">
               <svg-icon :icon-class="bt.icon" />
               {{ bt.buttonName }}
             </el-dropdown-item>
