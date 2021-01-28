@@ -4,8 +4,8 @@
     <!--查询-->
     <div ref="filterContainer" class="filter-container">
       <el-form ref="qo" :inline="true" :model="qo">
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model.trim="qo.username" clearable />
+        <el-form-item label="用户名" prop="keyword">
+          <el-input v-model.trim="qo.keyword" clearable />
         </el-form-item>
       </el-form>
       <!--查询框按钮-->
@@ -67,7 +67,7 @@ export default {
   data() {
     return {
       showLoading: false, data: null, total: 0,
-      qo: { page: 1, size: 10, username: '' }
+      qo: { page: 1, size: 10, keyword: '' }
     }
   },
   created() {

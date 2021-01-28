@@ -1,5 +1,7 @@
 import request from '@/utils/request'
 import fileRequest from '@/utils/fileRequest'
+import { Message } from 'element-ui'
+import store from '@/store'
 
 export function list(data) {
   return request({
@@ -42,17 +44,7 @@ export function download(fileId) {
     method: 'get',
     responseType: 'blob'
   }).then(res => {
-    const disposition = res.headers['content-disposition']
-    let fileName = disposition.substring(disposition.indexOf('=') + 1)
-    fileName = decodeURIComponent(fileName)
-    const link = document.createElement('a')
-    link.style.display = 'none'
-    link.href = window.URL.createObjectURL(new Blob([res.data]))
-    link.setAttribute('download', fileName)
-    document.body.appendChild(link)
-    link.click()
-    URL.revokeObjectURL(link.href)
-    document.body.removeChild(link)
+    downloadBackCommon(res)
   }).catch(error => {
     console.log(error)
   })
@@ -65,6 +57,45 @@ export function downloadZip(fileIds) {
     data: fileIds,
     responseType: 'blob'
   }).then(res => {
+    downloadBackCommon(res)
+  }).catch(error => {
+    console.log(error)
+  })
+}
+
+export function downloadBackCommon(res) {
+  // 后台返回错误
+  if (res.data.type.indexOf('json') !== -1) {
+    const reader = new FileReader()
+    reader.onload = e => {
+      const backRes = JSON.parse(e.target.result)
+      if (backRes.code === '0') {
+        Message({
+          message: backRes.message || '文件不存在或已损坏',
+          type: 'error',
+          duration: 3000
+        })
+      } else {
+        Message({
+          message: backRes.message || 'Error',
+          type: 'error',
+          duration: 3000
+        })
+        // 登录过期
+        if (backRes.code === '10004') {
+          store.dispatch('LogOut').then(() => {
+            location.reload()
+          })
+        }
+      }
+    }
+    reader.readAsText(res.data)
+  } else {
+    Message({
+      message: '文件开始下载,请耐心等待!',
+      type: 'success',
+      duration: 3000
+    })
     const disposition = res.headers['content-disposition']
     let fileName = disposition.substring(disposition.indexOf('=') + 1)
     fileName = decodeURIComponent(fileName)
@@ -76,9 +107,7 @@ export function downloadZip(fileIds) {
     link.click()
     URL.revokeObjectURL(link.href)
     document.body.removeChild(link)
-  }).catch(error => {
-    console.log(error)
-  })
+  }
 }
 
 export function batchGetEntityFileCount(entityIds) {

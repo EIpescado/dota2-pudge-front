@@ -4,8 +4,8 @@
     <!--查询-->
     <div ref="filterContainer" class="filter-container">
       <el-form ref="qo" :inline="true" :model="qo">
-        <el-form-item label="关键字" prop="keyWord">
-          <el-input v-model.trim="qo.keyWord" clearable />
+        <el-form-item label="关键字" prop="keyword">
+          <el-input v-model.trim="qo.keyword" clearable />
         </el-form-item>
         <el-form-item label="文件用途" prop="fileTag">
           <el-select v-model="qo.fileTag" clearable>
@@ -66,7 +66,7 @@ export default {
   data() {
     return {
       showLoading: false, data: null, total: 0,
-      qo: { page: 1, size: 10, keyWord: '', fileTag: '' }
+      qo: { page: 1, size: 10, keyword: '', fileTag: '' }
     }
   },
   created() {
@@ -97,9 +97,7 @@ export default {
       if (rows && rows.length > 0) {
         const ids = []
         rows.forEach(element => { ids.push(element.id) })
-        downloadZip(ids).then(res => {
-          this.$message.success('下载成功,文件将打包成ZIP')
-        })
+        downloadZip(ids)
       } else {
         this.$message.warning('请选中至少一条')
       }

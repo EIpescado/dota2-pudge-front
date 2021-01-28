@@ -11,8 +11,8 @@
           <!--查询-->
           <div ref="filterContainer" class="card-filter-container">
             <el-form ref="qo" :inline="true" :model="qo">
-              <el-form-item label="关键字" label-width="60px" prop="keyWord">
-                <el-input v-model.trim="qo.keyWord" clearable />
+              <el-form-item label="关键字" label-width="60px" prop="keyword">
+                <el-input v-model.trim="qo.keyword" clearable />
               </el-form-item>
               <!--查询框按钮-->
               <FilterButton :baba="this" />
@@ -55,8 +55,8 @@
                 <el-form-item label="字典类型" label-width="85px" prop="typeCode">
                   <el-input v-model.trim="dictQo.typeCode" disabled />
                 </el-form-item>
-                <el-form-item label="关键字" label-width="60px" prop="keyWord">
-                  <el-input v-model.trim="dictQo.keyWord" clearable />
+                <el-form-item label="关键字" label-width="60px" prop="keyword">
+                  <el-input v-model.trim="dictQo.keyword" clearable />
                 </el-form-item>
                 <!--查询框按钮-->
                 <FilterButton :baba="this" qo-ref="dictQo" get-data-fun="getDictData" />
@@ -108,8 +108,8 @@ export default {
   components: { Pagination, TopButton, FilterButton, SingleRowButton, DictTypeForm, DictForm },
   data() {
     return {
-      dataList: null, total: 0, showLoading: false, qo: { page: 1, size: 10, keyWord: '' },
-      dictDataList: null, dictTotal: 0, dictShowLoading: false, dictQo: { page: 1, size: 10, keyWord: '', typeCode: '' }
+      dataList: null, total: 0, showLoading: false, qo: { page: 1, size: 10, keyword: '' },
+      dictDataList: null, dictTotal: 0, dictShowLoading: false, dictQo: { page: 1, size: 10, keyword: '', typeCode: '' }
     }
   },
   created() {
