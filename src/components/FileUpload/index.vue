@@ -4,6 +4,7 @@
       ref="upload"
       action=""
       multiple
+      :drag="drag"
       :on-remove="handleRemove"
       :on-change="handleChange"
       :file-list="fileList"
@@ -16,8 +17,10 @@
       :http-request="uploadFile"
       class="file-upload-container"
     >
-      <el-button slot="trigger" type="primary">选取文件</el-button>
-      <div slot="tip" class="el-upload__tip">只能上传 {{ acceptType }} 文件，且不超过{{ maxSizeStr }}</div>
+      <el-button v-if="!drag" slot="trigger" type="primary">选取文件</el-button>
+      <i v-if="drag" class="el-icon-upload" />
+      <div v-if="drag" class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+      <div v-if="acceptType && maxSizeStr" slot="tip" class="el-upload__tip">只能上传 {{ acceptType }} 文件，且不超过{{ maxSizeStr }}</div>
     </el-upload>
   </el-card>
 </template>
@@ -46,6 +49,10 @@ export default {
     maxSize: {
       type: Number,
       default: 15 * 1024 * 1024
+    },
+    drag: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
