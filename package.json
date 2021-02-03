@@ -1,6 +1,5 @@
 {
   "name": "dota2-pudge-front",
-  "version": "4.4.0",
   "description": "基于vue-element-admin改造",
   "author": "yq <1724537432@qq.com>",
   "scripts": {

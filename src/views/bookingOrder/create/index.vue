@@ -28,15 +28,9 @@
       </div>
       <div class="row">
         <el-form-item label="供应商联系人:">
-          <el-select v-model.trim="currentSupplierContact" value-key="id" filterable clearable @change="selectChange">
-            <el-option v-for="item in supplierContactList" :key="item.id" :label="item.name + ' ( ' + (item.tel ? item.tel + ' / ' + item.phone : item.phone) + ' )'" :value="item">
-              <span class="left-select-option">{{ item.name }}</span>
-              <span class="right-select-option">{{ item.tel ? item.tel + ' / ' + item.phone : item.phone }}</span>
-            </el-option>
+          <el-select v-model.trim="form.supplierContact" value-key="id" filterable clearable>
+            <el-option v-for="item in supplierContactList" :key="item.id" :label="item.name + ' ( ' + (item.tel ? item.tel + ' / ' + item.phone : item.phone) + ' )'" :value="item" />
           </el-select>
-        </el-form-item>
-        <el-form-item label="供应商联系电话:">
-          <el-input :value="form.supplierBank ? form.supplierBank.supplierBankName : ''" readonly disabled />
         </el-form-item>
       </div>
 
@@ -44,7 +38,15 @@
       <el-divider content-position="left">商品信息</el-divider>
       <el-table ref="table" :data="form.members" highlight-current-row show-summary :summary-method="getSummaries" max-height="400">
         <el-table-column type="index" width="50" />
-        <el-table-column label="商品型号" prop="itemModel" width="150" />
+        <el-table-column type="selection" width="50" />
+        <el-table-column label="商品型号" prop="itemModel" width="200">
+          <template slot-scope="{row}">
+            <el-tooltip v-show="row.gs" :content="'关税率' + row.gs + ( row.zjgs ? ',包含加征关税' + row.zjgs : '')">
+              <i class="el-icon-warning hfy-tip-image" />
+            </el-tooltip>
+            {{ row.itemModel }}
+          </template>
+        </el-table-column>
         <el-table-column label="商品名称" prop="itemName" />
         <el-table-column label="商品品牌" prop="itemBrand" />
         <el-table-column label="单位" prop="commodityUnit" />
@@ -56,14 +58,6 @@
           </template>
         </el-table-column>
         <el-table-column label="产地" prop="itemOrigin" />
-        <el-table-column label="关税率">
-          <template slot-scope="{row}">
-            <div v-if="!row.zjgs">{{ row.gs }}</div>
-            <el-tooltip v-else :content="'包含加征关税' + row.zjgs">
-              <div><i class="el-icon-warning hfy-tip-image" />{{ row.gs }}</div>
-            </el-tooltip>
-          </template>
-        </el-table-column>
         <el-table-column label="净重(KG)" prop="nw" />
         <el-table-column label="毛重(KG)" prop="gw" />
         <el-table-column label="物料号" prop="pn" />
@@ -151,6 +145,15 @@
 
       <!---------------------------------------------香港物流--------------------------------------------------->
       <el-divider content-position="left">香港物流</el-divider>
+      <div class="row">
+        <el-form-item label="到货类型:">
+          <el-radio-group v-model="form.checkType">
+            <el-radio-button :label="1">供应商送货</el-radio-button>
+            <el-radio-button :label="2">华富洋提货</el-radio-button>
+            <el-radio-button :label="3">快递到货</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+      </div>
 
       <!---------------------------------------------国内物流--------------------------------------------------->
       <el-divider content-position="left">国内物流</el-divider>
@@ -169,7 +172,7 @@ export default {
   components: { LCFileUpload },
   data() {
     return {
-      form: { name: '', temFee: '', currencyId: undefined, members: [] },
+      form: { settleId: '', supplierId: '', currencyId: '', supplierContact: '', temFee: '', members: [] },
       // 境内结算方式,即方案下拉
       settlementList: [
         { id: 1, businessType: '单抬头报关', settlementMode: '现结', accountPeriod: '' },
@@ -204,7 +207,7 @@ export default {
   },
   created() {
     this.form.members = [
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 1234, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
+      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 1234, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '', zjgs: '' },
       { itemModel: 'LS L29K-G1H2-1-Z', itemName: 'IC', commodityUnit: '个', price: 0.05, qty: 10000, itemBrand: 'OSRAM', itemOrigin: '马来西亚', packages: '9999', pn: 'this pn', nw: 1.0, gw: 1.2, poNo: 'this pono', involveRoyalty: false, gs: '10%', zjgs: '' },
       { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
       { itemModel: 'XXPP-001sadasdasdasdasda', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
@@ -277,9 +280,9 @@ export default {
         totalgw = add(totalgw, row.gw)
         totalPackages = add(totalPackages, row.packages)
       })
-      sums[1] = '共' + count + '项'
-      sums[5] = qtyTotal
-      sums[7] = totalPrice
+      sums[2] = '共' + count + '项'
+      sums[6] = qtyTotal
+      sums[8] = totalPrice
       sums[10] = totalNw
       sums[11] = totalgw
       sums[14] = totalPackages
@@ -304,10 +307,6 @@ export default {
       } else {
         this.currencyArray = this.currencyList.slice(0, 2)
       }
-    },
-    // 下拉选择变化
-    selectChange(item, a) {
-      console.log(item, a)
     }
   }
 }
