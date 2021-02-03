@@ -99,6 +99,12 @@ export const routerArray = [
         component: () => import('@/views/system/notice/edit'),
         name: '修改公告',
         meta: { title: '修改公告', icon: 'dashboard' }
+      },
+      {
+        path: '/bookingOrder/create',
+        component: () => import('@/views/bookingOrder/create'),
+        name: '新增订单',
+        meta: { title: '新增订单', icon: 'dashboard' }
       }
     ]
   }

@@ -57,7 +57,7 @@ export default {
   },
   data() {
     return {
-      fileList: [], maxSizeStr: formatBytes(this.maxSize), acceptType: this.accept ? this.accept.replace(/./, '') : ''
+      fileList: [], maxSizeStr: formatBytes(this.maxSize), acceptType: this.accept ? this.accept : ''
     }
   },
   methods: {

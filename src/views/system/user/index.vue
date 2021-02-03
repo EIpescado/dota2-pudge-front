@@ -53,13 +53,12 @@
 <script>
 import { list, resetPassword, enableAccount, disableAccount } from '@/api/system/user'
 import { batchGetEntityFileCount } from '@/api/system/file'
-import { getIdArray } from '@/utils/common'
 import Pagination from '@/components/Pagination'
 import TopButton from '@/components/TopButton'
 import SingleRowButton from '@/components/SingleRowButton'
 import FilterButton from '@/components/FilterButton'
 import SystemFileWindow from '@/components/SystemFileWindow'
-import { getDictSelectData, transferValueForArray } from '@/utils/common'
+import { getDictSelectData, transferValueForArray, getIdArray } from '@/utils/common'
 import Form from './form'
 export default {
   name: 'User',
