@@ -38,7 +38,7 @@
         </el-form-item>
       </div>
       <!--双抬头 指定报关合同号-->
-      <div class="row">
+      <div v-show="businessType && businessType === 2" class="row">
         <el-form-item label="指定报关合同号:">
           <el-radio-group v-model="form.appointContractNo">
             <el-radio-button :label="true">是</el-radio-button>
@@ -53,9 +53,9 @@
 
       <!---------------------------------------------商品信息--------------------------------------------------->
       <el-divider content-position="left">商品信息</el-divider>
-      <el-table ref="table" :data="form.members" highlight-current-row show-summary :summary-method="getSummaries" max-height="400" class="order-member-table-container">
+      <el-table ref="table" :data="form.members" highlight-current-row max-height="450" class="order-member-table-container">
         <el-table-column type="index" width="50" />
-        <el-table-column type="selection" width="50" />
+        <el-table-column type="selection" width="60" />
         <el-table-column label="商品型号" prop="itemModel" width="200">
           <template slot-scope="{row}">
             <el-tooltip v-show="row.gs" :content="'关税率' + row.gs + ( row.zjgs ? ',包含加征关税' + row.zjgs : '')">
@@ -92,7 +92,15 @@
           </template>
         </el-table-column>
       </el-table>
-
+      <el-row>
+        <el-col :span="6">
+          <!--分页-->
+          <Pagination :total="totalMember" :page.sync="memberPage" :limit="memberPageSize" layout="total, prev, pager, next" @pagination="getMemberPageData" />
+        </el-col>
+        <el-col :span="12" class="order-member-total-message-container">
+          <div class="order-member-total-message">总项数: {{ totalMember }} 总数量: {{ totalQty }} 总金额: {{ totalPrice }}</div>
+        </el-col>
+      </el-row>
       <!---------------------------------------------境外结算--------------------------------------------------->
       <el-divider content-position="left">境外结算</el-divider>
       <!--境外结算方式-->
@@ -236,23 +244,23 @@
       <!---------------------------------------------备注及其他--------------------------------------------------->
       <el-divider content-position="left">备注及其他</el-divider>
 
-      <Sticky :z-index="999" sticky-top="100%">
+      <div class="submit-button-container">
         <el-button type="primary" @click="submitForm">
           提交
         </el-button>
-      </Sticky>
+      </div>
     </el-form>
   </div>
 </template>
 
 <script>
-import { add, mul } from '@/utils/calculate'
+import { mul } from '@/utils/calculate'
 import FileUpload from '@/components/FileUpload'
 import PickAddressPicker from '@/components/AddressPicker'
-import Sticky from '@/components/Sticky'
+import Pagination from '@/components/Pagination'
 export default {
   name: 'CreateBookingOrder',
-  components: { FileUpload, PickAddressPicker, Sticky },
+  components: { FileUpload, PickAddressPicker, Pagination },
   data() {
     return {
       form: {
@@ -284,10 +292,12 @@ export default {
         { id: 1, supplierAccountName: '供应商银行A', supplierBankAccountNo: '1111111', supplierBankName: '汇丰', supplierBankSwiftCode: 'AAAAAA' },
         { id: 2, supplierAccountName: '供应商银行B', supplierBankAccountNo: '2222222', supplierBankName: '渣打', supplierBankSwiftCode: 'BBBBBB' }
       ],
+      // 订单明细合计
+      totalMember: 0, memberPage: 1, memberPageSize: 6, totalQty: 0, totalPrice: 0,
       // 香港物流运营商
       checkExpressList: ['FEDEX', 'UPS', 'DHL', 'EMS'],
       // 付款比例下拉 付款总额
-      payPercent: '', payPercentList: [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1], totalPrice: '',
+      payPercent: '', payPercentList: [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1],
       rules: {
         settleId: [
           { required: true, message: '境内结算方式必填', trigger: 'blur' }
@@ -296,51 +306,8 @@ export default {
     }
   },
   created() {
-    this.form.members = [
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 1234, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '', zjgs: '' },
-      { itemModel: 'LS L29K-G1H2-1-Z', itemName: 'IC', commodityUnit: '个', price: 0.05, qty: 10000, itemBrand: 'OSRAM', itemOrigin: '马来西亚', packages: '9999', pn: 'this pn', nw: 1.0, gw: 1.2, poNo: 'this pono', involveRoyalty: false, gs: '10%', zjgs: '' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001sadasdasdasdasda', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 26262, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-00adadasdasdsfg g1', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 55656, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPPsfdsd fsdf sf-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.1015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-sdfs fs001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-afwe十大歌手个0df 01', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0115, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 55, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-鬼地方个地方官大范甘迪', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.2015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 22, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-大范甘迪贵妇狗', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0013, qty: 15615, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.3015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
-      { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' }
-    ]
     this.showMoreCurrency()
+    this.getMemberPageData()
   },
   methods: {
     // 变更抬头 单抬头1 双抬头2
@@ -353,44 +320,44 @@ export default {
         this.businessType = ''
       }
     },
+    // 获取前端分页数据
+    getMemberPageData() {
+      const members = [
+        { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 1234, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '', zjgs: '' },
+        { itemModel: 'LS L29K-G1H2-1-Z', itemName: 'IC', commodityUnit: '个', price: 0.05, qty: 10000, itemBrand: 'OSRAM', itemOrigin: '马来西亚', packages: '9999', pn: 'this pn', nw: 1.0, gw: 1.2, poNo: 'this pono', involveRoyalty: false, gs: '10%', zjgs: '' },
+        { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
+        { itemModel: 'XXPP-001sadasdasdasdasda', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
+        { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
+        { itemModel: 'XXPP-001', commodityUnit: '个', price: 0.0015, qty: 26262, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' }
+      ]
+      if (members && members.length > 0) {
+        this.totalMember = members.length
+        if (members.length <= this.memberPageSize) {
+          this.form.members = members
+        } else {
+          let end = this.memberPage * this.memberPageSize
+          if (end > this.totalMember) {
+            end = this.totalMember
+          }
+          this.form.members = members.slice((this.memberPage - 1) * this.memberPageSize, end)
+        }
+      } else {
+        this.memberTotal = 0
+        this.form.members = []
+      }
+      this.getSummaries()
+    },
     // 删除商品明细
     deleteMember(row) {
       this.$message.success('删除' + row.itemModel)
       console.log(this.$refs.settlement)
       console.log(this.form)
     },
-    // 合计
-    getSummaries(param) {
-      const { data } = param
-      const sums = []
-      const count = data ? data.length : 0
-      // 总数量
-      let qtyTotal = 0
-      // 总价
-      let totalPrice = 0
-      // 总净重
-      let totalNw = 0
-      // 总毛重
-      let totalgw = 0
-      // 总件数
-      let totalPackages = 0
-      data.map(row => {
-        qtyTotal = add(qtyTotal, row.qty)
-        totalPrice = add(totalPrice, mul(row.price, row.qty))
-        totalNw = add(totalNw, row.nw)
-        totalgw = add(totalgw, row.gw)
-        totalPackages = add(totalPackages, row.packages)
-      })
-      sums[0] = '合计'
-      sums[2] = '共' + count + '项'
-      sums[6] = qtyTotal
-      sums[8] = totalPrice
-      sums[10] = totalNw
-      sums[11] = totalgw
-      sums[14] = totalPackages
-      this.totalPrice = totalPrice
-      this.form.temFee = totalPrice
-      return sums
+    // 合计 在新增,删除明细时后台返回
+    getSummaries() {
+      this.totalMember = 6
+      this.totalQty = 52496
+      this.totalPrice = 563.744
     },
     // 计算商品单条总价
     calculateMemberAmount(a, b) {
@@ -422,7 +389,7 @@ export default {
 </script>
 <style lang="scss">
 .order-form-container{
-  margin: 8px;
+  margin: 20px;
   .el-form-item{
     width: 520px;
     margin-bottom: 8px !important;
@@ -440,6 +407,18 @@ export default {
   }
   .order-member-table-container{
     box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+  }
+  .order-member-total-message-container{
+    margin-top: 5px;
+    padding: 10px 0 10px 0;
+    color: #f0862b;
+    text-align: center;
+    .order-member-total-message{
+      font-size: 20px;
+      font-weight:800;
+      line-height: 48px;
+      // height: 48px;
+    }
   }
   .row{
     position: relative;
@@ -473,6 +452,18 @@ export default {
     .el-form-item__content{
       width: calc(100% - 200px);
     }
+  }
+  .submit-button-container{
+    border-top: 1px solid #dbe3e4;
+    background-color: #fff;
+    box-shadow: 0 -4px 4px -2px #e4e9f0;
+    height: 100px;
+    line-height: 100px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 98;
   }
 }
 .left-select-option{
