@@ -1,7 +1,6 @@
 <template>
   <el-card class="upload-card">
     <el-upload
-      ref="upload"
       action=""
       multiple
       :drag="drag"
@@ -20,7 +19,7 @@
       <el-button v-if="!drag" slot="trigger" type="primary">选取文件</el-button>
       <i v-if="drag" class="el-icon-upload" />
       <div v-if="drag" class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-      <div v-if="acceptType && maxSizeStr" slot="tip" class="el-upload__tip">只能上传 {{ acceptType }} 文件，且不超过{{ maxSizeStr }}</div>
+      <div v-if="acceptType && maxSizeStr" slot="tip" class="el-upload__tip">最多上传{{ limit }}个文件({{ acceptType }})，单个文件大小不可超过{{ maxSizeStr }}</div>
     </el-upload>
   </el-card>
 </template>
@@ -102,6 +101,7 @@ export default {
 }
 </script>
 <style lang="scss">
+.upload-card{ max-height:300px;overflow:auto; }
 .file-upload-container{
   .el-upload-list{
     margin: 8px 0 0 0;

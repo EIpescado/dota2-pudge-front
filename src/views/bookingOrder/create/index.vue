@@ -1,48 +1,65 @@
 <template>
   <div class="order-form-container">
-    <el-form ref="form" :model="form" :inline="true" label-width="120px">
+    <el-form ref="form" :model="form" :inline="true" :rules="rules" label-width="120px" label-position="right">
       <!---------------------------------------------订单信息--------------------------------------------------->
       <el-divider content-position="left">订单信息</el-divider>
+      <!--境内结算方式-->
       <div class="row">
-        <el-form-item label="境内结算方式:">
-          <el-select v-model.trim="form.settleId" filterable clearable>
+        <el-form-item label="境内结算方式:" prop="settleId">
+          <el-select v-model.trim="form.settleId" filterable clearable @change="changeSettlement">
             <el-option v-for="item in settlementList" :key="item.id" :label="item.businessType + '-' +(item.accountPeriod ? item.settlementMode + '-' + item.accountPeriod : item.settlementMode)" :value="item.id">
               <span class="left-select-option">{{ item.businessType + ' ' + item.settlementMode }}</span>
               <span v-show="item.accountPeriod" class="right-select-option">{{ item.accountPeriod }}</span>
             </el-option>
           </el-select>
+          <div v-show="businessType" class="tip-message">{{ businessType === 2 ? '海关' : '华富洋' }}开13%增值税票</div>
         </el-form-item>
       </div>
+      <!--币别-->
       <div class="row">
-        <el-form-item label="供应商名称:">
-          <el-select v-model.trim="form.supplierId" filterable clearable>
-            <el-option v-for="item in supplierList" :key="item.id" :label="item.supplierName" :value="item.id" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="币别:" class="order-form-item-plus">
+        <el-form-item label="币别:" class="currency-form-item">
           <el-radio-group v-model="form.currencyId">
             <el-radio-button v-for="item in currencyArray" :key="item.id" :label="item.id">{{ item.name }}</el-radio-button>
           </el-radio-group>
           <el-link type="primary" :icon="showAllSupportCurrency ? 'el-icon-d-arrow-left' : 'el-icon-d-arrow-right'" class="show-more-currency" @click="showMoreCurrency" />
         </el-form-item>
       </div>
+      <!--供应商名称 及 联系人-->
       <div class="row">
+        <el-form-item label="供应商名称:">
+          <el-select v-model.trim="form.supplierId" filterable clearable>
+            <el-option v-for="item in supplierList" :key="item.id" :label="item.supplierName" :value="item.id" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="供应商联系人:">
           <el-select v-model.trim="form.supplierContact" value-key="id" filterable clearable>
             <el-option v-for="item in supplierContactList" :key="item.id" :label="item.name + ' ( ' + (item.tel ? item.tel + ' / ' + item.phone : item.phone) + ' )'" :value="item" />
           </el-select>
         </el-form-item>
       </div>
+      <!--双抬头 指定报关合同号-->
+      <div class="row">
+        <el-form-item label="指定报关合同号:">
+          <el-radio-group v-model="form.appointContractNo">
+            <el-radio-button :label="true">是</el-radio-button>
+            <el-radio-button :label="false">否</el-radio-button>
+          </el-radio-group>
+          <div class="tip-message">报关合同号为报关专用，如需填写请联系商务专员。</div>
+        </el-form-item>
+        <el-form-item v-show="form.appointContractNo" label="指定报关合同号:">
+          <el-input v-model.trim="form.contractNo" />
+        </el-form-item>
+      </div>
 
       <!---------------------------------------------商品信息--------------------------------------------------->
       <el-divider content-position="left">商品信息</el-divider>
-      <el-table ref="table" :data="form.members" highlight-current-row show-summary :summary-method="getSummaries" max-height="400">
+      <el-table ref="table" :data="form.members" highlight-current-row show-summary :summary-method="getSummaries" max-height="400" class="order-member-table-container">
         <el-table-column type="index" width="50" />
         <el-table-column type="selection" width="50" />
         <el-table-column label="商品型号" prop="itemModel" width="200">
           <template slot-scope="{row}">
             <el-tooltip v-show="row.gs" :content="'关税率' + row.gs + ( row.zjgs ? ',包含加征关税' + row.zjgs : '')">
-              <i class="el-icon-warning hfy-tip-image" />
+              <i class="el-icon-warning tip-icon" />
             </el-tooltip>
             {{ row.itemModel }}
           </template>
@@ -78,7 +95,7 @@
 
       <!---------------------------------------------境外结算--------------------------------------------------->
       <el-divider content-position="left">境外结算</el-divider>
-
+      <!--境外结算方式-->
       <div class="row">
         <el-form-item label="境外结算方式:">
           <el-radio-group v-model="form.hsePayStyle">
@@ -120,7 +137,7 @@
       <!--送货前付款 信用证附件-->
       <div v-show="form.hsePayStyle === 0 && form.payFeeStyle === 1" class="row">
         <el-form-item label="信用证附件:">
-          <LCFileUpload ref="lcFile" :file-tag="1" :max-size="5 * 1024 * 1024" accept="doc,jpg,png" />
+          <FileUpload ref="lcFile" :file-tag="1" :max-size="5 * 1024 * 1024" accept="doc,jpg,png" />
         </el-form-item>
       </div>
       <!--送货前付款 送货收票-->
@@ -145,6 +162,7 @@
 
       <!---------------------------------------------香港物流--------------------------------------------------->
       <el-divider content-position="left">香港物流</el-divider>
+      <!--到货类型-->
       <div class="row">
         <el-form-item label="到货类型:">
           <el-radio-group v-model="form.checkType">
@@ -154,31 +172,101 @@
           </el-radio-group>
         </el-form-item>
       </div>
+      <!--华富洋提货-->
+      <div v-show="form.checkType === 2" class="row">
+        <el-form-item label="提货类型:">
+          <el-radio-group v-model="form.deliveryTypeHk">
+            <el-radio-button :label="0">单个提货点</el-radio-button>
+            <el-radio-button :label="1">多个提货点</el-radio-button>
+          </el-radio-group>
+          <!--多点提货 提货提示-->
+          <div v-show="form.deliveryTypeHk === 1" class="tip-message">多个提货点提货时请在订单保存后至 提货安排 中新增</div>
+        </el-form-item>
+        <!--单个提货点-->
+        <el-form-item v-show="form.deliveryTypeHk === 0" label="提货时间:">
+          <el-date-picker v-model="form.checkDateTime" type="datetime" />
+        </el-form-item>
+      </div>
+
+      <!--华富洋提货 单个提货点-->
+      <div v-show="form.checkType === 2 && form.deliveryTypeHk === 0" class="row">
+        <el-form-item label="提货件数:" class="pick-numbers-form-item">
+          <el-input v-model="form.totalPallet">
+            <template slot="append">板</template>
+          </el-input>
+          <el-input v-model="form.totalPackage">
+            <template slot="append">箱</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="提货单号:">
+          <el-input v-model.trim="form.pickUpNo" clearable />
+        </el-form-item>
+      </div>
+
+      <!--华富洋提货 单个提货点 提货地址-->
+      <div v-show="form.checkType === 2 && form.deliveryTypeHk === 0" class="row">
+        <el-form-item label="提货地址:" class="address-form-item">
+          <PickAddressPicker ref="pickAddress" />
+        </el-form-item>
+      </div>
+
+      <!--华富洋提货 单个提货点 提货附件-->
+      <div v-show="form.checkType === 2 && form.deliveryTypeHk === 0" class="row">
+        <el-form-item label="提货附件:">
+          <FileUpload ref="pickFile" :file-tag="2" :max-size="5 * 1024 * 1024" accept="doc,jpg,png" />
+        </el-form-item>
+      </div>
+
+      <!--快递到货-->
+      <div v-show="form.checkType === 3" class="row">
+        <el-form-item label="运营商:">
+          <el-select v-model.trim="form.checkExpressName" filterable clearable allow-create>
+            <el-option v-for="item in checkExpressList" :key="item" :label="item" :value="item" />
+          </el-select>
+          <div class="tip-message">多个快递单号时请用 / 分割</div>
+        </el-form-item>
+        <el-form-item label="快递单号:">
+          <el-input v-model.trim="form.checkExpressNo" />
+          <div class="tip-message">可手动录入其他运营商</div>
+        </el-form-item>
+      </div>
 
       <!---------------------------------------------国内物流--------------------------------------------------->
       <el-divider content-position="left">国内物流</el-divider>
       <!---------------------------------------------备注及其他--------------------------------------------------->
       <el-divider content-position="left">备注及其他</el-divider>
 
+      <Sticky :z-index="999" sticky-top="100%">
+        <el-button type="primary" @click="submitForm">
+          提交
+        </el-button>
+      </Sticky>
     </el-form>
   </div>
 </template>
 
 <script>
 import { add, mul } from '@/utils/calculate'
-import LCFileUpload from '@/components/FileUpload'
+import FileUpload from '@/components/FileUpload'
+import PickAddressPicker from '@/components/AddressPicker'
+import Sticky from '@/components/Sticky'
 export default {
   name: 'CreateBookingOrder',
-  components: { LCFileUpload },
+  components: { FileUpload, PickAddressPicker, Sticky },
   data() {
     return {
-      form: { settleId: '', supplierId: '', currencyId: '', supplierContact: '', temFee: '', members: [] },
+      form: {
+        settleId: '', supplierId: '', currencyId: '', supplierContact: '', appointContractNo: '', contractNo: '',
+        members: [],
+        hsePayStyle: '', payFeeStyle: '', temFee: '', ticketDay: undefined, termBillDay: undefined, supplierBank: ''
+      },
       // 境内结算方式,即方案下拉
       settlementList: [
         { id: 1, businessType: '单抬头报关', settlementMode: '现结', accountPeriod: '' },
         { id: 2, businessType: '单抬头报关', settlementMode: '垫全款', accountPeriod: '次月31日结' },
-        { id: 3, businessType: '单抬头报关', settlementMode: '垫税款', accountPeriod: '30天' }
-      ],
+        { id: 3, businessType: '单抬头报关', settlementMode: '垫税款', accountPeriod: '30天' },
+        { id: 4, businessType: '双抬头报关', settlementMode: '垫税款', accountPeriod: '30天' }
+      ], businessType: '',
       // 供应商下拉
       supplierList: [
         { id: 1, supplierName: '创新在线电子有限公司', supplierNameEn: 'create new online elc ltd' },
@@ -196,11 +284,13 @@ export default {
         { id: 1, supplierAccountName: '供应商银行A', supplierBankAccountNo: '1111111', supplierBankName: '汇丰', supplierBankSwiftCode: 'AAAAAA' },
         { id: 2, supplierAccountName: '供应商银行B', supplierBankAccountNo: '2222222', supplierBankName: '渣打', supplierBankSwiftCode: 'BBBBBB' }
       ],
+      // 香港物流运营商
+      checkExpressList: ['FEDEX', 'UPS', 'DHL', 'EMS'],
       // 付款比例下拉 付款总额
       payPercent: '', payPercentList: [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1], totalPrice: '',
       rules: {
-        name: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' }
+        settleId: [
+          { required: true, message: '境内结算方式必填', trigger: 'blur' }
         ]
       }
     }
@@ -253,9 +343,20 @@ export default {
     this.showMoreCurrency()
   },
   methods: {
+    // 变更抬头 单抬头1 双抬头2
+    changeSettlement(id) {
+      const selectedSettlement = this.settlementList.find(item => item.id === id)
+      console.log(selectedSettlement)
+      if (selectedSettlement) {
+        this.businessType = selectedSettlement.businessType.indexOf('单抬头') !== -1 ? 1 : 2
+      } else {
+        this.businessType = ''
+      }
+    },
     // 删除商品明细
     deleteMember(row) {
       this.$message.success('删除' + row.itemModel)
+      console.log(this.$refs.settlement)
       console.log(this.form)
     },
     // 合计
@@ -280,6 +381,7 @@ export default {
         totalgw = add(totalgw, row.gw)
         totalPackages = add(totalPackages, row.packages)
       })
+      sums[0] = '合计'
       sums[2] = '共' + count + '项'
       sums[6] = qtyTotal
       sums[8] = totalPrice
@@ -307,6 +409,13 @@ export default {
       } else {
         this.currencyArray = this.currencyList.slice(0, 2)
       }
+    },
+    submitForm() {
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          console.log(this.form)
+        }
+      })
     }
   }
 }
@@ -315,15 +424,22 @@ export default {
 .order-form-container{
   margin: 8px;
   .el-form-item{
-    width: 35%;
+    width: 520px;
     margin-bottom: 8px !important;
     margin-top: 8px !important;
+    .el-form-item__content{
+      width: 400px;
+    }
   }
-  .order-form-item-plus{
-    width: 45%;
+  .currency-form-item{
+    // 兼容1024*768 最大700左侧导航占用 300
+    width: 700px;
+    .el-form-item__content{
+      width: 580px;
+    }
   }
-  .el-form-item__content{
-    width: calc(100% - 120px);
+  .order-member-table-container{
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
   }
   .row{
     position: relative;
@@ -332,7 +448,7 @@ export default {
     .input-with-select {
       .el-select{width: 110px;}
     }
-    .show-more-currency{ margin-left: 12px;}
+    .show-more-currency{ margin-left: 12px; color: #f0862b;}
   }
   .el-divider__text {
     position: absolute;
@@ -341,9 +457,22 @@ export default {
     color: #f0862b;
     font-size: 16px;
   }
-  .hfy-tip-image{
+  .tip-icon{
     color: #f0862b;
-    font-size: 15px;
+    font-size: 16px;
+  }
+  .tip-message{
+    margin-top: 2px;
+    color: #f0862b;
+  }
+  .pick-numbers-form-item{
+    .el-input-group{ width: 50%;}
+  }
+  .address-form-item{
+    width: 100%;
+    .el-form-item__content{
+      width: calc(100% - 200px);
+    }
   }
 }
 .left-select-option{
