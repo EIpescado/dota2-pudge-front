@@ -257,29 +257,14 @@
       <el-divider content-position="left">国内物流</el-divider>
       <!---------------------------------------------备注及其他--------------------------------------------------->
       <el-divider content-position="left">备注及其他</el-divider>
-
-      <!--提交按钮-->
-      <!-- <div class="submit-button-container">
-        <el-row :gutter="20">
-          <el-col :offset="6" :span="4">
-            <el-button type="primary" style="width:100%;" @click="submitForm">
-              暂存
-            </el-button>
-          </el-col>
-          <el-col :span="4">
-            <el-button type="primary" style="width:100%;" @click="submitForm">
-              提交
-            </el-button>
-          </el-col>
-        </el-row>
-      </div> -->
     </el-form>
 
+    <!--提交 及 暂存按钮-->
     <div class="submit-button-sticky">
-      <el-button type="primary" style="width:10%;" @click="submitForm">
+      <el-button type="primary" class="submit-button" @click="submitForm">
         暂存
       </el-button>
-      <el-button type="primary" style="width:10%;" @click="submitForm">
+      <el-button type="primary" class="submit-button" @click="submitForm">
         提交
       </el-button>
     </div>
@@ -356,7 +341,7 @@ export default {
     getMemberPageData() {
       const members = [
         { itemModel: '1851-13-437P 40(2.5-11D-5)20D-AB10X10-CDR2B-CZ3(61220019)', commodityUnit: '个', price: 0.0015, qty: 1234, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: true, gs: '', zjgs: '' },
-        { itemModel: 'LS L29K-G1H2-1-Z', itemName: 'IC', commodityUnit: '个', price: 0.05, qty: 10000, itemBrand: 'OSRAM', itemOrigin: '马来西亚', packages: '9999', pn: 'this pn', nw: 1.0, gw: 1.2, poNo: 'this pono', involveRoyalty: false, gs: '10%', zjgs: '' },
+        { itemModel: 'LS L29K-G1H2-1-Z', itemName: 'IC', commodityUnit: '个', price: 0.05, qty: 10000, itemBrand: 'OSRAM', itemOrigin: '马来西亚', packages: '9999', pn: 'this pn', nw: 1.0, gw: 1.2, poNo: 'this pono', involveRoyalty: false, gs: '', zjgs: '' },
         { itemModel: 'XXPP-002', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: true, gs: '10%', zjgs: '5%' },
         { itemModel: 'XXPP-001sadasdasdasdasda', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
         { itemModel: 'XXPP-003', commodityUnit: '个', price: 0.0015, qty: 5000, itemBrand: '3L', itemOrigin: '美国', involveRoyalty: false, gs: '10%', zjgs: '5%' },
@@ -472,8 +457,6 @@ export default {
   .tip-icon{
     color: #f0862b;
     font-size: 24px;
-    // width: 24px;
-    // height: 24px;
   }
   .tip-message{
     color: #f0862b;
@@ -493,37 +476,24 @@ export default {
       width: calc(100% - 120px);
     }
   }
-  .submit-button-container{
-    border-top: 1px solid #dbe3e4;
-    border-left: 1px solid #dbe3e4;
-    border-right: 1px solid #dbe3e4;
-    background-color: #fff;
-    box-shadow: 0 -4px 4px -2px #e4e9f0;
-    height: 80px;
-    line-height: 80px;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    left: -20px;
-    right: 20px;
-    text-align: center;
-    z-index: 98;
-    margin-bottom: 33px;
-  }
   .submit-button-sticky{
     border-top: 1px solid #dbe3e4;
     background-color: #fff;
     box-shadow: 0 -4px 4px -2px #e4e9f0;
-    height: 80px;
-    line-height: 80px;
+    height: 70px;
+    line-height: 70px;
     position: fixed;
     text-align: center;
     z-index: 98;
     margin-bottom: 33px;
     width: 100%;
-    // left: 0;
-    // right: 0;
+    left: 0;
     bottom: 0;
+    .submit-button {
+      padding: 10px 80px;
+      margin-left: 20px;
+      font-size: 18px;
+    }
   }
 }
 .left-select-option{
