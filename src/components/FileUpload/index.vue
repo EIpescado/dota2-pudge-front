@@ -71,7 +71,10 @@ export default {
         file.id = data.id
         // 标记为上传完毕
         file.onSuccess()
-      }).catch(() => {})
+      }).catch(() => {
+        // 标记为上传失败 自动移除
+        file.onError()
+      })
     },
     handleRemove(file, fileList) {
       this.fileList = fileList
@@ -103,14 +106,13 @@ export default {
 <style lang="scss">
 .upload-card{ max-height:300px;overflow:auto; }
 .file-upload-container{
+  .el-upload__tip { line-height: 12px;}
   .el-upload-list{
-    margin: 8px 0 0 0;
+    margin-top: 8px;
     border-top: 1px solid #e6ebf5;
     .el-upload-list__item{
       line-height: 2.5;
-      .el-icon-close{
-        top: 10px;
-      }
+      .el-icon-close{ top: 10px; }
     }
   }
 }
