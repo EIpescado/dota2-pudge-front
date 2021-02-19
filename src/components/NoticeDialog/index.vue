@@ -5,7 +5,7 @@
       <div class="sub-title">
         <span class="create-date">发布于 {{ noticeDetail.dateCreated }}</span>
         <span class="source">来源: 屠夫</span>
-        <span class="tag">标签: DOTA2</span>
+        <span class="tag">标签: {{ formatType(noticeDetail.type) }}</span>
       </div>
     </span>
     <div v-html="noticeDetail.content" />
@@ -17,6 +17,7 @@
 
 <script>
 import { get } from '@/api/system/notice'
+import { getDictSelectData, transferValueForArray } from '@/utils/common'
 export default {
   name: 'NoticeDialog',
   props: {
@@ -27,8 +28,11 @@ export default {
   },
   data() {
     return {
-      noticeDetail: { title: '', content: '', dateCreated: '' }, dialog: false
+      noticeDetail: { title: '', content: '', dateCreated: '', type: '' }, dialog: false
     }
+  },
+  created() {
+    getDictSelectData('system_notice_type')
   },
   methods: {
     show(nid) {
@@ -38,8 +42,11 @@ export default {
       })
     },
     cancel() {
-      this.noticeDetail = { title: '', content: '', dateCreated: '' }
+      this.noticeDetail = { title: '', content: '', dateCreated: '', type: '' }
       this.dialog = false
+    },
+    formatType(type) {
+      return transferValueForArray('system_notice_type', type)
     }
   }
 }

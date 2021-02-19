@@ -15,7 +15,7 @@
             </el-select>
             <div v-show="businessType" class="tip-message">{{ businessType === 2 ? '海关' : '华富洋' }}开13%增值税票</div>
           </el-form-item>
-          <el-form-item label="币别:" class="currency-form-item">
+          <el-form-item label="币别:" class="currency-form-item" prop="currencyId">
             <el-radio-group v-model="form.currencyId">
               <el-radio-button v-for="item in currencyArray" :key="item.id" :label="item.id">{{ item.name }}</el-radio-button>
             </el-radio-group>
@@ -53,10 +53,16 @@
       </div>
 
       <!---------------------------------------------商品信息--------------------------------------------------->
-      <div class="order-member-info-container">
+      <div class="order-member-container">
         <el-divider content-position="left">商品信息</el-divider>
+        <el-row class="order-member-button-container">
+          <el-button type="primary" size="mini" icon="el-icon-plus">新增商品</el-button>
+          <el-button type="primary" size="mini" icon="el-icon-upload2">导入商品</el-button>
+          <el-button type="primary" size="mini" icon="el-icon-edit">修改商品</el-button>
+          <el-button type="primary" size="mini" icon="el-icon-delete">删除商品</el-button>
+        </el-row>
         <!--商品列表-->
-        <el-table ref="table" :data="form.members" highlight-current-row max-height="450" class="order-member-table-container">
+        <el-table ref="table" :data="form.members" highlight-current-row class="order-member-table-container">
           <el-table-column type="index" width="45" />
           <el-table-column type="selection" width="45" />
           <el-table-column label="商品型号" prop="itemModel" width="350">
@@ -87,11 +93,6 @@
           <el-table-column label="PO号" prop="poNo" />
           <el-table-column label="件数" prop="packages" />
           <el-table-column label="供应商发票号" prop="supplierInvoiceNo" />
-          <el-table-column label="操作" width="70" fixed="right">
-            <template slot-scope="{row}">
-              <el-button type="danger" icon="el-icon-delete" @click="deleteMember(row)" />
-            </template>
-          </el-table-column>
         </el-table>
         <!--分页 及 商品信息汇总-->
         <el-row>
@@ -101,7 +102,11 @@
           </el-col>
           <el-col :span="12">
             <div class="order-member-total-message-container">
-              <div class="order-member-total-message">总项数: {{ totalMember }} 总数量: {{ totalQty }} 总金额: {{ totalPrice }}</div>
+              <div class="order-member-total-message">
+                <span>总项数: {{ totalMember }}</span>
+                <span>总数量: {{ totalQty }}</span>
+                <span>总金额: {{ totalPrice }}</span>
+              </div>
             </div>
           </el-col>
         </el-row>
@@ -319,6 +324,9 @@ export default {
       rules: {
         settleId: [
           { required: true, message: '境内结算方式必填', trigger: 'change' }
+        ],
+        currencyId: [
+          { required: true, message: '币别必选', trigger: 'change' }
         ]
       }
     }
@@ -428,23 +436,31 @@ export default {
       width: 580px;
     }
   }
-  .order-member-table-container{
-    box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-  }
-  .order-member-total-message-container{
-    margin-top: 5px;
-    padding: 10px 0 10px 0;
-    color: #f0862b;
-    text-align: center;
-    .order-member-total-message{
-      display: inline-block;
-      font-size: 18px;
-      height: 28px;
-      line-height: 28px;
-      vertical-align: top;
-      -webkit-box-sizing: border-box;
-      box-sizing: border-box;
-      font-weight: bold;
+  .order-member-container{
+    .order-member-button-container{
+      margin-bottom: 8px;
+    }
+    .order-member-table-container{
+      box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+    }
+    .order-member-total-message-container{
+      margin-top: 5px;
+      padding: 10px 0 10px 0;
+      color: #f0862b;
+      text-align: center;
+      .order-member-total-message{
+        display: inline-block;
+        font-size: 18px;
+        height: 28px;
+        line-height: 28px;
+        vertical-align: top;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        font-weight: bold;
+        span{
+          margin-left: 15px;
+        }
+      }
     }
   }
   .el-divider__text {
