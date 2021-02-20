@@ -56,14 +56,13 @@
       <div class="order-member-container">
         <el-divider content-position="left">商品信息</el-divider>
         <el-row class="order-member-button-container">
-          <el-button type="primary" size="mini" icon="el-icon-plus">新增商品</el-button>
+          <el-button type="primary" size="mini" icon="el-icon-plus" @click="showCreateItemDialog">新增商品</el-button>
           <el-button type="primary" size="mini" icon="el-icon-upload2">导入商品</el-button>
           <el-button type="primary" size="mini" icon="el-icon-edit">修改商品</el-button>
           <el-button type="primary" size="mini" icon="el-icon-delete">删除商品</el-button>
         </el-row>
         <!--商品列表-->
         <el-table ref="table" :data="form.members" highlight-current-row class="order-member-table-container">
-          <el-table-column type="index" width="45" />
           <el-table-column type="selection" width="45" />
           <el-table-column label="商品型号" prop="itemModel" width="350">
             <template slot-scope="{row}">
@@ -110,6 +109,8 @@
             </div>
           </el-col>
         </el-row>
+
+        <AddAndEditItemDialog ref="itemDialog" />
       </div>
 
       <!---------------------------------------------境外结算--------------------------------------------------->
@@ -281,9 +282,10 @@ import { mul } from '@/utils/calculate'
 import FileUpload from '@/components/FileUpload'
 import PickAddressPicker from '@/components/AddressPicker'
 import Pagination from '@/components/Pagination'
+import AddAndEditItemDialog from '@/components/AddAndEditItemDialog'
 export default {
   name: 'CreateBookingOrder',
-  components: { FileUpload, PickAddressPicker, Pagination },
+  components: { FileUpload, PickAddressPicker, Pagination, AddAndEditItemDialog },
   data() {
     return {
       form: {
@@ -371,6 +373,10 @@ export default {
         this.form.members = []
       }
       this.getSummaries()
+    },
+    // 新增商品弹出框
+    showCreateItemDialog() {
+      this.$refs.itemDialog.createShow()
     },
     // 删除商品明细
     deleteMember(row) {

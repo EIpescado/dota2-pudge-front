@@ -4,7 +4,9 @@ const state = {
   system_notice_type: [],
   system_log_type: [],
   system_file_tag: [],
-  system_user_state: []
+  system_user_state: [],
+  e_chain_unit: [],
+  e_chain_origin_country: []
 }
 
 const mutations = {
