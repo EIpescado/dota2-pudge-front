@@ -58,11 +58,11 @@
         <el-row class="order-member-button-container">
           <el-button type="primary" size="mini" icon="el-icon-plus" @click="showCreateItemDialog">新增商品</el-button>
           <el-button type="primary" size="mini" icon="el-icon-sold-out" @click="showImportItemDialog">导入商品</el-button>
-          <el-button type="primary" size="mini" icon="el-icon-edit">修改商品</el-button>
-          <el-button type="primary" size="mini" icon="el-icon-delete">删除商品</el-button>
+          <el-button :disabled="!memberSelection || memberSelection.length !== 1" type="primary" size="mini" icon="el-icon-edit" @click="showEditItemDialog">修改商品</el-button>
+          <el-button :disabled="!memberSelection || memberSelection.length === 0" type="primary" size="mini" icon="el-icon-delete" @click="deleteMembers">删除商品</el-button>
         </el-row>
         <!--商品列表-->
-        <el-table ref="table" :data="form.members" highlight-current-row class="order-member-table-container">
+        <el-table ref="table" :data="form.members" highlight-current-row class="order-member-table-container" @selection-change="handleOrderMemberSelectionChange">
           <el-table-column type="selection" width="45" />
           <el-table-column label="商品型号" prop="itemModel" width="350">
             <template slot-scope="{row}">
@@ -322,7 +322,7 @@ export default {
         { id: 2, supplierAccountName: '供应商银行B', supplierBankAccountNo: '2222222', supplierBankName: '渣打', supplierBankSwiftCode: 'BBBBBB' }
       ],
       // 订单明细合计
-      totalMember: 0, memberPage: 1, memberPageSize: 5, totalQty: 0, totalPrice: 0,
+      totalMember: 0, memberPage: 1, memberPageSize: 5, totalQty: 0, totalPrice: 0, memberSelection: [],
       // 香港物流运营商
       checkExpressList: ['FEDEX', 'UPS', 'DHL', 'EMS'],
       // 付款比例下拉 付款总额
@@ -378,6 +378,10 @@ export default {
       }
       this.getSummaries()
     },
+    // 订单明细选择变化
+    handleOrderMemberSelectionChange(val) {
+      this.memberSelection = val
+    },
     // 新增商品弹出框
     showCreateItemDialog() {
       this.$refs.itemDialog.createShow()
@@ -386,11 +390,13 @@ export default {
     showImportItemDialog() {
       this.$refs.importMemberDialog.show()
     },
+    // 更新商品弹出框
+    showEditItemDialog() {
+      this.$refs.itemDialog.updateShow()
+    },
     // 删除商品明细
-    deleteMember(row) {
-      this.$message.success('删除' + row.itemModel)
-      console.log(this.$refs.settlement)
-      console.log(this.form)
+    deleteMembers() {
+      this.$message.success('删除' + this.memberSelection.length + '条')
     },
     // 合计 在新增,删除明细时后台返回
     getSummaries() {

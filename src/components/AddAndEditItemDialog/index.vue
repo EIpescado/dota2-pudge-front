@@ -142,6 +142,10 @@ export default {
       this.isAdd = true
       this.dialog = true
     },
+    updateShow() {
+      this.isAdd = false
+      this.dialog = true
+    },
     cancel() {
       this.submitDisabled = false
       this.submitLoading = false
