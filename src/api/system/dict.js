@@ -82,3 +82,15 @@ export function select(dictType) {
     method: 'get'
   })
 }
+
+export function importDict(formData, uploadProgress) {
+  return request({
+    url: '/dict/import',
+    method: 'post',
+    data: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
+    onUploadProgress: uploadProgress
+  })
+}

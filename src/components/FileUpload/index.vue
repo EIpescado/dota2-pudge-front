@@ -19,7 +19,7 @@
       <el-button v-if="!drag" slot="trigger" type="primary">选取文件</el-button>
       <i v-if="drag" class="el-icon-upload" />
       <div v-if="drag" class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-      <div v-if="acceptType && maxSizeStr" slot="tip" class="el-upload__tip">最多上传{{ limit }}个文件({{ acceptType }})，单个文件大小不可超过{{ maxSizeStr }}</div>
+      <div v-if="accept && maxSizeStr" slot="tip" class="el-upload__tip">最多上传{{ limit }}个文件({{ accept }})，单个文件大小不可超过{{ maxSizeStr }}</div>
     </el-upload>
   </el-card>
 </template>
@@ -39,7 +39,7 @@ export default {
       type: Number,
       default: 5
     },
-    // 接受的文件类型, 还需在beforeupload中过滤,因为仍可选择,此选项只是从文件列表过滤,形如 .pdf
+    // 接受的文件类型, 还需在beforeupload中过滤,因为仍可选择,此选项只是从文件列表过滤,形如 pdf,jpg
     accept: {
       type: String,
       default: undefined
@@ -56,7 +56,7 @@ export default {
   },
   data() {
     return {
-      fileList: [], maxSizeStr: formatBytes(this.maxSize), acceptType: this.accept ? this.accept : ''
+      fileList: [], maxSizeStr: formatBytes(this.maxSize)
     }
   },
   methods: {
@@ -94,8 +94,8 @@ export default {
         return false
       }
       const extension = file.name.substring(file.name.lastIndexOf('.') + 1)
-      if (this.accept && this.accept.length > 0 && this.accept.indexOf(extension) === -1) {
-        this.$message.error('仅可上传 ' + this.acceptType)
+      if (this.accept && this.accept.indexOf(extension) === -1) {
+        this.$message.error('仅可上传 ' + this.accept)
         return false
       }
       return true
@@ -104,7 +104,7 @@ export default {
 }
 </script>
 <style lang="scss">
-.upload-card{ max-height:300px;overflow:auto; }
+.upload-card{ max-height:320px;overflow:auto; }
 .file-upload-container{
   .el-upload__tip { line-height: 12px;}
   .el-upload-list{

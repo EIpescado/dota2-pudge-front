@@ -99,7 +99,11 @@ export default {
           content = res.errorInfo
         }
         ld.close()
-        this.$refs.multiWindow.show(title, content, contentType)
+        if (content) {
+          this.$refs.multiWindow.show(title, content, contentType)
+        } else {
+          this.$message.info('无可用内容')
+        }
       }).catch(() => { ld.close() })
     },
     formatType(row) {

@@ -31,8 +31,8 @@
             </el-select>
           </el-form-item>
           <el-form-item label="供应商联系人:">
-            <el-select v-model.trim="form.supplierContact" value-key="id" filterable clearable>
-              <el-option v-for="item in supplierContactList" :key="item.id" :label="item.name + ' ( ' + (item.tel ? item.tel + ' / ' + item.phone : item.phone) + ' )'" :value="item" />
+            <el-select v-model.trim="form.supplierContactId" filterable clearable>
+              <el-option v-for="item in supplierContactList" :key="item.id" :label="item.name + ' ( ' + (item.tel ? item.tel + ' / ' + item.phone : item.phone) + ' )'" :value="item.id" />
             </el-select>
           </el-form-item>
         </el-row>
@@ -57,7 +57,7 @@
         <el-divider content-position="left">商品信息</el-divider>
         <el-row class="order-member-button-container">
           <el-button type="primary" size="mini" icon="el-icon-plus" @click="showCreateItemDialog">新增商品</el-button>
-          <el-button type="primary" size="mini" icon="el-icon-upload2">导入商品</el-button>
+          <el-button type="primary" size="mini" icon="el-icon-sold-out" @click="showImportItemDialog">导入商品</el-button>
           <el-button type="primary" size="mini" icon="el-icon-edit">修改商品</el-button>
           <el-button type="primary" size="mini" icon="el-icon-delete">删除商品</el-button>
         </el-row>
@@ -110,7 +110,10 @@
           </el-col>
         </el-row>
 
+        <!--新增修改明细窗口-->
         <AddAndEditItemDialog ref="itemDialog" />
+        <!--导入明细窗口-->
+        <TemplateImport ref="importMemberDialog" title="批量上传产品" :baba="this" template-file-id="1356171993041108993" />
       </div>
 
       <!---------------------------------------------境外结算--------------------------------------------------->
@@ -140,7 +143,7 @@
         <!--送货前付款 送货收票-->
         <el-row v-show="form.hsePayStyle === 0 || form.hsePayStyle === 1">
           <el-form-item label="本次付款金额:">
-            <el-input v-model="form.temFee" type="number" placeholder="付款比例" class="input-with-select">
+            <el-input v-model="form.temFee" placeholder="付款比例" class="input-with-select">
               <el-select slot="prepend" v-model="payPercent" placeholder="付款比例" @change="changePayPercent">
                 <el-option v-for="item in payPercentList" :key="item" :label="item * 100 + '%'" :value="item" />
               </el-select>
@@ -283,9 +286,10 @@ import FileUpload from '@/components/FileUpload'
 import PickAddressPicker from '@/components/AddressPicker'
 import Pagination from '@/components/Pagination'
 import AddAndEditItemDialog from '@/components/AddAndEditItemDialog'
+import TemplateImport from '@/components/TemplateImport'
 export default {
   name: 'CreateBookingOrder',
-  components: { FileUpload, PickAddressPicker, Pagination, AddAndEditItemDialog },
+  components: { FileUpload, PickAddressPicker, Pagination, AddAndEditItemDialog, TemplateImport },
   data() {
     return {
       form: {
@@ -377,6 +381,10 @@ export default {
     // 新增商品弹出框
     showCreateItemDialog() {
       this.$refs.itemDialog.createShow()
+    },
+    // 批量上传产品弹出框
+    showImportItemDialog() {
+      this.$refs.importMemberDialog.show()
     },
     // 删除商品明细
     deleteMember(row) {
