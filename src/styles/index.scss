@@ -121,7 +121,7 @@ aside {
 
 //main-container全局样式
 .app-container {
-  padding: 10px;
+  padding: 15px 15px 33px 15px;
 }
 
 .components-container {
@@ -138,8 +138,8 @@ aside {
   line-height: 50px;
   position: relative;
   width: 100%;
-  text-align: left;
-  padding-left: 40px;
+  text-align: center;
+  padding-left: 15px;
   transition: 600ms ease position;
   background: linear-gradient(90deg, rgba(32, 182, 249, 1) 0%, rgba(32, 182, 249, 1) 0%, rgba(33, 120, 241, 1) 100%, rgba(33, 120, 241, 1) 100%);
 
@@ -148,8 +148,13 @@ aside {
     color: #fff;
   }
 
-  background: #d0d0d0;
+  .el-button{
+    width: 180px;
+    height: 40px;
+    margin-right: 20px;
+  }
 
+  background: #d0d0d0;
 }
 
 .link-type,
@@ -166,42 +171,18 @@ aside {
   @include common-border;
   padding-bottom: 8px;
   .el-form--inline{
-    padding-top: 8px !important;
+    padding-top: 18px !important;
   }
   .el-form-item{
-    width: 23%;
-    margin-bottom: 8px !important;
-    margin-top: 8px !important;
+    width: 480px;
+    .el-form-item__label { width: 120px; }
+    .el-form-item__content{ width: 360px; }
   }
   .el-select{
     width: 100%;
   }
-  .el-form-item__label{
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    width: 80px;
-  }
-  .el-form-item__content{
-    width: calc(100% - 80px);
-  }
-  .el-date-editor{
-    width: 100% !important;
-  }
 }
 .filter-container:hover{
-  @include common-border-hover;
-}
-
-.card-filter-container{
-  @include common-border;
-  padding-bottom: 8px;
-  .el-form--inline{
-    padding-top: 8px !important;
-  }
-}
-
-.card-filter-container:hover{
   @include common-border-hover;
 }
 
@@ -213,20 +194,27 @@ aside {
   }
 }
 
+.card-filter-container{
+  @include common-border;
+  padding-bottom: 8px;
+  .el-form--inline{
+    padding-top: 18px !important;
+  }
+}
+
+.card-filter-container:hover{
+  @include common-border-hover;
+}
+
 .pudge-hidden{
   display: none;
 }
 
 .form-container{
   .el-form-item{
-    width: 100%;
-  }
-  .el-form-item__label{
-    width: 85px;
-  }
-  .el-form-item__content{
-    width: 80%;
-    width: calc(100% - 85px)
+    width: 480px;
+    .el-form-item__label { width: 120px; }
+    .el-form-item__content{ width: 360px; }
   }
   .el-select{
     width: 100%;
@@ -261,7 +249,6 @@ aside {
 }
 
 .table-container{
-  width: 100%;
   @include common-border;
   .el-table__header{
     font-weight: 600;

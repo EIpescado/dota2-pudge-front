@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-row :gutter="15">
+    <el-row :gutter="10">
       <!--字典类型-->
       <el-col :span="10">
         <el-card shadow="never">
@@ -51,11 +51,11 @@
           <div v-if="dictQo.typeCode">
             <!--查询-->
             <div ref="dictFilterContainer" class="card-filter-container">
-              <el-form ref="dictQo" :inline="true" :model="dictQo">
-                <el-form-item label="字典类型" label-width="85px" prop="typeCode">
+              <el-form ref="dictQo" :inline="true" :model="dictQo" label-width="85px">
+                <el-form-item label="字典类型" prop="typeCode">
                   <el-input v-model.trim="dictQo.typeCode" disabled />
                 </el-form-item>
-                <el-form-item label="关键字" label-width="60px" prop="keyword">
+                <el-form-item label="关键字" prop="keyword">
                   <el-input v-model.trim="dictQo.keyword" clearable />
                 </el-form-item>
                 <!--查询框按钮-->

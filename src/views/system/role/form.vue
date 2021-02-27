@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible.sync="show" :title="isAdd ? '新增角色' : '编辑角色'" append-to-body :close-on-click-modal="false" width="500px" custom-class="form-dialog" @closed="cancel">
+  <el-dialog :visible.sync="show" :title="isAdd ? '新增角色' : '编辑角色'" append-to-body :close-on-click-modal="false" width="600px" custom-class="form-dialog" @closed="cancel">
     <el-form ref="form" v-loading="formLoading" :inline="true" :model="form" :rules="rules" class="form-container">
       <el-form-item label="角色编码" prop="name">
         <el-input v-model.trim="form.name" :disabled="!isAdd" />

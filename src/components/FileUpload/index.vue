@@ -19,6 +19,7 @@
       <el-button v-if="!drag" slot="trigger" type="primary">选取文件</el-button>
       <i v-if="drag" class="el-icon-upload" />
       <div v-if="drag" class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+      <div v-if="otherTip" class="el-upload__tip">{{ otherTip }}</div>
       <div v-if="accept && maxSizeStr" slot="tip" class="el-upload__tip">最多上传{{ limit }}个文件({{ accept }})，单个文件大小不可超过{{ maxSizeStr }}</div>
     </el-upload>
   </el-card>
@@ -52,6 +53,10 @@ export default {
     drag: {
       type: Boolean,
       default: false
+    },
+    otherTip: {
+      type: String,
+      default: ''
     }
   },
   data() {

@@ -9,7 +9,7 @@
             <span class="role-span">角色列表</span>
           </div>
           <!--查询-->
-          <div ref="filterContainer" class="filter-container">
+          <div ref="filterContainer" class="card-filter-container">
             <el-form ref="qo" :inline="true" :model="qo">
               <el-form-item label="角色" prop="name">
                 <el-input v-model.trim="qo.name" clearable />

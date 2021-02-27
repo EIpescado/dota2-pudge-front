@@ -1,41 +1,29 @@
 <template>
-  <div class="notice-form-container">
-    <el-form ref="form" :model="form" :inline="true" :rules="rules" class="form-container" label-position="left">
-
-      <!--按钮-->
-      <sticky :z-index="10" class-name="sub-navbar">
-        <el-button :loading="submitLoading" :disabled="submitDisabled" type="primary" @click="submitForm">
-          {{ isEdit ? '保存' : '发布' }}
-        </el-button>
-      </sticky>
-
-      <!--表单-->
-      <div class="notice-main-container">
-        <el-row>
-          <el-form-item prop="title" label-width="70px" label="标题：">
-            <el-input v-model.trim="form.title" clearable />
-          </el-form-item>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item prop="type" label-width="70px" label="类型：">
-              <el-select v-model.trim="form.type" clearable>
-                <el-option v-for="item in this.$store.getters.dictSelectData.system_notice_type" :key="item.value" :value="item.value" :label="item.label" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item prop="expiredDate" label-width="100px" label="失效时间：">
-              <el-date-picker v-model="form.expiredDate" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-form-item prop="content" class="form-tinymce-container">
-          <Tinymce ref="editor" v-model="form.content" />
+  <div class="app-container">
+    <!--按钮-->
+    <sticky :z-index="10" class-name="sub-navbar">
+      <el-button :loading="submitLoading" :disabled="submitDisabled" type="primary" @click="submitForm">
+        {{ isEdit ? '保存' : '发布' }}
+      </el-button>
+    </sticky>
+    <el-form ref="form" :model="form" :inline="true" :rules="rules" class="form-container" label-width="100px" label-position="left">
+      <el-row>
+        <el-form-item prop="title" label="标题：" class="notice-title-input">
+          <el-input v-model.trim="form.title" clearable />
         </el-form-item>
-
-      </div>
+      </el-row>
+      <el-row>
+        <el-form-item prop="type" label="类型：">
+          <el-select v-model.trim="form.type" clearable>
+            <el-option v-for="item in this.$store.getters.dictSelectData.system_notice_type" :key="item.value" :value="item.value" :label="item.label" />
+          </el-select>
+        </el-form-item>
+        <el-form-item prop="expiredDate" label="失效时间：">
+          <el-date-picker v-model="form.expiredDate" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" />
+        </el-form-item>
+      </el-row>
+      <!--富文本编辑器-->
+      <Tinymce ref="editor" v-model="form.content" />
     </el-form>
   </div>
 </template>
@@ -61,8 +49,7 @@ export default {
       rules: {
         title: [{ required: true, message: '标题必填' }],
         type: [{ required: true, message: '类型必填' }],
-        expiredDate: [{ required: true, message: '失效时间必填' }],
-        content: [{ required: true, message: '内容必填' }]
+        expiredDate: [{ required: true, message: '失效时间必填' }]
       }
     }
   },
@@ -124,13 +111,19 @@ export default {
 }
 </script>
 
-<style scoped>
-.notice-form-container .notice-main-container{ padding: 25px 40px; }
-.notice-form-container .notice-main-container .el-row{ width:73%; }
-.notice-form-container .notice-main-container .el-row >>> .el-form-item__content { width: calc(100% - 105px); }
-.form-tinymce-container{
-  margin-bottom: 30px;
-  height: 450px;
-  width: 76%;
+<style lang="scss" scope>
+.app-container{
+  padding: 0 0 0 0;
+  .form-container{
+    margin: 0 15px;
+    padding-top: 18px;
+    .notice-title-input {
+      width: 100%;
+      .el-form-item__content { width: calc(100% - 100px);}
+    }
+  }
+  .form-tinymce-container{
+    margin-bottom: 30px;
+  }
 }
 </style>

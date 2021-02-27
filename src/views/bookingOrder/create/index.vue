@@ -1,275 +1,338 @@
 <template>
-  <div class="order-form-container">
-    <el-form ref="form" :model="form" :inline="true" :rules="rules" label-width="120px" label-position="right">
-      <!---------------------------------------------订单信息--------------------------------------------------->
-      <div class="order-info-container">
-        <el-divider content-position="left">订单信息</el-divider>
-        <!--境内结算方式 及 币别-->
-        <el-row>
-          <el-form-item label="境内结算方式:" prop="settleId">
-            <el-select v-model.trim="form.settleId" filterable clearable @change="changeSettlement">
-              <el-option v-for="item in settlementList" :key="item.id" :label="item.businessType + '-' +(item.accountPeriod ? item.settlementMode + '-' + item.accountPeriod : item.settlementMode)" :value="item.id">
-                <span class="left-select-option">{{ item.businessType + ' ' + item.settlementMode }}</span>
-                <span v-show="item.accountPeriod" class="right-select-option">{{ item.accountPeriod }}</span>
-              </el-option>
-            </el-select>
-            <div v-show="businessType" class="tip-message">{{ businessType === 2 ? '海关' : '华富洋' }}开13%增值税票</div>
-          </el-form-item>
-          <el-form-item label="币别:" class="currency-form-item" prop="currencyId">
-            <el-radio-group v-model="form.currencyId">
-              <el-radio-button v-for="item in currencyArray" :key="item.id" :label="item.id">{{ item.name }}</el-radio-button>
-            </el-radio-group>
-            <el-link type="primary" :icon="showAllSupportCurrency ? 'el-icon-d-arrow-left' : 'el-icon-d-arrow-right'" class="show-more-currency" @click="showMoreCurrency" />
-          </el-form-item>
-        </el-row>
-
-        <!--供应商名称 及 联系人-->
-        <el-row>
-          <el-form-item label="供应商名称:">
-            <el-select v-model.trim="form.supplierId" filterable clearable>
-              <el-option v-for="item in supplierList" :key="item.id" :label="item.supplierName" :value="item.id" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="供应商联系人:">
-            <el-select v-model.trim="form.supplierContactId" filterable clearable>
-              <el-option v-for="item in supplierContactList" :key="item.id" :label="item.name + ' ( ' + (item.tel ? item.tel + ' / ' + item.phone : item.phone) + ' )'" :value="item.id" />
-            </el-select>
-          </el-form-item>
-        </el-row>
-
-        <!--双抬头 指定报关合同号-->
-        <el-row v-show="businessType && businessType === 2">
-          <el-form-item label="指定报关合同号:">
-            <el-radio-group v-model="form.appointContractNo">
-              <el-radio-button :label="true">是</el-radio-button>
-              <el-radio-button :label="false">否</el-radio-button>
-            </el-radio-group>
-            <div class="tip-message">报关合同号为报关专用，如需填写请联系商务专员。</div>
-          </el-form-item>
-          <el-form-item v-show="form.appointContractNo" label="指定报关合同号:">
-            <el-input v-model.trim="form.contractNo" />
-          </el-form-item>
-        </el-row>
-      </div>
-
-      <!---------------------------------------------商品信息--------------------------------------------------->
-      <div class="order-member-container">
-        <el-divider content-position="left">商品信息</el-divider>
-        <el-row class="order-member-button-container">
-          <el-button type="primary" size="mini" icon="el-icon-plus" @click="showCreateItemDialog">新增商品</el-button>
-          <el-button type="primary" size="mini" icon="el-icon-sold-out" @click="showImportItemDialog">导入商品</el-button>
-          <el-button :disabled="!memberSelection || memberSelection.length !== 1" type="primary" size="mini" icon="el-icon-edit" @click="showEditItemDialog">修改商品</el-button>
-          <el-button :disabled="!memberSelection || memberSelection.length === 0" type="primary" size="mini" icon="el-icon-delete" @click="deleteMembers">删除商品</el-button>
-        </el-row>
-        <!--商品列表-->
-        <el-table ref="table" :data="form.members" highlight-current-row class="order-member-table-container" @selection-change="handleOrderMemberSelectionChange">
-          <el-table-column type="selection" width="45" />
-          <el-table-column label="商品型号" prop="itemModel" width="350">
-            <template slot-scope="{row}">
-              <el-tooltip v-show="row.gs" :content="'关税率' + row.gs + ( row.zjgs ? ',包含加征关税' + row.zjgs : '')">
-                <svg-icon icon-class="tariff" class-name="tip-icon" />
-              </el-tooltip>
-              <el-tooltip v-show="row.involveRoyalty" content="此项涉及特许权使用费">
-                <svg-icon icon-class="involveRoyalty" class-name="tip-icon" />
-              </el-tooltip>
-              {{ row.itemModel }}
-            </template>
-          </el-table-column>
-          <el-table-column label="商品名称" prop="itemName" />
-          <el-table-column label="商品品牌" prop="itemBrand" />
-          <el-table-column label="单位" prop="commodityUnit" />
-          <el-table-column label="数量" prop="qty" />
-          <el-table-column label="单价" prop="price" />
-          <el-table-column label="金额">
-            <template slot-scope="{row}">
-              {{ calculateMemberAmount(row.price, row.qty) }}
-            </template>
-          </el-table-column>
-          <el-table-column label="产地" prop="itemOrigin" />
-          <el-table-column label="净重(KG)" prop="nw" />
-          <el-table-column label="毛重(KG)" prop="gw" />
-          <el-table-column label="物料号" prop="pn" />
-          <el-table-column label="PO号" prop="poNo" />
-          <el-table-column label="件数" prop="packages" />
-          <el-table-column label="供应商发票号" prop="supplierInvoiceNo" />
-        </el-table>
-        <!--分页 及 商品信息汇总-->
-        <el-row>
-          <el-col :span="6">
-            <!--分页-->
-            <Pagination :total="totalMember" :page.sync="memberPage" :limit="memberPageSize" layout="total, prev, pager, next" @pagination="getMemberPageData" />
-          </el-col>
-          <el-col :span="12">
-            <div class="order-member-total-message-container">
-              <div class="order-member-total-message">
-                <span>总项数: {{ totalMember }}</span>
-                <span>总数量: {{ totalQty }}</span>
-                <span>总金额: {{ totalPrice }}</span>
-              </div>
-            </div>
-          </el-col>
-        </el-row>
-
-        <!--新增修改明细窗口-->
-        <AddAndEditItemDialog ref="itemDialog" />
-        <!--导入明细窗口-->
-        <TemplateImport ref="importMemberDialog" title="批量上传产品" :baba="this" template-file-id="1356171993041108993" />
-      </div>
-
-      <!---------------------------------------------境外结算--------------------------------------------------->
-      <div class="abroad-settlement-container">
-        <el-divider content-position="left">境外结算</el-divider>
-        <!--境外结算方式 及 支付方式-->
-        <el-row>
-          <el-form-item label="境外结算方式:">
-            <el-radio-group v-model="form.hsePayStyle">
-              <el-radio-button :label="0">送货前付款</el-radio-button>
-              <el-radio-button :label="1">送货收票</el-radio-button>
-              <el-radio-button :label="2">送货后付款</el-radio-button>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item v-show="form.hsePayStyle === 0 || form.hsePayStyle === 1" label="支付方式:">
-            <el-radio-group v-model="form.payFeeStyle">
-              <!--送货前付款-->
-              <el-radio-button v-if="form.hsePayStyle === 0" :label="0">转账</el-radio-button>
-              <el-radio-button v-if="form.hsePayStyle === 0" :label="1">信用证</el-radio-button>
-              <!--送货收票-->
-              <el-radio-button v-if="form.hsePayStyle === 1" :label="2">支票</el-radio-button>
-              <el-radio-button v-if="form.hsePayStyle === 1" :label="3">期票</el-radio-button>
-            </el-radio-group>
-          </el-form-item>
-        </el-row>
-
-        <!--送货前付款 送货收票-->
-        <el-row v-show="form.hsePayStyle === 0 || form.hsePayStyle === 1">
-          <el-form-item label="本次付款金额:">
-            <el-input v-model="form.temFee" placeholder="付款比例" class="input-with-select">
-              <el-select slot="prepend" v-model="payPercent" placeholder="付款比例" @change="changePayPercent">
-                <el-option v-for="item in payPercentList" :key="item" :label="item * 100 + '%'" :value="item" />
+  <div class="order-container">
+    <!--订单表单-->
+    <div class="order-form-container">
+      <el-form ref="form" :model="form" :inline="true" :rules="rules" label-width="120px" label-position="right">
+        <!---------------------------------------------订单信息--------------------------------------------------->
+        <div class="order-info-container">
+          <el-divider content-position="left">
+            订单信息
+          </el-divider>
+          <el-alert title="带 * 号为必填项" type="info" show-icon />
+          <!--境内结算方式 及 币别-->
+          <el-row>
+            <el-form-item label="境内结算方式:" prop="settleId">
+              <el-select v-model.trim="form.settleId" filterable clearable @change="changeSettlement">
+                <el-option v-for="item in settlementList" :key="item.id" :label="item.businessType + '-' +(item.accountPeriod ? item.settlementMode + '-' + item.accountPeriod : item.settlementMode)" :value="item.id">
+                  <span class="left-select-option">{{ item.businessType + ' ' + item.settlementMode }}</span>
+                  <span v-show="item.accountPeriod" class="right-select-option">{{ item.accountPeriod }}</span>
+                </el-option>
               </el-select>
-            </el-input>
-          </el-form-item>
-          <!--送货前付款 信用证 信用证天数-->
-          <el-form-item v-show="form.hsePayStyle === 0 && form.payFeeStyle === 1" label="信用证天数:">
-            <el-input-number v-model="form.ticketDay" step-strictly />
-          </el-form-item>
-          <!--送货收票 期票 期票天数-->
-          <el-form-item v-show="form.hsePayStyle === 1 && form.payFeeStyle === 3" label="期票天数:">
-            <el-input-number v-model="form.termBillDay" step-strictly />
-          </el-form-item>
-        </el-row>
+              <div v-show="businessType" class="tip-message">{{ businessType === 2 ? '海关' : '华富洋' }}开13%增值税票</div>
+            </el-form-item>
+            <el-form-item label="币别:" class="currency-form-item" prop="currencyId">
+              <el-radio-group v-model="form.currencyId">
+                <el-radio-button v-for="item in currencyArray" :key="item.id" :label="item.id">{{ item.name }}</el-radio-button>
+              </el-radio-group>
+              <el-link type="primary" :icon="showAllSupportCurrency ? 'el-icon-d-arrow-left' : 'el-icon-d-arrow-right'" class="show-more-currency" @click="showMoreCurrency" />
+            </el-form-item>
+          </el-row>
 
-        <!--送货前付款 信用证附件-->
-        <el-row v-show="form.hsePayStyle === 0 && form.payFeeStyle === 1">
-          <el-form-item label="信用证附件:">
-            <FileUpload ref="lcFile" :file-tag="1" :max-size="5 * 1024 * 1024" accept="doc,jpg,png" />
-          </el-form-item>
-        </el-row>
+          <!--供应商名称 及 联系人-->
+          <el-row>
+            <el-form-item label="供应商名称:">
+              <el-select v-model.trim="form.supplierId" filterable clearable>
+                <el-option v-for="item in supplierList" :key="item.id" :label="item.supplierName" :value="item.id" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="供应商联系人:">
+              <el-select v-model.trim="form.supplierContactId" filterable clearable>
+                <el-option v-for="item in supplierContactList" :key="item.id" :label="item.name + ' ( ' + (item.tel ? item.tel + ' / ' + item.phone : item.phone) + ' )'" :value="item.id" />
+              </el-select>
+            </el-form-item>
+          </el-row>
 
-        <!--送货前付款 送货收票-->
-        <el-row v-show="form.hsePayStyle === 0 || form.hsePayStyle === 1">
-          <el-form-item label="收款方户名:">
-            <el-select v-model="form.supplierBank" value-key="id" filterable clearable>
-              <el-option v-for="item in supplierBankList" :key="item.id" :label="item.supplierAccountName" :value="item" />
-            </el-select>
-          </el-form-item>
-          <el-form-item v-show="form.hsePayStyle === 0" label="收款人账号:">
-            <el-input :value="form.supplierBank ? form.supplierBank.supplierBankAccountNo : ''" readonly disabled />
-          </el-form-item>
-        </el-row>
+          <!--双抬头 指定报关合同号-->
+          <el-row v-show="businessType && businessType === 2">
+            <el-form-item label="指定报关合同号:">
+              <el-radio-group v-model="form.appointContractNo">
+                <el-radio-button :label="true">是</el-radio-button>
+                <el-radio-button :label="false">否</el-radio-button>
+              </el-radio-group>
+              <div class="tip-message">报关合同号为报关专用，如需填写请联系商务专员。</div>
+            </el-form-item>
+            <el-form-item v-show="form.appointContractNo" label="指定报关合同号:">
+              <el-input v-model.trim="form.contractNo" />
+            </el-form-item>
+          </el-row>
+        </div>
 
-        <!--送货前付款 送货收票-->
-        <el-row v-show="form.hsePayStyle === 0">
-          <el-form-item label="开户银行:">
-            <el-input :value="form.supplierBank ? form.supplierBank.supplierBankName : ''" readonly disabled />
-          </el-form-item>
-          <el-form-item label="Swift Code:">
-            <el-input :value="form.supplierBank ? form.supplierBank.supplierBankSwiftCode : ''" readonly disabled />
-          </el-form-item>
-        </el-row>
-      </div>
+        <!---------------------------------------------商品信息--------------------------------------------------->
+        <div class="order-member-container">
+          <el-divider content-position="left">商品信息</el-divider>
+          <el-row class="order-member-button-container">
+            <el-button type="primary" size="mini" icon="el-icon-plus" @click="showCreateItemDialog">新增商品</el-button>
+            <el-button type="primary" size="mini" icon="el-icon-sold-out" @click="showImportItemDialog">导入商品</el-button>
+            <el-button :disabled="!memberSelection || memberSelection.length !== 1" type="primary" size="mini" icon="el-icon-edit" @click="showEditItemDialog">修改商品</el-button>
+            <el-button :disabled="!memberSelection || memberSelection.length === 0" type="primary" size="mini" icon="el-icon-delete" @click="deleteMembers">删除商品</el-button>
+          </el-row>
+          <!--商品列表-->
+          <el-table ref="table" :data="form.members" highlight-current-row class="order-member-table-container" @selection-change="handleOrderMemberSelectionChange">
+            <el-table-column type="selection" width="45" />
+            <el-table-column label="商品型号" prop="itemModel" width="350">
+              <template slot-scope="{row}">
+                <el-tooltip v-show="row.gs" effect="light">
+                  <div slot="content" class="tooltip-content">
+                    {{ '关税率' + row.gs + ( row.zjgs ? ',包含加征关税' + row.zjgs : '') }}
+                  </div>
+                  <svg-icon icon-class="tariff" class-name="tip-icon" />
+                </el-tooltip>
+                <el-tooltip v-show="row.involveRoyalty" effect="light">
+                  <div slot="content" class="tooltip-content">
+                    此项涉及特许权使用费
+                  </div>
+                  <svg-icon icon-class="involveRoyalty" class-name="tip-icon" />
+                </el-tooltip>
+                {{ row.itemModel }}
+              </template>
+            </el-table-column>
+            <el-table-column label="商品名称" prop="itemName" />
+            <el-table-column label="商品品牌" prop="itemBrand" />
+            <el-table-column label="单位" prop="commodityUnit" />
+            <el-table-column label="数量" prop="qty" />
+            <el-table-column label="单价" prop="price" />
+            <el-table-column label="金额">
+              <template slot-scope="{row}">
+                {{ calculateMemberAmount(row.price, row.qty) }}
+              </template>
+            </el-table-column>
+            <el-table-column label="产地" prop="itemOrigin" />
+            <el-table-column label="净重(KG)" prop="nw" />
+            <el-table-column label="毛重(KG)" prop="gw" />
+            <el-table-column label="物料号" prop="pn" />
+            <el-table-column label="PO号" prop="poNo" />
+            <el-table-column label="件数" prop="packages" />
+            <el-table-column label="供应商发票号" prop="supplierInvoiceNo" />
+          </el-table>
+          <!--分页 及 商品信息汇总-->
+          <el-row>
+            <el-col :span="6">
+              <!--分页-->
+              <Pagination :total="totalMember" :page.sync="memberPage" :limit="memberPageSize" layout="total, prev, pager, next" @pagination="getMemberPageData" />
+            </el-col>
+            <el-col :span="12">
+              <div class="order-member-total-message-container">
+                <div class="order-member-total-message">
+                  <span>总项数: {{ totalMember }}</span>
+                  <span>总数量: {{ totalQty }}</span>
+                  <span>总金额: {{ totalPrice }}</span>
+                </div>
+              </div>
+            </el-col>
+          </el-row>
 
-      <!---------------------------------------------香港物流--------------------------------------------------->
-      <div class="hk-logistics-container">
-        <el-divider content-position="left">香港物流</el-divider>
-        <!--到货类型-->
-        <el-row>
-          <el-form-item label="到货类型:">
-            <el-radio-group v-model="form.checkType">
-              <el-radio-button :label="1">供应商送货</el-radio-button>
-              <el-radio-button :label="2">华富洋提货</el-radio-button>
-              <el-radio-button :label="3">快递到货</el-radio-button>
-            </el-radio-group>
-          </el-form-item>
-        </el-row>
-        <!--华富洋提货-->
-        <el-row v-show="form.checkType === 2">
-          <el-form-item label="提货类型:">
-            <el-radio-group v-model="form.deliveryTypeHk">
-              <el-radio-button :label="0">单个提货点</el-radio-button>
-              <el-radio-button :label="1">多个提货点</el-radio-button>
-            </el-radio-group>
-            <!--多点提货 提货提示-->
-            <div v-show="form.deliveryTypeHk === 1" class="tip-message">多个提货点提货时请在订单保存后至 提货安排 中新增</div>
-          </el-form-item>
-          <!--单个提货点-->
-          <el-form-item v-show="form.deliveryTypeHk === 0" label="提货时间:">
-            <el-date-picker v-model="form.checkDateTime" type="datetime" />
-          </el-form-item>
-        </el-row>
+          <!--新增修改明细窗口-->
+          <AddAndEditItemDialog ref="itemDialog" />
+          <!--导入明细窗口-->
+          <TemplateImport ref="importMemberDialog" title="批量上传产品" :baba="this" template-file-id="1356171993041108993" />
+        </div>
 
-        <!--华富洋提货 单个提货点-->
-        <el-row v-show="form.checkType === 2 && form.deliveryTypeHk === 0">
-          <el-form-item label="提货件数:" class="pick-numbers-form-item">
-            <el-input v-model="form.totalPallet">
-              <template slot="append">板</template>
-            </el-input>
-            <el-input v-model="form.totalPackage">
-              <template slot="append">箱</template>
-            </el-input>
-          </el-form-item>
-          <el-form-item label="提货单号:">
-            <el-input v-model.trim="form.pickUpNo" clearable />
-          </el-form-item>
-        </el-row>
+        <!---------------------------------------------境外结算--------------------------------------------------->
+        <div class="abroad-settlement-container">
+          <el-divider content-position="left">境外结算</el-divider>
+          <!--境外结算方式 及 支付方式-->
+          <el-row>
+            <el-form-item label="境外结算方式:">
+              <el-radio-group v-model="form.hsePayStyle">
+                <el-radio-button :label="0">送货前付款</el-radio-button>
+                <el-radio-button :label="1">送货收票</el-radio-button>
+                <el-radio-button :label="2">送货后付款</el-radio-button>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item v-show="form.hsePayStyle === 0 || form.hsePayStyle === 1" label="支付方式:">
+              <el-radio-group v-model="form.payFeeStyle">
+                <!--送货前付款-->
+                <el-radio-button v-if="form.hsePayStyle === 0" :label="0">转账</el-radio-button>
+                <el-radio-button v-if="form.hsePayStyle === 0" :label="1">信用证</el-radio-button>
+                <!--送货收票-->
+                <el-radio-button v-if="form.hsePayStyle === 1" :label="2">支票</el-radio-button>
+                <el-radio-button v-if="form.hsePayStyle === 1" :label="3">期票</el-radio-button>
+              </el-radio-group>
+            </el-form-item>
+          </el-row>
 
-        <!--华富洋提货 单个提货点 提货地址-->
-        <el-row v-show="form.checkType === 2 && form.deliveryTypeHk === 0">
-          <el-form-item label="提货地址:" class="address-form-item">
-            <PickAddressPicker ref="pickAddress" />
-          </el-form-item>
-        </el-row>
+          <!--送货前付款 送货收票-->
+          <el-row v-show="form.hsePayStyle === 0 || form.hsePayStyle === 1">
+            <el-form-item label="本次付款金额:">
+              <el-input v-model="form.temFee" placeholder="付款比例" class="input-with-select">
+                <el-select slot="prepend" v-model="payPercent" placeholder="付款比例" @change="changePayPercent">
+                  <el-option v-for="item in payPercentList" :key="item" :label="item * 100 + '%'" :value="item" />
+                </el-select>
+              </el-input>
+            </el-form-item>
+            <!--送货前付款 信用证 信用证天数-->
+            <el-form-item v-show="form.hsePayStyle === 0 && form.payFeeStyle === 1" label="信用证天数:">
+              <el-input-number v-model="form.ticketDay" step-strictly />
+            </el-form-item>
+            <!--送货收票 期票 期票天数-->
+            <el-form-item v-show="form.hsePayStyle === 1 && form.payFeeStyle === 3" label="期票天数:">
+              <el-input-number v-model="form.termBillDay" step-strictly />
+            </el-form-item>
+          </el-row>
 
-        <!--华富洋提货 单个提货点 提货附件-->
-        <el-row v-show="form.checkType === 2 && form.deliveryTypeHk === 0">
-          <el-form-item label="提货附件:">
-            <FileUpload ref="pickFile" :file-tag="2" :max-size="5 * 1024 * 1024" accept="doc,jpg,png" />
-          </el-form-item>
-        </el-row>
+          <!--送货前付款 信用证附件-->
+          <el-row v-show="form.hsePayStyle === 0 && form.payFeeStyle === 1">
+            <el-form-item label="信用证附件:">
+              <FileUpload ref="lcFile" :file-tag="1" :max-size="5 * 1024 * 1024" accept="doc,jpg,png" />
+            </el-form-item>
+          </el-row>
 
-        <!--快递到货-->
-        <el-row v-show="form.checkType === 3">
-          <el-form-item label="运营商:">
-            <el-select v-model.trim="form.checkExpressName" filterable clearable allow-create>
-              <el-option v-for="item in checkExpressList" :key="item" :label="item" :value="item" />
-            </el-select>
-            <div class="tip-message">可手动录入其他运营商</div>
-          </el-form-item>
-          <el-form-item label="快递单号:">
-            <el-input v-model.trim="form.checkExpressNo" />
-            <div class="tip-message">多个快递单号时请用 / 分隔</div>
-          </el-form-item>
-        </el-row>
-      </div>
+          <!--送货前付款 送货收票-->
+          <el-row v-show="form.hsePayStyle === 0 || form.hsePayStyle === 1">
+            <el-form-item label="收款方户名:">
+              <el-select v-model="form.supplierBank" value-key="id" filterable clearable>
+                <el-option v-for="item in supplierBankList" :key="item.id" :label="item.supplierAccountName" :value="item" />
+              </el-select>
+            </el-form-item>
+            <el-form-item v-show="form.hsePayStyle === 0" label="收款人账号:">
+              <el-input :value="form.supplierBank ? form.supplierBank.supplierBankAccountNo : ''" readonly disabled />
+            </el-form-item>
+          </el-row>
 
-      <!---------------------------------------------国内物流--------------------------------------------------->
-      <el-divider content-position="left">国内物流</el-divider>
-      <!---------------------------------------------备注及其他--------------------------------------------------->
-      <el-divider content-position="left">备注及其他</el-divider>
-    </el-form>
+          <!--送货前付款 送货收票-->
+          <el-row v-show="form.hsePayStyle === 0">
+            <el-form-item label="开户银行:">
+              <el-input :value="form.supplierBank ? form.supplierBank.supplierBankName : ''" readonly disabled />
+            </el-form-item>
+            <el-form-item label="Swift Code:">
+              <el-input :value="form.supplierBank ? form.supplierBank.supplierBankSwiftCode : ''" readonly disabled />
+            </el-form-item>
+          </el-row>
+        </div>
 
+        <!---------------------------------------------香港物流--------------------------------------------------->
+        <div class="hk-logistics-container">
+          <el-divider content-position="left">
+            香港物流
+          </el-divider>
+          <el-alert title="交货要求" type="info" show-icon>
+            1、报订单号<br>
+            2、随货附装箱单，发票各一式三份<br>
+            3、快递交货提前提供快递单号<br>
+            4、货物标签需体现型号、数量、品牌、产地且贴标签面对外摆放
+          </el-alert>
+          <!--到货类型-->
+          <el-row>
+            <el-form-item label="到货类型:">
+              <el-radio-group v-model="form.checkType">
+                <el-radio-button :label="1">供应商送货</el-radio-button>
+                <el-radio-button :label="2">华富洋提货</el-radio-button>
+                <el-radio-button :label="3">快递到货</el-radio-button>
+              </el-radio-group>
+            </el-form-item>
+          </el-row>
+          <!--华富洋提货-->
+          <el-row v-show="form.checkType === 2">
+            <el-form-item label="提货类型:">
+              <el-radio-group v-model="form.deliveryTypeHk">
+                <el-radio-button :label="0">单个提货点</el-radio-button>
+                <el-radio-button :label="1">多个提货点</el-radio-button>
+              </el-radio-group>
+              <!--多点提货 提货提示-->
+              <div v-show="form.deliveryTypeHk === 1" class="tip-message">多个提货点提货时请在订单保存后至 提货安排 中新增</div>
+            </el-form-item>
+            <!--单个提货点-->
+            <el-form-item v-show="form.deliveryTypeHk === 0" label="提货时间:">
+              <el-date-picker v-model="form.checkDateTime" type="datetime" />
+            </el-form-item>
+          </el-row>
+
+          <!--华富洋提货 单个提货点-->
+          <el-row v-show="form.checkType === 2 && form.deliveryTypeHk === 0">
+            <el-form-item label="提货件数:" class="pick-numbers-form-item">
+              <el-input v-model="form.totalPallet">
+                <template slot="append">板</template>
+              </el-input>
+              <el-input v-model="form.totalPackage">
+                <template slot="append">箱</template>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="提货单号:">
+              <el-input v-model.trim="form.pickUpNo" clearable />
+            </el-form-item>
+          </el-row>
+
+          <!--华富洋提货 单个提货点 提货地址-->
+          <el-row v-show="form.checkType === 2 && form.deliveryTypeHk === 0">
+            <el-form-item label="提货地址:" class="address-form-item">
+              <PickAddressPicker ref="pickAddress" />
+            </el-form-item>
+          </el-row>
+
+          <!--华富洋提货 单个提货点 提货附件-->
+          <el-row v-show="form.checkType === 2 && form.deliveryTypeHk === 0">
+            <el-form-item label="提货附件:">
+              <FileUpload ref="pickFile" :file-tag="2" :max-size="5 * 1024 * 1024" accept="doc,jpg,png" />
+            </el-form-item>
+          </el-row>
+
+          <!--快递到货-->
+          <el-row v-show="form.checkType === 3">
+            <el-form-item label="运营商:">
+              <el-select v-model.trim="form.checkExpressName" filterable clearable allow-create>
+                <el-option v-for="item in checkExpressList" :key="item" :label="item" :value="item" />
+              </el-select>
+              <div class="tip-message">可手动录入其他运营商</div>
+            </el-form-item>
+            <el-form-item label="快递单号:">
+              <el-input v-model.trim="form.checkExpressNo" />
+              <div class="tip-message">多个快递单号时请用 / 分隔</div>
+            </el-form-item>
+          </el-row>
+        </div>
+
+        <!---------------------------------------------国内物流--------------------------------------------------->
+        <el-divider content-position="left">
+          国内物流
+        </el-divider>
+        <el-alert type="info" show-icon>
+          默认配送时间：工作日周一至周五9:00 - 18:00<br>
+          如贵司在非工作时段或节假日可收货，请在备注栏说明
+        </el-alert>
+        <!---------------------------------------------备注及其他--------------------------------------------------->
+        <div class="other-info-container">
+          <el-divider content-position="left">备注及其他</el-divider>
+          <!--特殊关系和影响报关价格-->
+          <el-row>
+            <el-form-item prop="special">
+              <el-tooltip slot="label" effect="light" content="买卖双方是否存在特殊关系">
+                <span>特殊关系:</span>
+              </el-tooltip>
+              <el-radio-group v-model="form.special">
+                <el-radio-button :label="true">是</el-radio-button>
+                <el-radio-button :label="false">否</el-radio-button>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item v-show="form.special" prop="effectDeclarationPrice">
+              <el-tooltip slot="label" effect="light" content="此特殊关系是否影响商品报关价格">
+                <span>影响报关价格:</span>
+              </el-tooltip>
+              <el-radio-group v-model="form.effectDeclarationPrice">
+                <el-radio-button :label="true">是</el-radio-button>
+                <el-radio-button :label="false">否</el-radio-button>
+              </el-radio-group>
+            </el-form-item>
+          </el-row>
+          <!--备注-->
+          <el-row>
+            <el-form-item label="备注:" prop="remark">
+              <el-input v-model.trim="form.remark" type="textarea" :autosize="{ minRows: 5}" maxlength="250" show-word-limit />
+            </el-form-item>
+          </el-row>
+          <!--发票及装箱单-->
+          <el-row>
+            <el-form-item label="发票:">
+              <FileUpload ref="invoiceFile" :file-tag="1" :max-size="5 * 1024 * 1024" accept="doc,jpg,png" other-tip="请上传供应商出具的INVOICE" />
+            </el-form-item>
+            <el-form-item label="装箱单:">
+              <FileUpload ref="packingListFile" :file-tag="1" :max-size="5 * 1024 * 1024" accept="doc,jpg,png" other-tip="请上传供应商出具的PACKING LIST" />
+            </el-form-item>
+          </el-row>
+        </div>
+      </el-form>
+    </div>
     <!--提交 及 暂存按钮-->
-    <div class="submit-button-sticky">
+    <div class="order-form-button-container">
       <el-button type="primary" class="submit-button" @click="submitForm">
         暂存
       </el-button>
@@ -295,7 +358,9 @@ export default {
       form: {
         settleId: '', supplierId: '', currencyId: '', supplierContact: '', appointContractNo: '', contractNo: '',
         members: [],
-        hsePayStyle: '', payFeeStyle: '', temFee: '', ticketDay: undefined, termBillDay: undefined, supplierBank: ''
+        hsePayStyle: '', payFeeStyle: '', temFee: '', ticketDay: undefined, termBillDay: undefined, supplierBank: '',
+
+        special: '', effectDeclarationPrice: '', remark: ''
       },
       // 境内结算方式,即方案下拉
       settlementList: [
@@ -333,6 +398,12 @@ export default {
         ],
         currencyId: [
           { required: true, message: '币别必选', trigger: 'change' }
+        ],
+        special: [
+          { required: true, message: '买卖双方是否存在特殊关系必选', trigger: 'change' }
+        ],
+        effectDeclarationPrice: [
+          { required: true, message: '此关系是否影响商品报关价格必选', trigger: 'change' }
         ]
       }
     }
@@ -433,109 +504,120 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-.order-form-container{
-  margin: 20px 20px 144px 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-  .el-row{
-    .input-with-select {
-      .el-select{width: 110px;}
+<style lang="scss" scope>
+.order-container{
+  padding: 0 0 15px 0;
+  .order-form-container{
+    margin: 0 15px 65px 15px;
+    .el-row{
+      .input-with-select {
+        .el-select{width: 110px;}
+      }
+      .show-more-currency{ margin-left: 12px;}
     }
-    .show-more-currency{ margin-left: 12px;}
-  }
-  .el-form-item{
-    width: 520px;
-    .el-form-item__content{
-      width: 400px;
+    .el-form-item{
+      width: 520px;
+      .el-form-item__content{
+        width: 400px;
+      }
     }
-  }
-  .currency-form-item{
-    // 兼容1024*768 最大700左侧导航占用 300
-    width: 700px;
-    .el-form-item__content{
-      width: 580px;
+    .currency-form-item{
+      // 兼容1024*768 最大700左侧导航占用 300
+      width: 700px;
+      .el-form-item__content{
+        width: 580px;
+      }
     }
-  }
-  .order-member-container{
-    .order-member-button-container{
-      margin-bottom: 8px;
-    }
-    .order-member-table-container{
-      box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-    }
-    .order-member-total-message-container{
-      margin-top: 5px;
-      padding: 10px 0 10px 0;
-      color: #f0862b;
-      text-align: center;
-      .order-member-total-message{
-        display: inline-block;
-        font-size: 18px;
-        height: 28px;
-        line-height: 28px;
-        vertical-align: top;
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-        font-weight: bold;
-        span{
-          margin-left: 15px;
+    .order-member-container{
+      .order-member-button-container{
+        margin-bottom: 8px;
+      }
+      .order-member-table-container{
+        box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+      }
+      .order-member-total-message-container{
+        margin-top: 5px;
+        padding: 10px 0 10px 0;
+        color: #f0862b;
+        text-align: center;
+        .order-member-total-message{
+          display: inline-block;
+          font-size: 18px;
+          height: 28px;
+          line-height: 28px;
+          vertical-align: top;
+          -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+          font-weight: bold;
+          span{
+            margin-left: 15px;
+          }
         }
       }
     }
-  }
-  .el-divider__text {
-    position: absolute;
-    padding: 0 20px;
-    font-weight: 600;
-    color: #f0862b;
-    font-size: 16px;
-  }
-  .tip-icon{
-    color: #f0862b;
-    font-size: 24px;
-  }
-  .tip-message{
-    color: #f0862b;
-    font-size: 12px;
-    line-height: 1;
-    padding-top: 4px;
-    position: absolute;
-    top: 100%;
-    left: 0;
-  }
-  .pick-numbers-form-item{
-    .el-input-group{ width: 50%;}
-  }
-  .address-form-item{
-    width: 100%;
-    .el-form-item__content{
-      width: calc(100% - 120px);
+    .el-divider__text {
+      position: absolute;
+      padding: 0 20px;
+      font-weight: 600;
+      color: #f0862b;
+      font-size: 16px;
+    }
+    .el-alert {
+      margin-bottom: 12px;
+      color: #f0862b;
+      .el-alert__description {
+        color: #f0862b;
+      }
+    }
+    .tip-icon{
+      color: #f0862b;
+      font-size: 24px;
+    }
+    .tip-message{
+      color: #f0862b;
+      font-size: 12px;
+      line-height: 1;
+      padding-top: 4px;
+      position: absolute;
+      top: 100%;
+      left: 0;
+    }
+    .pick-numbers-form-item{
+      .el-input-group{ width: 50%;}
+    }
+    .address-form-item{
+      width: 100%;
+      .el-form-item__content{
+        width: calc(100% - 120px);
+      }
     }
   }
-  .submit-button-sticky{
-    border-top: 1px solid #dbe3e4;
-    background-color: #fff;
-    box-shadow: 0 -4px 4px -2px #e4e9f0;
-    height: 70px;
-    line-height: 70px;
+  .left-select-option{
+    float: left;
+  }
+  .right-select-option{
+    float: right; color: #8492a6;
+  }
+  // tooltip 弹出文字样式
+  .tooltip-content{
+    font-size: 14px;
+    line-height: 1.8;
+  }
+  .order-form-button-container {
+    background: none repeat scroll 0 0 #FFF;
+    border-top: 1px solid #e7eaec;
+    height: 50px;
+    color: #7a8b9a;
     position: fixed;
-    text-align: center;
-    z-index: 98;
-    margin-bottom: 33px;
+    bottom: 33px;
+    z-index: 99;
     width: 100%;
-    left: 0;
-    bottom: 0;
-    .submit-button {
-      padding: 10px 80px;
-      margin-left: 20px;
-      font-size: 18px;
+    text-align: center;
+    .el-button{
+      width: 240px;
+      height: 40px;
+      margin: 5px 15px 0 0;
     }
   }
-}
-.left-select-option{
-  float: left;
-}
-.right-select-option{
-  float: right; color: #8492a6;
 }
 </style>
