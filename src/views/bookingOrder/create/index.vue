@@ -618,6 +618,9 @@ export default {
       height: 40px;
       margin: 5px 15px 0 0;
     }
+    .el-button:last-of-type{
+      margin-right: 240px;
+    }
   }
 }
 </style>
