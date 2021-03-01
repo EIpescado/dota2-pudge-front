@@ -34,6 +34,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/variables.scss';
 .sidebarLogoFade-enter-active {
   transition: opacity 1.5s;
 }
@@ -48,8 +49,7 @@ export default {
   width: 100%;
   height: 50px;
   line-height: 50px;
-  // background: #2b2f3a;
-  background: #070007;
+  background: $menuBg;
   text-align: center;
   overflow: hidden;
 
@@ -70,7 +70,7 @@ export default {
       color: #fff;
       font-weight: 600;
       line-height: 50px;
-      font-size: 14px;
+      font-size: 18px;
       vertical-align: middle;
     }
   }
