@@ -103,8 +103,8 @@ export const routerArray = [
       {
         path: '/bookingOrder/create',
         component: () => import('@/views/bookingOrder/create'),
-        name: '新增订单',
-        meta: { title: '新增订单', icon: 'dashboard' }
+        name: 'BookingOrderCreate',
+        meta: { title: '新增订单', icon: 'dashboard', noCache: false }
       }
     ]
   }

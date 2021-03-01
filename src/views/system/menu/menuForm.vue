@@ -35,7 +35,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="缓存" prop="cache">
+          <el-form-item prop="cache">
+            <el-tooltip slot="label" effect="light" content="组件名称与代码内name完全一致,缓存才会有效">
+              <span>缓存</span>
+            </el-tooltip>
             <el-radio-group v-model="form.noCache" size="mini">
               <el-radio-button :label="false">是</el-radio-button>
               <el-radio-button :label="true">否</el-radio-button>

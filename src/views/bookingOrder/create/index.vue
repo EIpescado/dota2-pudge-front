@@ -351,7 +351,7 @@ import Pagination from '@/components/Pagination'
 import AddAndEditItemDialog from '@/components/AddAndEditItemDialog'
 import TemplateImport from '@/components/TemplateImport'
 export default {
-  name: 'CreateBookingOrder',
+  name: 'BookingOrderCreate',
   components: { FileUpload, PickAddressPicker, Pagination, AddAndEditItemDialog, TemplateImport },
   data() {
     return {
@@ -505,6 +505,7 @@ export default {
 }
 </script>
 <style lang="scss" scope>
+
 .order-container{
   padding: 0 0 15px 0;
   .order-form-container{
@@ -604,16 +605,18 @@ export default {
     line-height: 1.8;
   }
   .order-form-button-container {
-    background: none repeat scroll 0 0 #FFF;
-    border-top: 1px solid #e7eaec;
+    background-color: #FFFFFF;
+    border-top: 1px solid #e6ebf5;
+    -webkit-box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
+    box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
     height: 50px;
-    color: #7a8b9a;
     position: fixed;
     bottom: 33px;
     z-index: 99;
     width: 100%;
     text-align: center;
     .el-button{
+      font-size: 18px;
       width: 240px;
       height: 40px;
       margin: 5px 15px 0 0;

@@ -182,9 +182,6 @@ aside {
     width: 100%;
   }
 }
-.filter-container:hover{
-  @include common-border-hover;
-}
 
 .filter-button-container{
   margin-left:40%;
@@ -200,10 +197,6 @@ aside {
   .el-form--inline{
     padding-top: 18px !important;
   }
-}
-
-.card-filter-container:hover{
-  @include common-border-hover;
 }
 
 .pudge-hidden{
@@ -254,9 +247,6 @@ aside {
     font-weight: 600;
   }
 }
-.table-container:hover{
-  @include common-border-hover;
-}
 
 .top-table-container{
   margin-top: 12px;
@@ -300,7 +290,6 @@ aside {
   width: 100%;
   text-align: center;
   color: #fff;
-  font-family: Arial, serif;
   font-size: 12px;
   letter-spacing: 1px;
 }
@@ -311,10 +300,9 @@ aside {
   overflow: hidden;
   padding: 10px 6px 0 6px;
   height: 33px;
-  font-size: 0.7rem !important;
+  font-size: 12px;
   color: #7a8b9a;
   letter-spacing: 0.8px;
-  font-family: Arial, sans-serif !important;
   position: fixed;
   bottom: 0;
   z-index: 99;
