@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible.sync="dialog" :close-on-click-modal="false" title="更改邮箱" append-to-body width="475px" custom-class="form-dialog" @close="cancel">
+  <el-dialog :visible.sync="dialog" :close-on-click-modal="false" title="更改邮箱" append-to-body width="500px" custom-class="form-dialog" @close="cancel">
     <el-form ref="mailForm" :inline="true" :model="mailForm" :rules="rules" class="form-container">
       <el-form-item label="新邮箱" prop="mail">
         <el-row>
@@ -71,10 +71,16 @@ export default {
         } else {
           this.codeDisabled = true
           this.codeLoading = true
+          if (!validEmail(this.mailForm.mail)) {
+            this.$message.warning('请输入有效邮箱')
+            this.codeDisabled = false
+            this.codeLoading = false
+            return
+          }
           this.buttonName = '发送中'
           const _this = this
           sendChangeMailCode(this.mailForm.mail).then(res => {
-            this.$message.success('验证码已发送到邮箱，请及时查看(有效期5分分钟)')
+            this.$notify.success({ title: '验证码已发送', message: '验证码有效期5分钟，请注意查看邮件' })
             this.codeLoading = false
             this.codeDisabled = true
             this.buttonName = (this.time--) + '秒'

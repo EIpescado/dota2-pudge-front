@@ -18,20 +18,27 @@
 
       </template>
 
-      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
+      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="hover" :show-timeout="0" @visible-change="avatarContainerVisibleChange">
         <div class="avatar-wrapper">
           <img :src="userInfo.avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
-          <i class="el-icon-caret-bottom" />
+          <i :class="showAvatarContainerDropdown ? 'el-icon-caret-top' : 'el-icon-caret-bottom'" />
         </div>
-        <el-dropdown-menu slot="dropdown">
+        <el-dropdown-menu slot="dropdown" class="navbar-dropdown-menu">
           <router-link to="/profile/index">
-            <el-dropdown-item>个人中心</el-dropdown-item>
+            <el-dropdown-item class="navbar-dropdown-item">
+              <svg-icon icon-class="user" />
+              个人中心
+            </el-dropdown-item>
           </router-link>
           <a target="_blank" href="https://github.com/EIpescado/dota2-pudge-front">
-            <el-dropdown-item>Github</el-dropdown-item>
+            <el-dropdown-item class="navbar-dropdown-item">
+              <svg-icon icon-class="link" />
+              Github
+            </el-dropdown-item>
           </a>
-          <el-dropdown-item divided @click.native="open">
-            <span style="display:block;">退出登录</span>
+          <el-divider class="navbar-dropdown-divider" />
+          <el-dropdown-item class="navbar-dropdown-item logout-dropdown-item" @click.native="open">
+            退出登录
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -55,7 +62,7 @@ export default {
   },
   data() {
     return {
-      screenfullTooltipDisabled: false, sizeSelectTooltipDisabled: false
+      screenfullTooltipDisabled: false, sizeSelectTooltipDisabled: false, showAvatarContainerDropdown: false
     }
   },
   computed: {
@@ -89,6 +96,9 @@ export default {
       } else if (flag === 'sizeSelect') {
         this.sizeSelectTooltipDisabled = true
       }
+    },
+    avatarContainerVisibleChange(val) {
+      this.showAvatarContainerDropdown = val
     }
   }
 }
@@ -149,7 +159,7 @@ export default {
     }
 
     .avatar-container {
-      margin-right: 30px;
+      margin-right: 15px;
 
       .avatar-wrapper {
         margin-top: 5px;
@@ -159,18 +169,24 @@ export default {
           cursor: pointer;
           width: 40px;
           height: 40px;
-          border-radius: 10px;
+          border-radius: 50%;
         }
 
-        .el-icon-caret-bottom {
-          cursor: pointer;
-          position: absolute;
-          right: -20px;
-          top: 25px;
-          font-size: 12px;
-        }
       }
     }
+  }
+}
+.navbar-dropdown-menu{
+  .navbar-dropdown-item{
+    line-height: 32px;
+    padding-left: 10px;
+    padding-right: 44px;
+  }
+  .navbar-dropdown-divider{
+    margin: 5px 0;
+  }
+  .logout-dropdown-item{
+    margin-bottom: 5px;
   }
 }
 </style>

@@ -1,41 +1,40 @@
 <template>
   <div class="app-container">
-    <!--按钮-->
-    <sticky :z-index="10" class-name="sub-navbar">
-      <el-button :loading="submitLoading" :disabled="submitDisabled" type="primary" @click="submitForm">
-        {{ isEdit ? '保存' : '发布' }}
-      </el-button>
-    </sticky>
-    <el-form ref="form" :model="form" :inline="true" :rules="rules" class="form-container" label-width="100px" label-position="left">
+    <el-form ref="form" :model="form" :inline="true" :rules="rules" class="notice-form-container" label-position="left">
       <el-row>
         <el-form-item prop="title" label="标题：" class="notice-title-input">
           <el-input v-model.trim="form.title" clearable />
         </el-form-item>
       </el-row>
       <el-row>
-        <el-form-item prop="type" label="类型：">
+        <el-form-item prop="type" label="类型：" class="half-form-item">
           <el-select v-model.trim="form.type" clearable>
             <el-option v-for="item in this.$store.getters.dictSelectData.system_notice_type" :key="item.value" :value="item.value" :label="item.label" />
           </el-select>
         </el-form-item>
-        <el-form-item prop="expiredDate" label="失效时间：">
+        <el-form-item prop="expiredDate" label="失效时间：" class="half-form-item">
           <el-date-picker v-model="form.expiredDate" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" />
         </el-form-item>
       </el-row>
       <!--富文本编辑器-->
       <Tinymce ref="editor" v-model="form.content" />
     </el-form>
+
+    <el-row class="notice-form-button-container">
+      <el-button :loading="submitLoading" :disabled="submitDisabled" type="primary" @click="submitForm">
+        {{ isEdit ? '保存' : '发布' }}
+      </el-button>
+    </el-row>
   </div>
 </template>
 
 <script>
 import Tinymce from '@/components/Tinymce'
-import Sticky from '@/components/Sticky'
 import { getDictSelectData } from '@/utils/common'
 import { create, get, update } from '@/api/system/notice'
 export default {
   name: 'ArticleDetail',
-  components: { Tinymce, Sticky },
+  components: { Tinymce },
   props: {
     isEdit: {
       type: Boolean,
@@ -113,17 +112,25 @@ export default {
 
 <style lang="scss" scope>
 .app-container{
-  padding: 0 0 0 0;
-  .form-container{
-    margin: 0 15px;
-    padding-top: 18px;
+  .notice-form-container{
+    .el-form-item__label{
+      width: 100px;
+    }
     .notice-title-input {
       width: 100%;
       .el-form-item__content { width: calc(100% - 100px);}
     }
+    .half-form-item{
+      .el-form-item__content{ width: 360px; }
+    }
   }
-  .form-tinymce-container{
-    margin-bottom: 30px;
+  .notice-form-button-container{
+    margin: 15px 0;
+    .el-button{
+      height: 40px;
+      width: 240px;
+      font-size: 16px;
+    }
   }
 }
 </style>

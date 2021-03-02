@@ -1,61 +1,49 @@
 <template>
-  <el-dialog append-to-body :close-on-click-modal="false" :visible.sync="show" :title="isAdd ? '新按钮' : '编辑按钮'" width="640px" @closed="cancel">
-    <el-form ref="form" v-loading="formLoading" :inline="true" :model="form" :rules="rules" label-width="80px">
-      <el-row :gutter="10">
-        <el-col :span="12">
-          <el-form-item label="按钮名称" prop="buttonName">
-            <el-input v-model.trim="form.buttonName" placeholder="按钮名称" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="按钮图标" prop="icon">
-            <el-popover
-              placement="bottom-start"
-              width="400"
-              trigger="click"
-              @show="$refs['iconSelect'].reset()"
-            >
-              <IconSelect ref="iconSelect" @selected="selected" />
-              <el-input slot="reference" v-model.trim="form.icon" placeholder="点击选择图标" readonly style="width:187px;">
-                <svg-icon v-if="form.icon" slot="prefix" :icon-class="form.icon" />
-                <i v-else slot="prefix" class="el-icon-search el-input__icon" />
-              </el-input>
-            </el-popover>
-          </el-form-item>
-        </el-col>
+  <el-dialog append-to-body :close-on-click-modal="false" :visible.sync="show" :title="isAdd ? '新按钮' : '编辑按钮'" width="970px" custom-class="form-dialog" @closed="cancel">
+    <el-form ref="form" v-loading="formLoading" :inline="true" :model="form" :rules="rules" class="form-container">
+      <el-row>
+        <el-form-item label="按钮名称" prop="buttonName">
+          <el-input v-model.trim="form.buttonName" placeholder="按钮名称" />
+        </el-form-item>
+        <el-form-item label="按钮图标" prop="icon">
+          <el-popover
+            placement="bottom-start"
+            width="400"
+            trigger="click"
+            @show="$refs['iconSelect'].reset()"
+          >
+            <IconSelect ref="iconSelect" @selected="selected" />
+            <el-input slot="reference" v-model.trim="form.icon" placeholder="点击选择图标" readonly>
+              <svg-icon v-if="form.icon" slot="prefix" :icon-class="form.icon" />
+              <i v-else slot="prefix" class="el-icon-search el-input__icon" />
+            </el-input>
+          </el-popover>
+        </el-form-item>
       </el-row>
 
-      <el-row :gutter="10">
-        <el-col :span="12">
-          <el-form-item label="按钮位置" prop="position">
-            <el-input v-model.trim="form.position" placeholder="按钮位置" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="绑定函数" prop="click">
-            <el-input v-model.trim="form.click" placeholder="按钮绑定函数名称" />
-          </el-form-item>
-        </el-col>
+      <el-row>
+        <el-form-item label="按钮位置" prop="position">
+          <el-input v-model.trim="form.position" placeholder="按钮位置" />
+        </el-form-item>
+        <el-form-item label="绑定函数" prop="click">
+          <el-input v-model.trim="form.click" placeholder="按钮绑定函数名称" />
+        </el-form-item>
       </el-row>
 
-      <el-row :gutter="10">
-        <el-col :span="12">
-          <el-form-item label="排序号" prop="sortNo">
-            <el-input-number v-model.number="form.sortNo" :min="0" controls-position="right" style="width:183px;" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="权限标识" prop="permission">
-            <el-input v-model.trim="form.permission" :disabled="form.iFrame" placeholder="权限标识" />
-          </el-form-item>
-        </el-col>
+      <el-row>
+        <el-form-item label="排序号" prop="sortNo">
+          <el-input-number v-model.number="form.sortNo" :min="0" controls-position="right" />
+        </el-form-item>
+        <el-form-item label="权限标识" prop="permission">
+          <el-input v-model.trim="form.permission" :disabled="form.iFrame" placeholder="权限标识" />
+        </el-form-item>
       </el-row>
       <el-form-item label="所属菜单" prop="menuId">
         <treeselect
           v-model="form.menuId"
           :options="menus"
           :normalizer="normalizer"
-          style="width: 490px;"
+          style="width: 830px;"
           placeholder="选择所属菜单"
         />
       </el-form-item>

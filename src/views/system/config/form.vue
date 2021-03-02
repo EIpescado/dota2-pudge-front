@@ -1,5 +1,5 @@
 <template>
-  <el-dialog append-to-body :close-on-click-modal="false" :visible.sync="show" :title="isAdd ? '新配置' : '编辑配置'" width="600px" custom-class="form-dialog" @closed="cancel">
+  <el-dialog append-to-body :close-on-click-modal="false" :visible.sync="show" :title="isAdd ? '新配置' : '编辑配置'" width="500px" custom-class="form-dialog" @closed="cancel">
     <el-form ref="form" v-loading="formLoading" :inline="true" :model="form" :rules="rules" class="form-container">
       <el-form-item label="配置编码" prop="code">
         <el-input v-model.trim="form.code" :disabled="!isAdd" />

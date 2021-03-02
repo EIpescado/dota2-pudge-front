@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible.sync="dialog" :close-on-click-modal="false" title="换绑手机" append-to-body width="475px" custom-class="form-dialog" @close="cancel">
+  <el-dialog :visible.sync="dialog" :close-on-click-modal="false" title="换绑手机" append-to-body width="500px" custom-class="form-dialog" @close="cancel">
     <el-form ref="phoneForm" :inline="true" :model="phoneForm" :rules="rules" class="form-container">
       <el-form-item label="新手机号" prop="phone">
         <el-row>
@@ -71,6 +71,12 @@ export default {
         } else {
           this.codeDisabled = true
           this.codeLoading = true
+          if (!validPhone(this.phoneForm.phone)) {
+            this.$message.warning('请输入有效手机')
+            this.codeDisabled = false
+            this.codeLoading = false
+            return
+          }
           this.buttonName = '发送中'
           const _this = this
           sendChangePhoneCode(this.phoneForm.phone).then(res => {

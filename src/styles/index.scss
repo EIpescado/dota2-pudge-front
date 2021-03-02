@@ -184,10 +184,9 @@ aside {
 }
 
 .filter-button-container{
-  margin-left:40%;
+  text-align: center;
   .el-button{
     margin-right: 20px;
-    border-radius: 6px !important;
   }
 }
 
@@ -203,32 +202,35 @@ aside {
   display: none;
 }
 
-.form-container{
-  .el-form-item{
-    width: 480px;
-    .el-form-item__label { width: 120px; }
-    .el-form-item__content{ width: 360px; }
-  }
-  .el-select{
-    width: 100%;
-  }
-  .el-date-editor{
-    width: 100% !important;
-  }
-  .el-input-number{
-    width: 100%;
-    .el-input__inner{
-      text-align: left;
-    }
-  }
-}
-
+// dialog 弹窗大小 单行2个form-item 460 * 2 + 15 *2 + 10 * 2 = 970
 .form-dialog{
   .el-dialog__body{
     padding: 30px 15px 15px 15px ;
   }
-  .el-button{
-    margin-left: 20px;
+  .el-dialog__footer{
+    padding: 10px 25px 20px 15px;
+    .el-button{
+      margin-left: 20px;
+    }
+  }
+  .form-container{
+    .el-form-item{
+      width: 460px;
+      .el-form-item__label { width: 100px; }
+      .el-form-item__content{ width: 360px; }
+    }
+    .el-select{
+      width: 100%;
+    }
+    .el-date-editor{
+      width: 100% !important;
+    }
+    .el-input-number{
+      width: 100%;
+      .el-input__inner{
+        text-align: left;
+      }
+    }
   }
 }
 
@@ -249,26 +251,23 @@ aside {
 }
 
 .top-table-container{
-  margin-top: 12px;
-  margin-bottom: 12px;
+  margin: 12px 0;
   .table-top-left-button-container{
     width: calc(100% - 280px);
     .table-top-left-button-item{
       margin-right: 8px !important;
-      border-radius: 6px !important;
     }
     .table-top-left-more-button-item{
       top: 0;
       margin-right: 8px !important;
-      border-radius: 6px !important;
     }
   }
   
   .table-top-right-button-container{
+    // 无左侧按钮时需要此
     margin-bottom: 12px;
     float: right;
     .table-top-right-button-item{
-      border-radius: 6px !important;
       margin-left: 8px !important;;
     }
   }
